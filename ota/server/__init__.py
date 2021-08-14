@@ -4,7 +4,7 @@ import hashlib
 from flask import Flask 
 
 from afirmatron import File 
-from afirmatron.version import should_update
+from afirmatron.api import should_update
 from afirmatron import api as afirm
 
 logging.basicConfig(level=logging.DEBUG)

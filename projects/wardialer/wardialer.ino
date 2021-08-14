@@ -21,6 +21,9 @@
 #define BUTTON_1            35
 #define BUTTON_2            0
 
+char *openNetworks[50];
+int openNetworkCount = 0;
+
 TFT_eSPI tft = TFT_eSPI(135, 240); // Invoke custom library
 Button2 btn1(BUTTON_1);
 Button2 btn2(BUTTON_2);
@@ -154,12 +157,22 @@ void wifi_scan()
         Serial.printf("Found %d net\n", n);
         for (int i = 0; i < n; ++i) {
             int open = (int)(WiFi.encryptionType(i) == WIFI_AUTH_OPEN);
-            sprintf(buff,
-                    "[%d]:%s(%d)",
-                    open,
-                    WiFi.SSID(i).c_str(),
-                    WiFi.RSSI(i));
-            tft.println(buff);
+            if (open) {
+                char networkBuff[512];
+                sprintf(networkBuff,
+                        "[%d]:%s(%d)",
+                        open,
+                        WiFi.SSID(i).c_str(),
+                        WiFi.RSSI(i));
+                openNetworks[openNetworkCount] = networkBuff;
+                openNetworkCount++;
+            }
+        }
+        for (int i = 0; i < openNetworkCount; ++i) {
+            tft.println(openNetworks[i]);
+        }
+        if (openNetworkCount < 1) {
+            tft.println("No Open Networks");
         }
     }
     // WiFi.mode(WIFI_OFF);
