@@ -11,16 +11,13 @@ void setup() {
 
 void loop() {
   char key = getKey();
-  calcPress(key);
-  if(isNum(key)) {
+  if(key) {
+    calcPress(key);
+    Serial.print("reg0: ");
     Serial.println(reg0);
-  } else if(isOperator(key)) {
     Serial.print("reg1: ");
-    Serial.print(key);
-    Serial.print(": ");
     Serial.println(reg1);
-  } else if(key == '#') { // ENTER
-    Serial.println(reg0, reg1);
+    Serial.print("display: ");
+    Serial.println(calcDisplay(key));  
   }
-    
 }
