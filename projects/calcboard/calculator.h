@@ -1,9 +1,9 @@
 // int isNum(char key); 
 // int isOperator(char key);
 // void calcPress(char key);
-// long calcDisplay(char key);
-long reg0 = 0;
-long reg1 = 0;
+// float calcDisplay(char key);
+float reg0 = 0;
+float reg1 = 0;
 char operatr = 0;
 
 
@@ -21,7 +21,7 @@ int isOperator(char key) {
   return 0;
 }
 
-long operate() {
+float operate() {
   switch(operatr) {
     case '*': return reg1 * reg0;
     case '/': return reg1 / reg0;
@@ -34,18 +34,23 @@ void calcPress(char key) {
   if(isNum(key)) {
     reg0 = reg0 * 10 + (key - 48);
   } else if(isOperator(key)) {
+    operatr = key;
+    if(reg0 == 0) {
+      return;
+    } 
+
     if(reg1 == 0) {
         reg1 = reg0;
     } else {
         reg1 = operate();
     }
     reg0 = 0;
-    operatr = key;
-  } else if(key == '#') { // ENTER
+  } else if(key == '#') { // CLEAR
+    reg0 = 0;
   }
 }
 
-long calcDisplay(char key) {
+float calcDisplay(char key) {
   if(isNum(key)) {
     return reg0;
   } else if(isOperator(key)) {

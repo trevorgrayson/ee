@@ -15,7 +15,7 @@ char hexaKeys[ROWS][COLS] = {
 };
                     // nodemcu pin order: 15, 13, 12, 14, 02, 00, 4, 5
                     // 5, 4, 3, 2
-byte rowPins[ROWS] = {2, 0, 4, 5}; 
+byte rowPins[ROWS] = {2, 0, 9, 10}; 
                     // 8, 7, 6
 byte colPins[COLS] = {15, 13, 12, 14}; 
 
