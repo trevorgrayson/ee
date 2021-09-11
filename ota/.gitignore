@@ -1,5 +1,0 @@
-*.sw*
-build
-target
-*.pyc
-__pycache__
