@@ -6,12 +6,14 @@ SRC=$(wildcard noarch/*.c) $(ALL)
 TEST_SRC=test.c $(wildcard tests/impls/*.c) $(ALL)
 
 ACLI=arduino-cli
-BOARD?=esp32:esp32:ttgo-t1
-# BOARD?=Heltec-esp8266:esp8266:generic
+# BOARD?=esp32:esp32:ttgo-t1
+BOARD?=Heltec-esp8266:esp8266:generic
 # BOARD=arduino:avr:leonardo
 BOARD_ARTIFACT?=$(shell sed s/:/./g <<< $(BOARD))
 PORT?=/dev/cu.SLAB_USBtoUART
-BIN_MOD?="" # with_bootloader.
+BIN_MOD?= # with_bootloader.
+BIN_DIR?=ota/binaries
+HOST?=ota.pearl.st
 
 test: $(TEST_SRC)
 	@mkdir -p target
@@ -40,3 +42,18 @@ compile: build/$(BOARD_ARTIFACT)/$(PROJECT).ino.$(BIN_MOD)bin
 
 publish: compile
 	$(ACLI) upload -p $(PORT) --fqbn $(BOARD) -i build/$(BOARD_ARTIFACT)/$(PROJECT).ino.$(BIN_MOD)bin
+
+publishOTA: compile
+	echo "copying to `binaries`"
+	cp build/Heltec-esp8266.esp8266.generic/ota.ino.bin $(BIN_DIR)/a0:20:a6:27:0b:b2.bin
+	# curl --data-binary @build/esp8266.esp8266.generic/ota.ino.bin  $(HOST)/things/update/A0:20:A6:27:0B:B2
+	curl --data-binary @build/Heltec-esp8266.esp8266.generic/ota.ino.bin  $(HOST)/things/update/A0:20:A6:27:0B:B2
+
+monitor:
+	@echo "Ctrl a, Ctrl \ to disconnect"
+	screen $(PORT) $(BAUD)
+
+clean:
+	find . -name '*.o' -delete
+	find images -name '*.xbm' -delete
+	rm -rf build

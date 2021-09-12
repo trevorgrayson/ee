@@ -1,0 +1,26 @@
+---
+# TODO: Needs to mount volume
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ota-deployment
+  labels:
+    app: ota
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ota
+  template:
+    metadata:
+      labels:
+        app: ota
+    spec:
+      containers:
+        - name: ota
+          image: tgrayson/ota
+          ports:
+            - containerPort: 8000
+          # envFrom:
+          # - secretRef:
+          #     name: ota.env
