@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.register_blueprint(afirm.routes, url_prefix='/things')
 
+
 @app.route('/')
 def welcome():
     return 'Engage the Afirmatron'

@@ -23,7 +23,7 @@ def device_name(request):
 
 
 def md5sum(request):
-    return  request.headers.get('X-Esp8266-Sketch-Md5')
+    return request.headers.get('X-Esp8266-Sketch-Md5')
 
 
 @routes.route('/')
