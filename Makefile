@@ -13,7 +13,7 @@ BOARD_ARTIFACT?=$(shell sed s/:/./g <<< $(BOARD))
 PORT?=/dev/cu.SLAB_USBtoUART
 BIN_MOD?= # with_bootloader.
 BIN_DIR?=ota/binaries
-HOST?=ota.pearl.st
+OTAHOST?=ota.pearl.st
 
 test: $(TEST_SRC)
 	@mkdir -p target
@@ -46,8 +46,11 @@ publish: compile
 publishOTA: compile
 	echo "copying to `binaries`"
 	cp build/Heltec-esp8266.esp8266.generic/ota.ino.bin $(BIN_DIR)/a0:20:a6:27:0b:b2.bin
-	# curl --data-binary @build/esp8266.esp8266.generic/ota.ino.bin  $(HOST)/things/update/A0:20:A6:27:0B:B2
-	curl --data-binary @build/Heltec-esp8266.esp8266.generic/ota.ino.bin  $(HOST)/things/update/A0:20:A6:27:0B:B2
+	# curl --data-binary @build/esp8266.esp8266.generic/ota.ino.bin  $(OTAHOST)/things/update/A0:20:A6:27:0B:B2
+	curl --data-binary @build/Heltec-esp8266.esp8266.generic/ota.ino.bin  $(OTAHOST)/things/update/A0:20:A6:27:0B:B2
+
+publishTest:
+	curl -H 'X-Esp8266-Sketch-Md5: 242e80f46cc5c1f73bc4cf52cfc1e07f' -H 'X-Esp8266-Sta-Mac: A0:20:A6:27:0B:B2'  $(OTAHOST)/things/update
 
 monitor:
 	@echo "Ctrl a, Ctrl \ to disconnect"
