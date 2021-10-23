@@ -1,0 +1,9 @@
+all: compile
+	@./a.out
+
+compile: a.out
+a.out: test.c
+	gcc test.c 
+
+test: compile
+	
