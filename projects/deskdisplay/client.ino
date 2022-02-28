@@ -65,6 +65,7 @@ void request(State *state) {
           DeserializationError error = deserializeJson(doc, payload);
           
           if (error) {
+            sprintf(*(state->error), "deserializeJson() failed\0     ");
             Serial.print(F("deserializeJson() failed: "));
             Serial.println(error.f_str());
             return;
@@ -107,6 +108,7 @@ void request(State *state) {
           USE_SERIAL.println(payload);
       }
   } else {
+      sprintf(*(state->error), "HTTP %s\0", http.errorToString(httpCode).c_str());
       USE_SERIAL.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
   }
 

@@ -32,6 +32,17 @@ void splashScreen() {
   epd_poweroff();  // It will turn off the power of the ink screen, but cannot turn off the blue LED light.
 }
 
+/***************************************************\
+ * > todo1                             10 AM standup
+ * > todo2                             10 AM standup
+ * > todo3                             10 AM standup
+ * > todo4                             10 AM standup
+ * > todo5                             10 AM standup
+ * 
+ * 
+ * velocity
+ * KSMO 211503Z 10010 XXXXXXXXXXXXXXXXXXXXXXXXXX
+ ****************************************************/
 void renderCalendar(State s) {
   int cursor_x = 560;
   int cursor_y = 0;

@@ -11,7 +11,7 @@ struct State {
   char aqiStr[3];
   char *metar;
   char *calendar[20];
-  
+  char *error[30];
   // WX
   float temp;
   float humidity;
