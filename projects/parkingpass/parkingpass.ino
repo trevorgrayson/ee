@@ -1,7 +1,7 @@
 #include <Arduino.h>
-#include "pins.h"
+#include "constants.h"
 
-const int BUZZER = GPIO2;
+const int BUZZER = GPIO3;
 
 
 void setup(){
@@ -21,7 +21,7 @@ void setup(){
 void loop(){
   while (!isOnline()) {
       Serial.println("offline");
-      starwars();
+      starwars(BUZZER);
       delay(500);
   }
   noTone(BUZZER);

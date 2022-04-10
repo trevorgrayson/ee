@@ -7,6 +7,7 @@ TEST_SRC=test.c $(wildcard tests/impls/*.c) $(ALL)
 
 ACLI=arduino-cli
 # BOARD?=esp32:esp32:ttgo-t1
+# BOARD?=esp32:esp32:esp32:PSRAM=enabled
 BOARD?=Heltec-esp8266:esp8266:generic
 # BOARD=arduino:avr:leonardo
 BOARD_ARTIFACT?=$(shell sed s/:/./g <<< $(BOARD))
@@ -14,6 +15,8 @@ PORT?=/dev/cu.SLAB_USBtoUART
 BIN_MOD?= # with_bootloader.
 BIN_DIR?=ota/binaries
 OTAHOST?=ota.pearl.st
+
+INOS := $(wildcard projects/*)
 
 test: $(TEST_SRC)
 	@mkdir -p target
@@ -33,9 +36,19 @@ clean:
 boards:
 	$(ACLI) board list
 
+all: $(INOS)
+	for file in $^ ; do \
+		echo "compiling" $${file}; \
+		$(ACLI) compile --fqbn $(BOARD) --output-dir build/$(BOARD_ARTIFACT)/ $${file}; \
+		touch $${file}; \
+	done
+
+babycam: $(wildcard projects/dropcam/*)
+	$(ACLI) compile --fqbn $(BOARD) --output-dir build/dropcam/ projects/dropcam
+	
 build/$(BOARD_ARTIFACT)/$(PROJECT).ino.$(BIN_MOD)bin:$(wildcard projects/$(PROJECT)/*)
 	@echo "$(BOARD) $(BOARD_ARTIFACT) $(PROJECT)"
-	$(ACLI) compile --fqbn $(BOARD) --output-dir build/$(BOARD_ARTIFACT)/ \
+	$(ACLI) compile --fqbn $(BOARD) --libraries libs --output-dir build/$(BOARD_ARTIFACT)/ \
         projects/$(PROJECT)/
 
 compile: build/$(BOARD_ARTIFACT)/$(PROJECT).ino.$(BIN_MOD)bin

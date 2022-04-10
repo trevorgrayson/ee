@@ -9,6 +9,7 @@
 #define GPIO12 12  //OK	OK	SPI (MISO)
 #define GPIO13 13  //OK	OK	SPI (MOSI)
 #define GPIO15 15  //pulled to GND	OK	SPI (CS) Boot fails if pulled HIGH
+#define GPIO3 3
 #define D0 GPIO16  // 	no interrupt	no PWM or I2C support	HIGH at boot used to wake up from deep sleep
 #define D1 GPIO5   //OK	OK	often used as SCL (I2C)
 #define D2 GPIO4   //OK	OK	often used as SDA (I2C)

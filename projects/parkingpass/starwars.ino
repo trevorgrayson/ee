@@ -102,7 +102,7 @@
 int tempo = 108;
 
 // change this to whichever pin you want to use
-int buzzer = 15;
+// int buzzer = 15;
 
 // notes of the moledy followed by the duration.
 // a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
@@ -145,7 +145,7 @@ int wholenote = (60000 * 4) / tempo;
 
 int divider = 0, noteDuration = 0;
 
-void starwars() {
+void starwars(int buzzer) {
   // iterate over the notes of the melody. 
   // Remember, the array is twice the number of notes (notes + durations)
   for (int thisNote = 0; thisNote < notes * 2; thisNote = thisNote + 2) {
