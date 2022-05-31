@@ -18,3 +18,6 @@ struct State {
 
   struct Velocity velocity;
 };
+
+void initState();
+

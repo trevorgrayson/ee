@@ -8,6 +8,7 @@ PORT?=/dev/cu.SLAB_USBtoUART
 ARDUINO_CONF=arduino-cli.yaml
 ACLI=arduino-cli
 # --config-file $(ARDUINO_CONF)
+# arduino-cli compile -n -v -b esp32:esp32:esp32:PSRAM=enabled,PartitionScheme=huge_app,CPUFreq=80
 
 SRCS=$(wildcard *.c **/*.c)
 

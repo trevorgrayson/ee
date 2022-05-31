@@ -24,8 +24,8 @@ void setupClient() {
     delay(1000);
   }
   
-//  wifiMulti.addAP("tell my wifi love her2.4", "its on the fridge");
-  wifiMulti.addAP("dont you know", "its on the fridge");
+//  wifiMulti.addAP("", "");
+  wifiMulti.addAP("", "");
   Serial.print("Waiting for WiFi... ");
 
   while(wifiMulti.run() != WL_CONNECTED) {

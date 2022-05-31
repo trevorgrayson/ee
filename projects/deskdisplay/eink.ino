@@ -29,7 +29,7 @@ void splashScreen() {
   cursor_x = todo_x; 
   cursor_y += 50;
 
-  epd_poweroff();  // It will turn off the power of the ink screen, but cannot turn off the blue LED light.
+  epd_poweroff();  // turns off the power to ink screen, not blue LED
 }
 
 /***************************************************\

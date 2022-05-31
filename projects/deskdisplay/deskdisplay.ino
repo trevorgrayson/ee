@@ -15,8 +15,6 @@
 #include <sys/time.h>                   // struct timeval
 #endif
 #include "CronAlarms.h"
-
-
 #include "state.h"
 
 // 3.4767h
@@ -30,9 +28,9 @@
 #define SD_SCLK            14
 #define SD_CS              15
 
-#define BUTTON1            0
-#define BUTTON2            1
-#define BUTTON3            2
+#define BUTTON1            34
+#define BUTTON2            35
+#define BUTTON3            39
 
 #define TODO_COUNT  5
 #define CALENDAR_COUNT 10
@@ -43,14 +41,30 @@ int vref = 1100;
 // buttons - GPIO0, GPIO34, GPIO35, GPIO39 // 11, 12, 13
 struct State state;
 
-void initState() {
-  state.count = 0;
-  state.temp = 0;
-  state.humidity = 0;
 
-  state.todos[0] = 0;
-  state.calendar[0] = 0;
-  state.error[0] = 0;
+void initState(struct State *state) {
+  state->count = 0;
+  state->temp = 0;
+  state->humidity = 0;
+
+  state->todos[0] = 0;
+  state->calendar[0] = 0;
+  state->error[0] = 0;
+}
+
+
+void btn3() {
+
+}
+
+void btn2() {
+  state.count += 1;
+  Serial.println(state.count); 
+}
+
+void btn1() {
+  Serial.println("btn 1");
+  splashScreen();
 }
 
 void setup()
@@ -65,6 +79,9 @@ void setup()
   buttonSetup();
   setupWX();
 
+  attachInterrupt(BUTTON1, btn1, HIGH);
+  attachInterrupt(BUTTON2, btn2, HIGH);
+  attachInterrupt(BUTTON3, btn3, HIGH);
   //epd_poweroff_all();
   esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR); // 3.4767h
 }
@@ -72,25 +89,13 @@ void setup()
 void Tick() {
   request(&state);
   tickWX(&state);
-  //renderCount(state);
+  // renderCount(state);
   render(state);
 }
 
 void loop()
 {
-  if( buttonPressed(BUTTON3) ) { 
-    Serial.println(state.count); 
-  }
-  if( buttonPressed(BUTTON2) ) {
-    state.count += 1;
-    Serial.println("button 2");
-    Tick();
-  }
-  if( buttonPressed(BUTTON1) ) {
-    Serial.println("btn 1");
-  }
   Tick();
-  
-  //esp_wifi_stop();
+  // esp_wifi_stop();
   esp_deep_sleep_start();
 }

@@ -8,7 +8,7 @@ TEST_SRC=test.c $(wildcard tests/impls/*.c) $(ALL)
 ACLI=arduino-cli
 # BOARD?=esp32:esp32:ttgo-t1
 # BOARD?=esp32:esp32:esp32:PSRAM=enabled
-BOARD?=Heltec-esp8266:esp8266:generic
+BOARD?=esp8266:esp8266:generic
 # BOARD=arduino:avr:leonardo
 BOARD_ARTIFACT?=$(shell sed s/:/./g <<< $(BOARD))
 PORT?=/dev/cu.SLAB_USBtoUART
@@ -17,6 +17,12 @@ BIN_DIR?=ota/binaries
 OTAHOST?=ota.pearl.st
 
 INOS := $(wildcard projects/*)
+
+export C_INCLUDE_PATH=../../creds/
+
+buildlibs:
+	gcc -c libs/constants/pins.h -o build/pins.o
+	
 
 test: $(TEST_SRC)
 	@mkdir -p target
@@ -48,7 +54,7 @@ babycam: $(wildcard projects/dropcam/*)
 	
 build/$(BOARD_ARTIFACT)/$(PROJECT).ino.$(BIN_MOD)bin:$(wildcard projects/$(PROJECT)/*)
 	@echo "$(BOARD) $(BOARD_ARTIFACT) $(PROJECT)"
-	$(ACLI) compile --fqbn $(BOARD) --libraries libs --output-dir build/$(BOARD_ARTIFACT)/ \
+	$(ACLI) compile --fqbn $(BOARD) --libraries /Users/trevorgrayson/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/libraries/WiFi/src --libraries creds --libraries libs/constants,libs,creds --output-dir build/$(BOARD_ARTIFACT)/ \
         projects/$(PROJECT)/
 
 compile: build/$(BOARD_ARTIFACT)/$(PROJECT).ino.$(BIN_MOD)bin
@@ -56,6 +62,13 @@ compile: build/$(BOARD_ARTIFACT)/$(PROJECT).ino.$(BIN_MOD)bin
 publish: compile
 	$(ACLI) upload -p $(PORT) --fqbn $(BOARD) -i build/$(BOARD_ARTIFACT)/$(PROJECT).ino.$(BIN_MOD)bin
 
+deskdisplay:
+	# BOARD?=esp32:esp32:esp32:PSRAM=enabled
+	$(ACLI) compile --fqbn esp32:esp32:esp32:PSRAM=enabled --libraries creds --libraries libs/constants,libs,creds --output-dir build/deskdisplay/ \
+        projects/deskdisplay/
+	# $(ACLI) upload -p $(PORT) --fqbn esp32:esp32:esp32:PSRAM=enabled -i build/$(BOARD_ARTIFACT)/$(PROJECT).ino.$(BIN_MOD)bin
+
+	
 publishOTA: compile
 	echo "copying to `binaries`"
 	cp build/Heltec-esp8266.esp8266.generic/ota.ino.bin $(BIN_DIR)/a0:20:a6:27:0b:b2.bin

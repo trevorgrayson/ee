@@ -1,10 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-
-#ifndef STASSID
-#define STASSID "tell my wifi love her"  // Your wifi network
-#define STAPSK  "its on the fridge"  // Your wifi password
-#endif
+#include "wificreds.h"
 
 const uint16_t port = 80;
 

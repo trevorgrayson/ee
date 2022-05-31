@@ -1,52 +1,39 @@
-const int NUM_SLIDERS = 5;
-const int analogInputs[NUM_SLIDERS] = {A0, A1, A2, A3, A4};
+#define LIGHT_SWITCH 12
 
-int analogSliderValues[NUM_SLIDERS];
+int lights = 0;
+bool debounce = 0;
 
 void setup() { 
-  for (int i = 0; i < NUM_SLIDERS; i++) {
-    pinMode(analogInputs[i], INPUT);
-  }
-
+  pinMode(LIGHT_SWITCH, INPUT);
+  
+  setupAudio();
+  setupDimmer();
   Serial.begin(9600);
 }
 
 void loop() {
-  updateSliderValues();
-  sendSliderValues(); // Actually send data (all the time)
-  // printSliderValues(); // For debug
-  delay(10);
-}
+  tickAudio();
 
-void updateSliderValues() {
-  for (int i = 0; i < NUM_SLIDERS; i++) {
-     analogSliderValues[i] = analogRead(analogInputs[i]);
+  switch(lights) {
+    case 0: deluminate();
+            break;
+    case 1: illuminate();
+            break;
+    case 2: glow(0, 0, 255);
+            break;
+    case 3: glow(255, 0, 0);
+            break;
+//    case 4: glow(255, 0, 0);
+//            break;
+//    case 2: swirl();
+//            break;
   }
-}
-
-void sendSliderValues() {
-  String builtString = String("");
-
-  for (int i = 0; i < NUM_SLIDERS; i++) {
-    builtString += String((int)analogSliderValues[i]);
-
-    if (i < NUM_SLIDERS - 1) {
-      builtString += String("|");
-    }
+  if(digitalRead(LIGHT_SWITCH) == HIGH & !debounce) {
+    debounce = 1;
+    lights = (lights + 1) % 4;
+  } else if(digitalRead(LIGHT_SWITCH) == LOW) {
+    debounce = 0;
   }
   
-  Serial.println(builtString);
-}
-
-void printSliderValues() {
-  for (int i = 0; i < NUM_SLIDERS; i++) {
-    String printedString = String("Slider #") + String(i + 1) + String(": ") + String(analogSliderValues[i]) + String(" mV");
-    Serial.write(printedString.c_str());
-
-    if (i < NUM_SLIDERS - 1) {
-      Serial.write(" | ");
-    } else {
-      Serial.write("\n");
-    }
-  }
+  delay(10);
 }

@@ -6,3 +6,4 @@ build/*
 ota/venv/
 .idea
 ota/binaries
+.pio
