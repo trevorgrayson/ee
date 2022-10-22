@@ -18,8 +18,11 @@
 // font
 #include "Firasans.h"
 #include "epd_n2h.h"
+
 #include "eink.h"
 
+#include "state.h"
+#include "client.h"
 
 /**
  * RTC Memory var to get number of wakeups via wakeup source button
@@ -33,14 +36,30 @@ RTC_DATA_ATTR int pressed_wakeup_btn_index;
 int64_t maxTimeRunning = 30000000;
 
 
+struct State state;
+
+
+void initState(struct State *state) {
+    state->count = 0;
+    state->temp = 0;
+    state->humidity = 0;
+
+    state->todos[0] = 0;
+    state->calendar[0] = 0;
+    state->error[0] = 0;
+}
+
 void setup() {
     Serial.begin(115200);
 
     setupEPD();
+    //setupClient();
+
+    //initState(&state);
 
     /* Non deepsleep wakeup source button interrupt caused start e.g. reset btn */
     Serial.println("Woken up by reset button or power cycle");
-    const char* message = "Hello! You shook me all night long.\nIn 30s I will go to deepsleep";
+    const char* message = "Hello! You shook me all nighnigh long.\nIn 30s I will go to deepsleep";
     display_center_message(message);
 }
 
