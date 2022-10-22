@@ -53,14 +53,16 @@ void setup() {
     Serial.begin(115200);
 
     setupEPD();
-    //setupClient();
+    setupClient();
 
-    //initState(&state);
+    initState(&state);
 
+    request(&state);
     /* Non deepsleep wakeup source button interrupt caused start e.g. reset btn */
     Serial.println("Woken up by reset button or power cycle");
     const char* message = "Hello! You shook me all nighnigh long.\nIn 30s I will go to deepsleep";
-    display_center_message(message);
+    display_center_message(state.todos[0]);
+
 }
 
 void loop()
