@@ -52,16 +52,19 @@ void initState(struct State *state) {
 void setup() {
     Serial.begin(115200);
 
+    // splash screen
     setupEPD();
+    display_center_message("hello.");
+
     setupClient();
-
     initState(&state);
-
     request(&state);
+
+    tickEInk(state);
     /* Non deepsleep wakeup source button interrupt caused start e.g. reset btn */
-    Serial.println("Woken up by reset button or power cycle");
-    const char* message = "Hello! You shook me all nighnigh long.\nIn 30s I will go to deepsleep";
-    display_center_message(state.todos[0]);
+//    Serial.println("Woken up by reset button or power cycle");
+//    const char* message = "Hello! You shook me all nighnigh long.\nIn 30s I will go to deepsleep";
+//    display_center_message(state.todos[0]);
 
 }
 
@@ -73,7 +76,7 @@ void loop()
     */
     if (esp_timer_get_time() > maxTimeRunning) {
         Serial.println("Max runtime of 30s reached. Forcing deepsleep now to save energy");
-        display_center_message("Sleeping now.\nWake me up from deepsleep again\nwith the first button on my side");
+        //display_center_message("Sleeping now.\nWake me up from deepsleep again\nwith the first button on my side");
         delay(1500);
 
         start_deep_sleep_with_wakeup_sources();

@@ -40,6 +40,15 @@ EpdRotation orientation = EPD_ROT_PORTRAIT;
 
 int vref = 1100;
 
+void update() {
+    // can avoid turning on and off for each iteration.
+    epd_poweron();
+    err = epd_hl_update_screen(&hl, MODE_GC16, temperature);
+    delay(500);
+    epd_poweroff();
+    delay(1000);
+}
+
 void display_center_message(const char* text) {
     // first set full screen to white
     epd_hl_set_all_white(&hl);
@@ -55,11 +64,7 @@ void display_center_message(const char* text) {
     font_props.flags = EPD_DRAW_ALIGN_CENTER;
     epd_write_string(&FiraSans_12, text, &cursor_x, &cursor_y, fb, &font_props);
 
-    epd_poweron();
-    err = epd_hl_update_screen(&hl, MODE_GC16, temperature);
-    delay(500);
-    epd_poweroff();
-    delay(1000);
+    update();
 }
 
 void display_full_screen_left_aligned_text(const char* text) {
@@ -77,13 +82,24 @@ void display_full_screen_left_aligned_text(const char* text) {
     epd_write_string(&FiraSans_12, text, &cursor_x, &cursor_y, fb, &font_props);
     /********************************************************/
 
-    epd_poweron();
-    err = epd_hl_update_screen(&hl, MODE_GC16, temperature);
-    delay(500);
-    epd_poweroff();
-    delay(1000);
+    update();
 }
 
+void renderTodo(State state) {
+    EpdFontProperties font_props = epd_font_properties_default();
+    font_props.flags = EPD_DRAW_ALIGN_LEFT;
+
+    int cursor_x = 0;
+    int cursor_y = 30;
+    // "➸";
+
+    for(int item = 0; item < 5; item++) {
+        epd_write_string(&FiraSans_12, state.todos[item], &cursor_x, &cursor_y, fb, &font_props);
+
+        cursor_x = 0;
+        cursor_y += 10;
+    }
+}
 
 void setupEPD() {
     // First setup epd to use later
@@ -92,4 +108,10 @@ void setupEPD() {
     epd_set_rotation(orientation);
     fb = epd_hl_get_framebuffer(&hl);
     epd_clear();
+}
+
+void tickEInk(State state) {
+    renderTodo(state);
+
+    update();
 }
