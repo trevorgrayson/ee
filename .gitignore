@@ -10,3 +10,5 @@ ota/binaries
 creds/*
 .project
 .cproject
+venv
+.venv
