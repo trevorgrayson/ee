@@ -8,7 +8,7 @@ struct Velocity {
 };
 
 struct State {
-  char *todos[5];
+  char *todos[10];
   int aqi;
   int count;
   char aqiStr[3];

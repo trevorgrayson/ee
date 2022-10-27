@@ -10,6 +10,7 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include "state.h"
+#include "wificreds.h"  // TODO replace with env vars
 
 #define USE_SERIAL Serial
 
@@ -23,6 +24,7 @@ const char* calptrs[5];
 
 WiFiMulti wifiMulti;
 
+
 void setupClient() {
     //TODO Tune this speed
     for(uint8_t t = 4; t > 0; t--) {
@@ -32,7 +34,7 @@ void setupClient() {
     }
 
 //  wifiMulti.addAP("", "");
-    wifiMulti.addAP("", "");
+    wifiMulti.addAP(AP1_NAME, AP1_PASS);
     Serial.print("Waiting for WiFi... ");
 
     while(wifiMulti.run() != WL_CONNECTED) {

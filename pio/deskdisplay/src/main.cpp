@@ -59,8 +59,8 @@ void setup() {
     setupClient();
     initState(&state);
     request(&state);
-
-    tickEInk(state);
+    display_center_message("");
+    tickEInk(&state);
     /* Non deepsleep wakeup source button interrupt caused start e.g. reset btn */
 //    Serial.println("Woken up by reset button or power cycle");
 //    const char* message = "Hello! You shook me all nighnigh long.\nIn 30s I will go to deepsleep";
