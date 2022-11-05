@@ -1,34 +1,89 @@
 //
 // Created by trevor on 10/3/2022.
 //
+// eink config: https://epdiy.readthedocs.io/en/latest/api.html
+// 540X960
+
+/***************************************************\
+ * > todo1                             10 AM standup
+ * > todo2                             10 AM standup
+ * > todo3                             10 AM standup
+ * > todo4                             10 AM standup
+ * > todo5                             10 AM standup
+ *
+ *
+ * velocity
+ * KSMO 211503Z 10010 XXXXXXXXXXXXXXXXXXXXXXXXXX
+ ****************************************************/
 
 #include "eink.h"
-
-
 #include <Arduino.h>
+
+// esp32 sdk imports
+#include "esp_heap_caps.h"
+#include "esp_log.h"
+
 // epd
 #include "epd_driver.h"
 #include "epd_highlevel.h"
+
+// battery
+#include <driver/adc.h>
+#include "esp_adc_cal.h"
+
+// deepsleep
 #include "esp_sleep.h"
 
 // font
 #include "Firasans.h"
-
+#include "epd_n2h.h"
 
 #define WAVEFORM EPD_BUILTIN_WAVEFORM
 
+#define HEIGHT 540
+#define WIDTH 960
+#define TOP 30
+#define LINE_HEIGHT 10
+
+// state util
+int todoCount(State state) {
+    return sizeof(state.todos)-1;
+}
+
+int metar_x = 0;
+int metar_y = 520;
+
+char tempBuffer[5];
+char humidityBuffer[5];
+char displayBuffer[50];
+char velocityBuff[25];
+
 EpdiyHighlevelState hl;
-// ambient temperature around device
+// ambient temperature around device // epd_ambient_temperature
 int temperature = 20;
 uint8_t *fb;
 enum EpdDrawError err;
 
 // CHOOSE HERE YOU IF YOU WANT PORTRAIT OR LANDSCAPE
 // both orientations possible
-EpdRotation orientation = EPD_ROT_PORTRAIT;
-// EpdRotation orientation = EPD_ROT_LANDSCAPE;
+// EpdRotation orientation = EPD_ROT_PORTRAIT;
+EpdRotation orientation = EPD_ROT_INVERTED_LANDSCAPE;
 
 int vref = 1100;
+
+float get_temp() {
+    epd_poweron();
+    return epd_ambient_temperature();
+}
+
+void update() {
+    // can avoid turning on and off for each iteration.
+    epd_poweron();
+    err = epd_hl_update_screen(&hl, MODE_GC16, temperature);
+    delay(500);
+    epd_poweroff();
+    delay(1000);
+}
 
 void display_center_message(const char* text) {
     // first set full screen to white
@@ -45,11 +100,7 @@ void display_center_message(const char* text) {
     font_props.flags = EPD_DRAW_ALIGN_CENTER;
     epd_write_string(&FiraSans_12, text, &cursor_x, &cursor_y, fb, &font_props);
 
-    epd_poweron();
-    err = epd_hl_update_screen(&hl, MODE_GC16, temperature);
-    delay(500);
-    epd_poweroff();
-    delay(1000);
+    update();
 }
 
 void display_full_screen_left_aligned_text(const char* text) {
@@ -67,29 +118,72 @@ void display_full_screen_left_aligned_text(const char* text) {
     epd_write_string(&FiraSans_12, text, &cursor_x, &cursor_y, fb, &font_props);
     /********************************************************/
 
-    /************ Battery percentage display ****************/
-    // height and width switched here because portrait mode
-    int battery_cursor_x = EPD_WIDTH - 30;
-    int battery_cursor_y = EPD_HEIGHT - 10;
-    if (orientation == EPD_ROT_PORTRAIT) {
-        // switched x and y constants in portrait mode
-        battery_cursor_x = EPD_HEIGHT - 10;
-        battery_cursor_y = EPD_WIDTH - 30;
-    }
-    EpdFontProperties battery_font_props = epd_font_properties_default();
-    battery_font_props.flags = EPD_DRAW_ALIGN_RIGHT;
-    String battery_text = "OK";
-    battery_text.concat("% Battery");
-    epd_write_string(&FiraSans_12, battery_text.c_str(), &battery_cursor_x, &battery_cursor_y, fb, &battery_font_props);
-    /********************************************************/
-
-    epd_poweron();
-    err = epd_hl_update_screen(&hl, MODE_GC16, temperature);
-    delay(500);
-    epd_poweroff();
-    delay(1000);
+    update();
 }
 
+void renderTodo(State state) {
+    EpdFontProperties font_props = epd_font_properties_default();
+    font_props.flags = EPD_DRAW_ALIGN_LEFT;
+
+    int cursor_x = 0;
+    int cursor_y = TOP;
+    // "➸";
+
+    for(int item=0; item < min(todoCount(state), 5);  item++) {
+        if(!state.todos[item]) break;
+        epd_write_string(&FiraSans_12, state.todos[item], &cursor_x, &cursor_y, fb, &font_props);
+
+        cursor_x = 0;
+        cursor_y += LINE_HEIGHT;
+    }
+}
+
+void renderCalendar(State state) {
+    EpdFontProperties font_props = epd_font_properties_default();
+    font_props.flags = EPD_DRAW_ALIGN_LEFT;
+    int cursor_x = 560;
+    int cursor_y = TOP;
+    int ii = 0;
+    for(int ix=0; ix < min(todoCount(state), 9); ix++) {
+        if(!state.calendar[ix]) break;
+        cursor_x = 560; cursor_y += LINE_HEIGHT;
+        epd_write_string(&FiraSans_12, state.calendar[ix], &cursor_x, &cursor_y, fb, &font_props);
+        ii++;
+    }
+}
+
+void renderAQI(State state) {
+    EpdFontProperties font_props = epd_font_properties_default();
+    font_props.flags = EPD_DRAW_ALIGN_LEFT;
+    int cursor_x = 0;
+    int cursor_y = metar_y - 50;
+    epd_write_string(&FiraSans_12, state.aqiStr, &cursor_x, &cursor_y, fb, &font_props);
+}
+
+void renderWX(State state) {
+    EpdFontProperties font_props = epd_font_properties_default();
+    font_props.flags = EPD_DRAW_ALIGN_LEFT;
+    temperature = epd_ambient_temperature();
+
+    int cursor_x = 0;
+    int cursor_y = HEIGHT - 4 * LINE_HEIGHT;
+    sprintf(tempBuffer, "         ", temperature);
+    sprintf(tempBuffer, "%4.1fC", temperature);
+    epd_write_string(&FiraSans_12, tempBuffer, &cursor_x, &cursor_y, fb, &font_props);
+//    cursor_x += 50;
+//    sprintf(humidityBuffer, "         ", state.humidity);
+//    sprintf(humidityBuffer, "%4.1f%%", state.humidity);
+//    epd_write_string(&FiraSans_12, humidityBuffer, &cursor_x, &cursor_y, fb, &font_props);
+}
+
+void renderMETAR(State state) {
+    EpdFontProperties font_props = epd_font_properties_default();
+    font_props.flags = EPD_DRAW_ALIGN_LEFT;
+
+    int cursor_x = 0;
+    int cursor_y = HEIGHT - LINE_HEIGHT;
+    epd_write_string(&FiraSans_12, state.metar, &cursor_x, &cursor_y, fb, &font_props);
+}
 
 void setupEPD() {
     // First setup epd to use later
@@ -98,4 +192,15 @@ void setupEPD() {
     epd_set_rotation(orientation);
     fb = epd_hl_get_framebuffer(&hl);
     epd_clear();
+}
+
+void tickEInk(State *state) {
+    renderTodo(*state);
+    renderCalendar(*state);
+    renderMETAR(*state);
+
+    state->temp = get_temp();
+    renderWX(*state);
+
+    update();
 }
