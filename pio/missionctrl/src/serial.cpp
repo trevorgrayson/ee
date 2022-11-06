@@ -2,7 +2,7 @@
 // Created by trevor on 11/4/2022.
 //
 
-#include "serial.h"
+#include "../include/serial.h"
 
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
