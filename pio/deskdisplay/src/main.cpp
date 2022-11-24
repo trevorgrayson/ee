@@ -16,7 +16,7 @@
 #include "esp_sleep.h"
 
 // font
-#include "Firasans.h"
+// #include "Firasans.h"
 #include "epd_n2h.h"
 
 #include "eink.h"

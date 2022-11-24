@@ -35,7 +35,7 @@
 #include "esp_sleep.h"
 
 // font
-#include "Firasans.h"
+#include "../lib/font.h"
 #include "epd_n2h.h"
 
 #define WAVEFORM EPD_BUILTIN_WAVEFORM
@@ -43,7 +43,7 @@
 #define HEIGHT 540
 #define WIDTH 960
 #define TOP 30
-#define LINE_HEIGHT 10
+#define LINE_HEIGHT 6
 
 // state util
 int todoCount(State state) {
@@ -98,7 +98,7 @@ void display_center_message(const char* text) {
     }
     EpdFontProperties font_props = epd_font_properties_default();
     font_props.flags = EPD_DRAW_ALIGN_CENTER;
-    epd_write_string(&FiraSans_12, text, &cursor_x, &cursor_y, fb, &font_props);
+    epd_write_string(&DisplayFont, text, &cursor_x, &cursor_y, fb, &font_props);
 
     update();
 }
@@ -115,7 +115,7 @@ void display_full_screen_left_aligned_text(const char* text) {
     // with bit of padding
     int cursor_x = 10;
     int cursor_y = 30;
-    epd_write_string(&FiraSans_12, text, &cursor_x, &cursor_y, fb, &font_props);
+    epd_write_string(&DisplayFont, text, &cursor_x, &cursor_y, fb, &font_props);
     /********************************************************/
 
     update();
@@ -131,10 +131,10 @@ void renderTodo(State state) {
 
     for(int item=0; item < min(todoCount(state), 5);  item++) {
         if(!state.todos[item]) break;
-        epd_write_string(&FiraSans_12, state.todos[item], &cursor_x, &cursor_y, fb, &font_props);
+        epd_write_string(&DisplayFont, state.todos[item], &cursor_x, &cursor_y, fb, &font_props);
 
         cursor_x = 0;
-        cursor_y += LINE_HEIGHT;
+        cursor_y += 3;
     }
 }
 
@@ -147,7 +147,7 @@ void renderCalendar(State state) {
     for(int ix=0; ix < min(todoCount(state), 9); ix++) {
         if(!state.calendar[ix]) break;
         cursor_x = 560; cursor_y += LINE_HEIGHT;
-        epd_write_string(&FiraSans_12, state.calendar[ix], &cursor_x, &cursor_y, fb, &font_props);
+        epd_write_string(&DisplayFont, state.calendar[ix], &cursor_x, &cursor_y, fb, &font_props);
         ii++;
     }
 }
@@ -157,7 +157,7 @@ void renderAQI(State state) {
     font_props.flags = EPD_DRAW_ALIGN_LEFT;
     int cursor_x = 0;
     int cursor_y = metar_y - 50;
-    epd_write_string(&FiraSans_12, state.aqiStr, &cursor_x, &cursor_y, fb, &font_props);
+    epd_write_string(&DisplayFont, state.aqiStr, &cursor_x, &cursor_y, fb, &font_props);
 }
 
 void renderWX(State state) {
@@ -166,14 +166,14 @@ void renderWX(State state) {
     temperature = epd_ambient_temperature();
 
     int cursor_x = 0;
-    int cursor_y = HEIGHT - 4 * LINE_HEIGHT;
+    int cursor_y = HEIGHT - 7 * LINE_HEIGHT;
     sprintf(tempBuffer, "         ", temperature);
     sprintf(tempBuffer, "%4.1fC", temperature);
-    epd_write_string(&FiraSans_12, tempBuffer, &cursor_x, &cursor_y, fb, &font_props);
+    epd_write_string(&DisplayFont, tempBuffer, &cursor_x, &cursor_y, fb, &font_props);
 //    cursor_x += 50;
 //    sprintf(humidityBuffer, "         ", state.humidity);
 //    sprintf(humidityBuffer, "%4.1f%%", state.humidity);
-//    epd_write_string(&FiraSans_12, humidityBuffer, &cursor_x, &cursor_y, fb, &font_props);
+//    epd_write_string(&DisplayFont, humidityBuffer, &cursor_x, &cursor_y, fb, &font_props);
 }
 
 void renderMETAR(State state) {
@@ -182,7 +182,7 @@ void renderMETAR(State state) {
 
     int cursor_x = 0;
     int cursor_y = HEIGHT - LINE_HEIGHT;
-    epd_write_string(&FiraSans_12, state.metar, &cursor_x, &cursor_y, fb, &font_props);
+    epd_write_string(&DisplayFont, state.metar, &cursor_x, &cursor_y, fb, &font_props);
 }
 
 void setupEPD() {
@@ -200,7 +200,7 @@ void tickEInk(State *state) {
     renderMETAR(*state);
 
     state->temp = get_temp();
-    renderWX(*state);
+    // renderWX(*state);
 
     update();
 }
