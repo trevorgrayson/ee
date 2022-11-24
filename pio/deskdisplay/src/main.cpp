@@ -17,12 +17,12 @@
 
 // font
 #include "Firasans.h"
-#include "epd_n2h.h"
+#include "../include/epd_n2h.h"
 
-#include "eink.h"
+#include "../include/eink.h"
 
-#include "state.h"
-#include "client.h"
+#include "../include/state.h"
+#include "../include/client.h"
 
 /**
  * RTC Memory var to get number of wakeups via wakeup source button
@@ -58,6 +58,7 @@ void setup() {
 
     setupClient();
     initState(&state);
+    thinking();
     request(&state);
     display_center_message("");
     tickEInk(&state);

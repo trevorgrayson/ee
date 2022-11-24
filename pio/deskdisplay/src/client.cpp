@@ -2,14 +2,14 @@
 // Created by trevor on 10/22/2022.
 //
 
-#include "client.h"
+#include "../include/client.h"
 
 #include <stdio.h>
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
-#include "state.h"
+#include "../include/state.h"
 #include "wificreds.h"  // TODO replace with env vars
 
 #define USE_SERIAL Serial

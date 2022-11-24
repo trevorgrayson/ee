@@ -2,7 +2,7 @@
 //// Created by trevor on 10/13/2022.
 ////
 
-#include "epd_n2h.h"
+#include "../include/epd_n2h.h"
 
 #include <Arduino.h>
 

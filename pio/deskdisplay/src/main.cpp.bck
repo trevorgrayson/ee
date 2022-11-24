@@ -98,7 +98,7 @@ void display_center_message(const char* text) {
     }
     EpdFontProperties font_props = epd_font_properties_default();
     font_props.flags = EPD_DRAW_ALIGN_CENTER;
-    epd_write_string(&FiraSans_12, text, &cursor_x, &cursor_y, fb, &font_props);
+    epd_write_string(&DisplayFont, text, &cursor_x, &cursor_y, fb, &font_props);
 
     epd_poweron();
     err = epd_hl_update_screen(&hl, MODE_GC16, temperature);
@@ -119,7 +119,7 @@ void display_full_screen_left_aligned_text(const char* text) {
     // with bit of padding
     int cursor_x = 10;
     int cursor_y = 30;
-    epd_write_string(&FiraSans_12, text, &cursor_x, &cursor_y, fb, &font_props);
+    epd_write_string(&DisplayFont, text, &cursor_x, &cursor_y, fb, &font_props);
     /********************************************************/
 
     /************ Battery percentage display ****************/
@@ -135,7 +135,7 @@ void display_full_screen_left_aligned_text(const char* text) {
     battery_font_props.flags = EPD_DRAW_ALIGN_RIGHT;
     String battery_text = String(get_battery_percentage());
     battery_text.concat("% Battery");
-    epd_write_string(&FiraSans_12, battery_text.c_str(), &battery_cursor_x, &battery_cursor_y, fb, &battery_font_props);
+    epd_write_string(&DisplayFont, battery_text.c_str(), &battery_cursor_x, &battery_cursor_y, fb, &battery_font_props);
     /********************************************************/
 
     epd_poweron();
