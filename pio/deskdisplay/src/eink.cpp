@@ -2,6 +2,7 @@
 // Created by trevor on 10/3/2022.
 //
 // eink config: https://epdiy.readthedocs.io/en/latest/api.html
+// fonts: https://github.com/Xinyuan-LilyGO/LilyGo-EPD47/tree/master/scripts
 // 540X960
 
 /***************************************************\
