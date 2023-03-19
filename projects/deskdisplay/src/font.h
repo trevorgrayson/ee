@@ -590,7 +590,7 @@ const uint8_t DisplayFontBitmaps[9406] = {
     0xC0, 0x73, 0xBE, 0x1F, 0xFF, 0x21, 0x80, 0xF7, 0xA7, 0xA5, 0xC0, 0x52, 0x90, 0x20, 0xB3, 0x07,
     0x50, 0x59, 0xE2, 0xEB, 0xFB, 0x12, 0x70, 0x3D, 0x0C, 0x00, 0x21, 0xEF, 0x18, 0xBA,
 };
-const GFXglyph DisplayFontGlyphs[] = {
+const EpdGlyph DisplayFontGlyphs[] = {
     { 0, 0, 9, 0, 0, 8, 0 }, //  
     { 5, 24, 9, 2, 24, 62, 8 }, // !
     { 10, 8, 12, 1, 24, 37, 70 }, // "
@@ -687,13 +687,13 @@ const GFXglyph DisplayFontGlyphs[] = {
     { 11, 31, 11, 0, 24, 97, 9258 }, // }
     { 17, 7, 19, 1, 15, 51, 9355 }, // ~
 };
-const UnicodeInterval DisplayFontIntervals[] = {
+const EpdUnicodeInterval DisplayFontIntervals[] = {
     { 0x20, 0x7E, 0x0 },
 };
-const GFXfont DisplayFont = {
+const EpdFont DisplayFont = {
     (uint8_t*)DisplayFontBitmaps,
-    (GFXglyph*)DisplayFontGlyphs,
-    (UnicodeInterval*)DisplayFontIntervals,
+    (EpdGlyph*)DisplayFontGlyphs,
+    (EpdUnicodeInterval*)DisplayFontIntervals,
     1,
     1,
     45,

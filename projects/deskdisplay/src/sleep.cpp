@@ -30,10 +30,10 @@ void start_deep_sleep_with_wakeup_sources()
 /**
  * That's maximum 30 seconds of runtime in microseconds
  */
-int64_t maxTimeRunning = 30000000;
+int64_t maxTimeRunning1 = 30000000;
 
 void consider_sleeping() {
-    if (esp_timer_get_time() > maxTimeRunning) {
+    if (esp_timer_get_time() > maxTimeRunning1) {
         Serial.println("Max runtime of 30s reached. Forcing deepsleep now to save energy");
         // display_center_message("Sleeping now.\nWake me up from deepsleep again\nwith the first button on my side");
         delay(1500);

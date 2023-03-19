@@ -66,7 +66,7 @@ void setup() {
 //    Serial.println("Woken up by reset button or power cycle");
 //    const char* message = "Hello! You shook me all nighnigh long.\nIn 30s I will go to deepsleep";
 //    display_center_message(state.todos[0]);
-
+    esp_sleep_enable_timer_wakeup(2.16e+10);
 }
 
 void loop()

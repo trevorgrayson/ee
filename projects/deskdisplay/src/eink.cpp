@@ -211,7 +211,7 @@ void thinking() {
 
     int cursor_x = WIDTH - 2 * LINE_HEIGHT;
     int cursor_y = HEIGHT - 4 * LINE_HEIGHT;
-    epd_write_string(&DisplayFont, '0', &cursor_x, &cursor_y, fb, &font_props);
+    // epd_write_string(&DisplayFont, '0', &cursor_x, &cursor_y, fb, &font_props);
 }
 
 void tickEInk(State *state) {
