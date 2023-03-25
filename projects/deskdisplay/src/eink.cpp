@@ -68,7 +68,8 @@ enum EpdDrawError err;
 // CHOOSE HERE YOU IF YOU WANT PORTRAIT OR LANDSCAPE
 // both orientations possible
 // EpdRotation orientation = EPD_ROT_PORTRAIT;
-EpdRotation orientation = EPD_ROT_INVERTED_LANDSCAPE;
+// EpdRotation orientation = EPD_ROT_INVERTED_LANDSCAPE;
+EpdRotation orientation = EPD_ROT_LANDSCAPE;
 
 int vref = 1100;
 
