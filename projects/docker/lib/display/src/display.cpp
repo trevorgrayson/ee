@@ -4,8 +4,8 @@
 
 #include "display.h"
 
-#define CLK 7
-#define DIO 8
+#define CLK 4
+#define DIO 5
 
 TM1637Display display(CLK, DIO);
 
