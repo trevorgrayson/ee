@@ -4,8 +4,8 @@
 #include "lights.h"
 #include "display.h"
 
-#define TRIGGER 5
-#define ECHO 6
+#define TRIGGER 4
+#define ECHO 5
 #define DELAY 60
 #define MARGIN_OF_TARGET 5
 #define MARGIN 20
