@@ -1,0 +1,2 @@
+void initNapper();
+void nap();

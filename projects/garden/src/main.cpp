@@ -1,6 +1,5 @@
 #include<Arduino.h>
-#include<avr/sleep.h>
-#include<avr/interrupt.h>
+//#include "Napper.h"
 #include "water.h"
 
 #define ONE_DAY 86400000 // 24 * 60 * 60 * 1000
@@ -25,8 +24,7 @@ float value4 = 0;
 
 void setup() {
   Serial.begin(9600);
-  set_sleep_mode(SLEEP_MODE_PWR_SAVE);
-  sleep_enable();
+  // initNapper();
 
   pinMode(PUMP1, OUTPUT);
   pinMode(PUMP2, OUTPUT);
