@@ -7,6 +7,8 @@
 #define TRIGGER 12
 #define ECHO 14
 
+//#define TRIGGER 4
+//#define ECHO 5
 #define DELAY 60
 #define MARGIN_OF_TARGET 5
 #define MARGIN 20
