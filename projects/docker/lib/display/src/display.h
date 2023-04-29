@@ -6,3 +6,4 @@
 
 void initDisplay();
 void setDisplay(int distance);
+void displayOK();

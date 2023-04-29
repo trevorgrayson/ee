@@ -2,11 +2,9 @@
 #include <HCSR04.h>
 
 #include "lights.h"
-#include "display.h"
 
-#define TRIGGER 12
-#define ECHO 14
-
+#define TRIGGER 5
+#define ECHO 6
 #define DELAY 60
 #define MARGIN_OF_TARGET 5
 #define MARGIN 20
@@ -56,22 +54,17 @@ bool shouldCalibrate(int dist)
 void setup()
 {
     Serial.begin(9600);
-    initDisplay();
-
     state.distance = hc.dist();
 
     if(shouldCalibrate(state.distance))
         state.target = state.distance;
-        setDisplay(state.target);
 }
 
 void loop()
 {
     state.distance = hc.dist();
     state.lights = classify(state);
-
     Serial.println( hc.dist() ); // return current distance (cm) in serial
-    setDisplay(state.distance);
     setLights(state.lights);
 
     delay(DELAY);

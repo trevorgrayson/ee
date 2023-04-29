@@ -18,3 +18,6 @@ void initDisplay() {
 void setDisplay(int distance) {
     display.showNumberDec(0, false);
 }
+
+void displayOK() {
+}

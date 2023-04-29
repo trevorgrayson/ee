@@ -5,6 +5,13 @@ float reg1 = 0;
 char operatr = 0;
 
 
+float getRegister(int regNum) {
+    if (regNum) {
+        return reg1;
+    }
+    return reg0;
+}
+
 int isNum(char key) {
     if(key < 58 && key > 47) {
         return 1;

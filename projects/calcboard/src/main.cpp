@@ -16,6 +16,6 @@ void loop()
 {
     char key = getKey();
     if(key) {
-        // calcPress(key);
+        calcPress(key);
     }
 }

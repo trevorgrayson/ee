@@ -1,4 +1,5 @@
 #include "unity.h"
+#include "calculator.h"
 
 void setUp(void) {
     // set stuff up here
@@ -8,19 +9,16 @@ void tearDown(void) {
     // clean stuff up here
 }
 
-void test_function_should_doBlahAndBlah(void) {
-    TEST_ASSERT(1==1);
-}
-
-void test_function_should_doAlsoDoBlah(void) {
-    // more test stuff
-    //TEST_FAIL();
+void test_function_should_add(void) {
+    calcPress("1");
+    calcPress("+");
+    calcPress("1");
+    TEST_ASSERT(getRegister(0) == 2);
 }
 
 int runUnityTests(void) {
     UNITY_BEGIN();
-    RUN_TEST(test_function_should_doBlahAndBlah);
-    RUN_TEST(test_function_should_doAlsoDoBlah);
+    RUN_TEST(test_function_should_add);
     return UNITY_END();
 }
 

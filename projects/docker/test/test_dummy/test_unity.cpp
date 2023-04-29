@@ -1,3 +1,4 @@
+#include "unity.h"
 
 void setUp(void) {
     // set stuff up here
@@ -7,6 +8,47 @@ void tearDown(void) {
     // clean stuff up here
 }
 
-int main( int argc, char **argv) {
+void test_function_should_doBlahAndBlah(void) {
+    // test stuff
+    TEST_ASSERT_X(1, 0  );
+}
 
+void test_function_should_doAlsoDoBlah(void) {
+    // more test stuff
+    TEST_FAIL();
+}
+
+int runUnityTests(void) {
+    UNITY_BEGIN();
+    RUN_TEST(test_function_should_doBlahAndBlah);
+    RUN_TEST(test_function_should_doAlsoDoBlah);
+    return UNITY_END();
+}
+
+// WARNING!!! PLEASE REMOVE UNNECESSARY MAIN IMPLEMENTATIONS //
+
+/**
+  * For native dev-platform or for some embedded frameworks
+  */
+int main(void) {
+    return runUnityTests();
+}
+
+/**
+  * For Arduino framework
+  */
+void setup() {
+    // Wait ~2 seconds before the Unity test runner
+    // establishes connection with a board Serial interface
+    delay(2000);
+
+    runUnityTests();
+}
+void loop() {}
+
+/**
+  * For ESP-IDF framework
+  */
+void app_main() {
+    runUnityTests();
 }
