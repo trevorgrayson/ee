@@ -9,6 +9,7 @@
 
 #include <Arduino.h>
 #include "display.h"
+#include "digikeypad.h"
 
 void setup() {
     Serial.begin(115200);
@@ -16,7 +17,11 @@ void setup() {
 }
 
 void loop() {
-    char key = 'a';
-    displayChar(key);
-    delay(2000);
+    char lastKey;
+    char key = getKey();
+    if(key != lastKey) {
+        displayChar(key);
+    }
+    //delay(2000);
+    lastKey = key;
 }
