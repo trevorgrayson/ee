@@ -12,3 +12,4 @@ creds/*
 .cproject
 venv
 .venv
+cscope.files
