@@ -9,7 +9,7 @@
 
 #include <Arduino.h>
 #include "display.h"
-#include "digikeypad.h"
+#include "telekeypad.h"
 
 void setup() {
     Serial.begin(115200);
@@ -17,7 +17,7 @@ void setup() {
 }
 
 void loop() {
-    char lastKey;
+    char lastKey = 'x';
     char key = getKey();
     if(key != lastKey) {
         displayChar(key);

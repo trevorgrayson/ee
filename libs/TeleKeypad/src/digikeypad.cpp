@@ -21,9 +21,9 @@ char hexaKeys[ROWS][COLS] = {
 };
 // nodemcu pin order: 15, 13, 12, 14, 02, 00, 4, 5
 // 5, 4, 3, 2
-byte rowPins[ROWS] = {2, 0, 9, 10};
+byte rowPins[ROWS] = {16, 0, 2, 14};
 // 8, 7, 6
-byte colPins[COLS] = {15, 13, 12, 14};
+byte colPins[COLS] = {12, 13, 15, 3};
 
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
 
