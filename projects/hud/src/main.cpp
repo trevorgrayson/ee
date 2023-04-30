@@ -7,37 +7,14 @@
   Written by Limor Fried/Ladyada for Adafruit Industries, with contributions from the open source community. BSD license, check license.txt for more information All text above, and the splash screen below must be included in any redistribution. 
 *********/
 
+#include <Arduino.h>
 #include "display.h"
 
 void setup() {
     Serial.begin(115200);
 
-    // SSD1306_SW
-    // TCHCAPVCC = generate display voltage from 3.3V internally
-    if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-        Serial.println(F("SSD1306 allocation failed"));
-        for(;;); // Don't proceed, loop forever
-    }
-
-    // Show initial display buffer contents on the screen --
-    // the library initializes this with an Adafruit splash screen.
-    display.display();
-    delay(2000); // Pause for 2 seconds
-
-    // Clear the buffer
-    display.clearDisplay();
-
-    // Draw a single pixel in white
-    display.drawPixel(10, 10, WHITE);
-
-    // Show the display buffer on the screen. You MUST call display() after
-    // drawing commands to make them visible on screen!
-    display.display();
-    delay(2000);
-    // display.display() is NOT necessary after every single drawing command,
-    // unless that's what you want...rather, you can batch up a bunch of
-    // drawing operations and then update the screen all at once by calling
-    // display.display(). These examples demonstrate both approaches...
+    displaySetup();
+    orientation();
 
     testdrawline();      // Draw many lines
 
@@ -66,12 +43,12 @@ void setup() {
     testdrawbitmap();    // Draw a small bitmap image
 
     // Invert and restore display, pausing in-between
-    display.invertDisplay(true);
-    delay(1000);
-    display.invertDisplay(false);
-    delay(1000);
+    //
+//    delay(1000);
+//    display.invertDisplay(false);
+//    delay(1000);
 
-    testanimate(logo_bmp, LOGO_WIDTH, LOGO_HEIGHT); // Animate bitmaps
+    //testanimate(logo_bmp, LOGO_WIDTH, LOGO_HEIGHT); // Animate bitmaps
 }
 
 void loop() {

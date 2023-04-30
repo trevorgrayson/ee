@@ -1,6 +1,8 @@
 //
 // Created by trevor on 4/28/23.
 //
+//
+#include <Arduino.h>
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -35,6 +37,52 @@ B01111100, B11110000,
 B01110000, B01110000,
 B00000000, B00110000 };
 
+
+void displayChar(char c) {
+    display.clearDisplay();
+
+    display.setTextSize(1);      // Normal 1:1 pixel scale
+    display.setTextColor(WHITE); // Draw white text
+    display.setCursor(0, 0);     // Start at top-left corner
+    display.cp437(true);         // Use full 256 char 'Code Page 437' font
+
+    display.write(c);
+    display.display();
+}
+
+void displaySetup() {
+    // SSD1306_SW
+    // TCHCAPVCC = generate display voltage from 3.3V internally
+    if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+        Serial.println(F("SSD1306 allocation failed"));
+        for(;;); // Don't proceed, loop forever
+    }
+
+    // Show initial display buffer contents on the screen --
+    // the library initializes this with an Adafruit splash screen.
+    display.display();
+    delay(2000); // Pause for 2 seconds
+
+    // Clear the buffer
+    display.clearDisplay();
+    display.setRotation(2);
+    // Draw a single pixel in white
+    display.drawPixel(10, 10, WHITE);
+
+    // Show the display buffer on the screen. You MUST call display() after
+    // drawing commands to make them visible on screen!
+    display.display();
+    delay(2000);
+    // display.display() is NOT necessary after every single drawing command,
+    // unless that's what you want...rather, you can batch up a bunch of
+    // drawing operations and then update the screen all at once by calling
+    // display.display(). These examples demonstrate both approaches...
+
+}
+
+void switchColor() {
+    display.invertDisplay(false);
+}
 
 void testdrawline() {
     int16_t i;

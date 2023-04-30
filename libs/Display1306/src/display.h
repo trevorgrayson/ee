@@ -4,6 +4,10 @@
 
 void print(char *string);
 
+void displaySetup();
+void orientation();
+
+void displayChar(char c);
 
 void testdrawline() ;
 void testdrawrect(void) ;
