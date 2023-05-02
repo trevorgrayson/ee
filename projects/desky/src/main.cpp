@@ -19,7 +19,7 @@ void setup() {
 void loop() {
     char lastKey = 'x';
     char key = getKey();
-    if(key != lastKey) {
+    if(key && key != lastKey) {
         displayChar(key);
     }
     //delay(2000);
