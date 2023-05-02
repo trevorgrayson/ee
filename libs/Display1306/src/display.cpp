@@ -50,6 +50,13 @@ void displayChar(char c) {
     display.display();
 }
 
+void print(char c[]) {
+    display.clearDisplay();
+    display.setCursor(0,0);             // Start at top-left corner
+    display.println(c);
+    display.display();
+}
+
 void displaySetup() {
     // SSD1306_SW
     // TCHCAPVCC = generate display voltage from 3.3V internally

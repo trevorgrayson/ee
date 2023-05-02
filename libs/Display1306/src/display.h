@@ -8,7 +8,7 @@ void displaySetup();
 void orientation();
 
 void displayChar(char c);
-
+void print(char c[]);
 void testdrawline() ;
 void testdrawrect(void) ;
 void testfillrect(void) ;
