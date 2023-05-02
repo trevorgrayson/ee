@@ -41,7 +41,7 @@ B00000000, B00110000 };
 void displayChar(char c) {
     display.clearDisplay();
 
-    display.setTextSize(1);      // Normal 1:1 pixel scale
+    display.setTextSize(2);      // Normal 1:1 pixel scale
     display.setTextColor(WHITE); // Draw white text
     display.setCursor(0, 0);     // Start at top-left corner
     display.cp437(true);         // Use full 256 char 'Code Page 437' font
@@ -57,12 +57,6 @@ void displaySetup() {
         Serial.println(F("SSD1306 allocation failed"));
         for(;;); // Don't proceed, loop forever
     }
-
-    // Show initial display buffer contents on the screen --
-    // the library initializes this with an Adafruit splash screen.
-    display.display();
-    delay(2000); // Pause for 2 seconds
-
     // Clear the buffer
     display.clearDisplay();
     display.setRotation(2);
