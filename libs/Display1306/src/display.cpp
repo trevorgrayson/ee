@@ -52,8 +52,10 @@ void displayChar(char c) {
 
 void print(char c[]) {
     display.clearDisplay();
+    display.setTextSize(2);      // Normal 1:1 pixel scale
+    display.setTextColor(WHITE); // Draw white text
     display.setCursor(0,0);             // Start at top-left corner
-    display.println(c);
+    display.write(c);
     display.display();
 }
 

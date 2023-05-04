@@ -11,17 +11,20 @@
 #include "display.h"
 #include "telekeypad.h"
 
+char cmd[] = "                    ";
+int offset = 0;
+
 void setup() {
     Serial.begin(115200);
     displaySetup();
 }
 
 void loop() {
-    char lastKey = 'x';
     char key = getKey();
-    if(key && key != lastKey) {
-        displayChar(key);
+    if(key) {
+        cmd[offset] = key;
+        offset++;
+
+        print(cmd);
     }
-    //delay(2000);
-    lastKey = key;
 }
