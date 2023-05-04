@@ -10,9 +10,13 @@
 #include <Arduino.h>
 #include "display.h"
 #include "telekeypad.h"
+#include "../../../libs/Txtings/src/state.h"
+#include "client.h"
 
 char cmd[] = "                    ";
 int offset = 0;
+
+struct State state;
 
 void setup() {
     Serial.begin(115200);

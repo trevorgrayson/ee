@@ -13,3 +13,4 @@ creds/*
 venv
 .venv
 cscope.files
+wificreds.h
