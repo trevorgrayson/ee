@@ -1,121 +1,56 @@
-//sagar saini : hackster saini_sagar_7294 follow us on instagram, hackaday profile link:https://hackaday.io/project/182316-arduino-based-ir-remote-decoder
-//
-//Universal IR Remote Controller
-
 #include <IRremote.h>
-//#include "LowPower.h"
 
 IRsend irsend;
 
-/*
- * RCA
- *
- * 89 UP            0x59
- * 88 DOWN          0x58
- * 87 RIGHT         0x57
- * 86 LEFT          0x56
- * 244 ENTER CLICK  0xF4
- * 39 BACK          0x27
- * 26 GUIDE 08 MENU 0x1A
- */
-const int b1  = 2;
-const int b2  = 4;
-const int b3  = 5;
-const int b4  = 6;
-const int b5  = 7;
-const int b6  = 8;
-const int b7  = 9;
+#define REPEATS 5
 
-const int b8  = 10;
-const int b9  = 11;
-const int b10 = 12;
+#define UP 5
+#define DOWN 6
+#define LEFT 7
+#define RIGHT 8
+#define ENTER 51
 
-int timer;
-int modeCounter = 0;
+#define PLAY 15
+#define MENU 10
 
-void wakeUp() {
-    timer = 0;
+bool isPressed(int BTN) {
+    return digitalRead(BTN) == LOW;
 }
 
-void setup() {
-    pinMode(b1, INPUT);
-    pinMode(b2, INPUT);
-    pinMode(b3, INPUT);
-    pinMode(b4, INPUT);
-    pinMode(b5, INPUT);
-    pinMode(b6, INPUT);
-    pinMode(b7, INPUT);
-    pinMode(b8, INPUT);
-    pinMode(b9, INPUT);
-    pinMode(b10, INPUT);
+void tx(int code) {
+    irsend.sendNEC(code, 32, REPEATS);
+    delay(30);
 }
+
+void setup()
+{
+    Serial.begin(9600);
+    pinMode(UP,INPUT_PULLUP); // button 1
+    pinMode(DOWN,INPUT_PULLUP); // button 2
+    pinMode(LEFT,INPUT_PULLUP); // button 3
+    pinMode(RIGHT,INPUT_PULLUP); // button 4
+    // add more number of lines in code utilise more pins
+}
+
 
 void loop() {
-    attachInterrupt(0, wakeUp, HIGH);
-    while (timer < 10000) {
-        if (digitalRead(b1) == HIGH) {
-            timer = 0;
-            delay(50);
-            irsend.sendNEC(0x0000, 32);     //Enter Remote Hex Value
-        }
 
-        if (digitalRead(b2) == HIGH) {
-            timer = 0;
-            delay(50);
-            irsend.sendNEC(0x0000, 32);     //Enter Remote Hex Value
-        }
-
-        if (digitalRead(b3) == HIGH) {
-            timer = 0;
-            delay(50);
-            irsend.sendNEC(0x0000, 32);     //Enter Remote Hex Value
-        }
-
-        if (digitalRead(b4) == HIGH) {
-            timer = 0;
-            delay(50);
-            irsend.sendNEC(0x0000, 32);     //Enter Remote Hex Value
-        }
-
-        if (digitalRead(b5) == HIGH) {
-            timer = 0;
-            delay(50);
-            irsend.sendNEC(0x0000, 32);     //Enter Remote Hex Value
-        }
-
-        if (digitalRead(b6) == HIGH) {
-            timer = 0;
-            delay(50);
-            irsend.sendNEC(0x0000, 32);     //Enter Remote Hex Value
-        }
-
-        if (digitalRead(b7) == HIGH) {
-            timer = 0;
-            delay(50);
-            irsend.sendNEC(0x0000, 32);     //Enter Remote Hex Value
-        }
-
-        if (digitalRead(b8) == HIGH) {
-            timer = 0;
-            delay(50);
-            irsend.sendNEC(0x0000, 32);     //Enter Remote Hex Value
-        }
-
-        if (digitalRead(b9) == HIGH) {
-            timer = 0;
-            delay(50);
-            irsend.sendNEC(0x0000, 32);     //Enter Remote Hex Value
-        }
-
-        if (digitalRead(b10) == HIGH) {
-            timer = 0;
-            delay(50);
-            irsend.sendNEC(0x0000, 32);     //Enter Remote Hex Value
-        }
-        delay(1);
-        timer = timer + 1;
-
+    if (isPressed(UP)) {
+        irsend.sendNEC(0x34895725, 32);  // change these unique code to yours but in decimal
+        delay(30);
+    } else if (isPressed(DOWN)) {
+        irsend.sendNEC(0x56874159, 32);
+        delay(30);
+    } else if (isPressed(LEFT)) {
+        irsend.sendNEC(0x15467823, 32);
+        delay(30);
+    } else if (isPressed(RIGHT)) {
+        irsend.sendNEC(0x25467823, 32);
+        delay(30);
+    } else {
+        Serial.println("Nothing to send");
+        delay(30);
     }
 
-    //LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
+    delay(100);
 }
