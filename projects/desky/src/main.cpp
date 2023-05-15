@@ -9,14 +9,22 @@
 
 #include <Arduino.h>
 #include "display.h"
+// #include "lcd.h"
 #include "telekeypad.h"
-#include "../../../libs/Txtings/src/state.h"
+#include "state.h"
 #include "client.h"
+#include "calculator.h"
+
+#define CALC_MODE 1
 
 char cmd[] = "                    ";
 int offset = 0;
 
 struct State state;
+
+int mode() {
+    return CALC_MODE;
+}
 
 void setup() {
     Serial.begin(115200);
@@ -29,6 +37,9 @@ void loop() {
         cmd[offset] = key;
         offset++;
 
+        // calc mode
+        calcPress(key);
+        // print(calcDisplay(key));
         print(cmd);
     }
 }

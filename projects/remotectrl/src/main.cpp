@@ -1,4 +1,6 @@
 #include <IRremote.h>
+// https://www.hackster.io/electroboy001/ir-transmitter-remote-using-arduino-94e906
+// https://arduino-irremote.github.io/Arduino-IRremote/classIRsend.html
 
 IRsend irsend;
 
