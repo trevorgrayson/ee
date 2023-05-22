@@ -8,12 +8,12 @@
 *********/
 
 #include <Arduino.h>
-#include "display.h"
 // #include "lcd.h"
 #include "telekeypad.h"
 #include "state.h"
 #include "client.h"
 #include "calculator.h"
+#include "lcd.h"
 
 #define CALC_MODE 1
 
@@ -28,7 +28,7 @@ int mode() {
 
 void setup() {
     Serial.begin(115200);
-    displaySetup();
+    setupLCD();
 }
 
 void loop() {
@@ -40,6 +40,7 @@ void loop() {
         // calc mode
         calcPress(key);
         // print(calcDisplay(key));
+        cursor(0, 0);
         print(cmd);
     }
 }
