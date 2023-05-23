@@ -29,6 +29,8 @@ int mode() {
 void setup() {
     Serial.begin(115200);
     setupLCD();
+    print("hello.");
+    delay(200);
 }
 
 void loop() {
