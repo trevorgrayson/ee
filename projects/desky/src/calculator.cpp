@@ -53,6 +53,11 @@ void calcPress(char key) {
         reg0 = 0;
     } else if(key == '#') { // CLEAR
         reg0 = 0;
+    } else if(key == '$') {
+        if( reg0 == 0 ) {
+            reg1 = 0;
+        }
+        reg0 = 0;
     }
 }
 

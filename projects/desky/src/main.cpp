@@ -14,7 +14,7 @@
 #include "client.h"
 #include "calculator.h"
 #include "lcd.h"
-
+#include <stdio.h>
 #define CALC_MODE 1
 
 char cmd[] = "                    ";
@@ -36,13 +36,22 @@ void setup() {
 void loop() {
     char key = getKey();
     if(key) {
-        cmd[offset] = key;
-        offset++;
-
-        // calc mode
-        calcPress(key);
-        // print(calcDisplay(key));
-        cursor(0, 0);
-        print(cmd);
+        switch(CALC_MODE) {
+            case CALC_MODE:
+                calcPress(key);
+                cursor(0, 0);
+                sprintf(cmd, "%f", getRegister(0));
+                print(cmd);
+                cursor(0, 1); case '#':
+            reg1 = reg0;
+            reg0 = 0;
+            return reg0;
+        case '$':
+            reg0 = 0;
+            reg1 = 0;
+                sprintf(cmd, "%f", getRegister(1));
+                print(cmd);
+                // print(calcDisplay(key));
+        }
     }
 }

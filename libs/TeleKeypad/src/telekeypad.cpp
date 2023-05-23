@@ -17,7 +17,7 @@ char hexaKeys[ROWS][COLS] = {
           {'1', '2', '3', '*'}, // Add
           {'4', '5', '6', '/'}, // Sub
           {'7', '8', '9', '+'}, // Multi
-          {'*', '0', '#', '-'}  // Divide
+          {'$', '0', '#', '-'}  // Divide
 };
 // nodemcu pin order: 15, 13, 12, 14, 02, 00, 4, 5
 // byte rowPins[ROWS] = {16, 0, 2, 14};
