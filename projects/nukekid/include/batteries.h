@@ -1,0 +1,2 @@
+void setupBatteries();
+void tickBatteries();

@@ -15,6 +15,16 @@ void cursor(int x, int y) {
     lcd.setCursor(x, y);
 }
 
+void print(char s[], int x, int y) {
+    cursor(x, y);
+    lcd.print(s);
+}
+
+void print(char s[], int y) {
+    cursor(0, y);
+    lcd.print(s);
+}
+
 void print(char s[]) {
     lcd.print(s);
 }
