@@ -25,6 +25,8 @@ int displacement = 0; // moving between rods
 
 Rod rods[ROD_COUNT];
 
+char buff2[] = "                \0";
+
 void setupFuelRod() {
     for (int rod=0; rod < ROD_COUNT; rod++) {
         rods[rod] = {rod, 0};
@@ -41,13 +43,17 @@ int nextRod() {
 }
 
 int actuatorStatus() {
-    if (digitalRead(ARTICULATE_SWITCH_UP) == 1) {
+    if (digitalRead(ARTICULATE_SWITCH_UP) == 0) {
         return 1;
-    } else if (digitalRead(ARTICULATE_SWITCH_DOWN) == 1) {
+    } else if (digitalRead(ARTICULATE_SWITCH_DOWN) == 0) {
         return -1;
     }
 
     return 0;
+}
+
+int rodButtonDepressed() {
+    return digitalRead(ROD_SELECT) == 0;
 }
 
 int rodLift(int dist) {
@@ -55,4 +61,7 @@ int rodLift(int dist) {
 }
 
 void tickFuelRod() {
+    sprintf(buff2, "Act: %4.2d %4.2d",
+            actuatorStatus(), rodButtonDepressed());
+    print(buff2, 1);
 }

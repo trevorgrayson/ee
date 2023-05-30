@@ -28,19 +28,18 @@ void setupBatteries() {
 
     pinMode(BATT_SETTING_1, INPUT);
     pinMode(BATT_SETTING_2, INPUT);
-    pinMode(ARTICULATE_SWITCH_UP, INPUT);
-    pinMode(ARTICULATE_SWITCH_DOWN, INPUT);
-    pinMode(ROD_SELECT, INPUT);
 
     batts[0].pin = BATT_SETTING_1;
     batts[1].pin = BATT_SETTING_2;
 }
 
+int battSetting(int batt) {
+    return analogRead(batts[batt].pin)/100;
+}
+
 void tickBatteries() {
-    sprintf(buff, "Batt1: %4.2d",
-            analogRead(BATT_SETTING_1));
+    sprintf(buff, "B1: %2d B2: %2d",
+            battSetting(0),
+            battSetting(1));
     print(buff, 0);
-    sprintf(buff, "Batt2: %4.2d",
-            analogRead(BATT_SETTING_2));
-    print(buff, 1);
 }

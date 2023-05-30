@@ -37,4 +37,6 @@ void setup() {
 
 void loop() {
     tickBatteries();
+    tickFuelRod();
+    // controller.h to choose display
 }
