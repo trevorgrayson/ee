@@ -35,8 +35,30 @@ void setup() {
     delay(200);
 }
 
+char buffCont[] = "                \0";
+
+void homeScreen() {
+    sprintf(buffCont, "Rod%2d %c Dep %2d", rodCurrent(), actuatorStatus(), rodDepth());
+    print(buffCont, 0);
+    sprintf(buffCont, "B1:>%2d Chg:%2d",
+            battSetting(0), battCharge(0));
+    print(buffCont, 1);
+}
+
+void battScreen() {
+    sprintf(buffCont, "B1: %2d",
+            battSetting(0));
+    print(buffCont, 0);
+}
+void fuelRodScreen() {
+    sprintf(buffCont, "Act: %c %4.2d",
+            actuatorStatus(), rodButtonDepressed());
+//    print(buff2, 1);
+}
+
 void loop() {
     tickBatteries();
     tickFuelRod();
+    homeScreen();
     // controller.h to choose display
 }

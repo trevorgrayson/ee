@@ -38,18 +38,25 @@ void setupFuelRod() {
     pinMode(ROD_SELECT, INPUT_PULLUP);
 }
 
+int rodCurrent() {
+    return rods[presentRod].num;
+}
+
+int rodDepth() {
+    return rods[presentRod].depth;
+}
+
 int nextRod() {
     return presentRod++;
 }
 
 int actuatorStatus() {
     if (digitalRead(ARTICULATE_SWITCH_UP) == 0) {
-        return 1;
+        return 85;
     } else if (digitalRead(ARTICULATE_SWITCH_DOWN) == 0) {
-        return -1;
+        return 68;
     }
-
-    return 0;
+    return 20;
 }
 
 int rodButtonDepressed() {
@@ -61,7 +68,18 @@ int rodLift(int dist) {
 }
 
 void tickFuelRod() {
-    sprintf(buff2, "Act: %4.2d %4.2d",
-            actuatorStatus(), rodButtonDepressed());
-    print(buff2, 1);
+    Rod rod = rods[presentRod];
+
+    int actuator = actuatorStatus();
+    switch(actuator) {
+        case 85:
+            if(rod.depth > 0)
+                rods[presentRod].depth -= 1;
+            break;
+        case 68:
+            if(rod.depth < 70)
+                rods[presentRod].depth += 1;
+            break;
+    }
+
 }

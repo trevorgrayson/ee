@@ -23,7 +23,7 @@ char buff[] = "                \0";
 
 void setupBatteries() {
     for (int batt=0; batt < BATT_COUNT; batt++) {
-        batts[batt] = {0, 0, 0};
+        batts[batt] = {0, 5, 0};
     }
 
     pinMode(BATT_SETTING_1, INPUT);
@@ -37,9 +37,9 @@ int battSetting(int batt) {
     return analogRead(batts[batt].pin)/100;
 }
 
+int battCharge(int batt) {
+    return batts[batt].charge;
+}
+
 void tickBatteries() {
-    sprintf(buff, "B1: %2d B2: %2d",
-            battSetting(0),
-            battSetting(1));
-    print(buff, 0);
 }
