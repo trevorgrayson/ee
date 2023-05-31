@@ -29,7 +29,7 @@ char buff2[] = "                \0";
 
 void setupFuelRod() {
     for (int rod=0; rod < ROD_COUNT; rod++) {
-        rods[rod] = {rod, 0};
+        rods[rod] = {rod, 5};
     }
 
     // setup pins
@@ -65,6 +65,16 @@ int rodButtonDepressed() {
 
 int rodLift(int dist) {
     return 1;
+}
+
+int power() {
+    int power = 0;
+    for(int rod=0; rod< ROD_COUNT; rod++) {
+        Rod rodney = rods[rod];
+        power += rodney.depth * 1;
+    }
+
+    return power;
 }
 
 void tickFuelRod() {

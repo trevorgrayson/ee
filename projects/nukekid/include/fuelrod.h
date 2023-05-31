@@ -13,3 +13,4 @@ int actuatorStatus();
 
 int rodLift(int dist);
 int rodButtonDepressed();
+int power();
