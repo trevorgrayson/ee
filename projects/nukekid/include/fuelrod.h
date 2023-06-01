@@ -14,3 +14,5 @@ int actuatorStatus();
 int rodLift(int dist);
 int rodButtonDepressed();
 int power();
+
+void fuelRodScreen(int rodCurrent, int actuatorStatus, int rodDepth);

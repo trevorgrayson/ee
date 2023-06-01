@@ -19,11 +19,16 @@
 #include "fuelrod.h"
 #include "batteries.h"
 #include "grid.h"
+#include "controller.h"
 
 
 struct State {
+    int power;
+    int gridDraw;
     int temp;
 };
+
+State state = {0, 0, 0};
 
 void setup() {
     Serial.begin(115200);
@@ -34,43 +39,30 @@ void setup() {
     setupBatteries();
     setupFuelRod();
 
-    print("hello.");
+    print("KoW Industries");
     delay(200);
 }
 
-char buffCont[] = "                \0";
-
-void homeScreen() {
-    /*
-     * Demand 4.2 Supply 0.1
-     */
-    sprintf(buffCont, "Draw%2d Pwr%3d", demand(), power());
-    print(buffCont, 0);
-//    print(buffCont, 1);
-}
-
-void battScreen() {
-    sprintf(buffCont, "B1: Chg%2d/Cap:%2d",
-            battCharge(0), battSetting(0));
-    print(buffCont, 1);
-}
-
-void fuelRodScreen() {
-    // sprintf(buffCont, "Act: %c %4.2d", actuatorStatus(), rodButtonDepressed());
-    sprintf(buffCont, "Rod%2d %c Dep %2d", rodCurrent(), actuatorStatus(), rodDepth());
-    print(buffCont, 1);
-}
-
 void loop() {
+    // Update
     tickBatteries();
     tickFuelRod();
-    homeScreen();
+
+    state.power = power();
+    state.gridDraw = demand();
+
+    int available = state.power - state.gridDraw;
+
+    int draw = state.gridDraw + battDraw(available);
+    int totalPower = state.power + battDistribute(state.gridDraw);
+
+    // Visualize
+    homeScreen(draw, state.power);
 
     if (battChanged()) { // TODO: Fix battChanged() & mod on seconds
-        battScreen();
+        battScreen(battCharge(0), battSetting(0));
         delay(500);  //TODO slows actuator when changing.
     } else {
-        fuelRodScreen();
+        fuelRodScreen(rodCurrent(), actuatorStatus(), rodDepth());
     }
-    // controller.h to choose display
 }

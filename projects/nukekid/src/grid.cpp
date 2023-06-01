@@ -5,5 +5,5 @@
 #include "grid.h"
 
 int demand() {
-    return 4.2;
+    return 20;
 }

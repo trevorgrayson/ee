@@ -10,6 +10,8 @@
 #include "lcd.h"
 
 #define BATT_COUNT 2
+#define MAX_DISBURSE 10
+#define MAX_CHARGE 10
 
 struct BattState {
     int dirty;
@@ -31,7 +33,7 @@ char buff[] = "                \0";
 
 void setupBatteries() {
     for (int batt=0; batt < BATT_COUNT; batt++) {
-        batts[batt] = {0, 5, 0, 0};
+        batts[batt] = {0, 1, 0, 0};
     }
 
     pinMode(BATT_SETTING_1, INPUT);
@@ -53,13 +55,34 @@ int battCharge(int batt) {
 /*
  * Calculate the Battery's Draw
  */
-int battDraw() {
+int battDraw(int availablePower) {
     int draw = 0;
     for (int x = 0; x<BATT_COUNT; x++) {
-        draw = draw + batts[x].charge;
+        int charge = max(0, batts[x].charge);
+
+        if (batts[x].desire > charge) {
+            batts[x].charge = min(availablePower,
+                                  min(MAX_CHARGE, charge + 1)); // TODO 1?
+            draw = draw + charge;
+        }
+
     }
 
     return draw;
+}
+
+int battDistribute(int draw) {
+    int charge = batts[0].charge;
+
+    if( charge < 1 ||
+        batts[0].desire >= charge)
+        return 0;
+
+    int output = min(min(MAX_DISBURSE, draw), charge);
+    output = min(output, charge - output);
+    batts[0].charge = charge - output;
+
+    return output;
 }
 
 void tickBatteries() {

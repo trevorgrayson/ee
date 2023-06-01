@@ -3,3 +3,7 @@
 //
 
 void controller();
+
+void homeScreen(int draw, int pwr);
+void battScreen(int battCharge, int battSetting);
+void fuelRodScreen();
