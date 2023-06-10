@@ -38,6 +38,8 @@ void setupBatteries() {
 
     pinMode(BATT_SETTING_1, INPUT);
     pinMode(BATT_SETTING_2, INPUT);
+    pinMode(BATT_BAR_1, OUTPUT);
+    pinMode(BATT_BAR_2, OUTPUT);
 
     batts[0].pin = BATT_SETTING_1;
     batts[1].pin = BATT_SETTING_2;
@@ -83,6 +85,11 @@ int battDistribute(int draw) {
     batts[0].charge = charge - output;
 
     return output;
+}
+
+void battDisplay() {
+    analogWrite(BATT_BAR_1, batts[0].charge);
+    analogWrite(BATT_BAR_2, batts[1].charge);
 }
 
 void tickBatteries() {

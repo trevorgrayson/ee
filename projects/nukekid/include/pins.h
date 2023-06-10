@@ -30,8 +30,8 @@
 // analog
 #define BATT_SETTING_1 23  // 23 A0
 #define BATT_SETTING_2 24  // 24 A1
-// 25 A2
-// 26 A3
+#define BATT_BAR_1 25      // 25 A2
+#define BATT_BAR_2 26      // 26 A3
 // 27 A4 Wire.h
 // 28 A5 Wire.h
 #endif //EE_PINS_H
