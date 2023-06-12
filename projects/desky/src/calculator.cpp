@@ -3,7 +3,7 @@
 float reg0 = 0;
 float reg1 = 0;
 char operatr = 0;
-
+int decimal = 10;
 
 float getRegister(int regNum) {
     if (regNum) {
@@ -38,7 +38,13 @@ float operate() {
 
 void calcPress(char key) {
     if(isNum(key)) {
-        reg0 = reg0 * 10 + (key - 48);
+        if(decimal == 10) {
+            reg0 = reg0 * 10 + (key - 48);
+        } else {
+            reg0 = reg0 * decimal + (key - 48);
+            decimal = decimal / 10;
+        }
+
     } else if(isOperator(key)) {
         operatr = key;
         if(reg0 == 0) {
@@ -53,11 +59,11 @@ void calcPress(char key) {
         reg0 = 0;
     } else if(key == '#') { // CLEAR
         reg0 = 0;
-    } else if(key == '$') {
-        if( reg0 == 0 ) {
-            reg1 = 0;
-        }
-        reg0 = 0;
+        decimal = 10;
+    } else if(key == '.' && decimal > 0) {
+        // janky, but expecting to set decimal to be 0.1 and
+        // make it a magnitude smaller every button press.
+        decimal = 0.1;
     }
 }
 
