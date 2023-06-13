@@ -1,11 +1,11 @@
 #include "calculator.h"
 
-float reg0 = 0;
-float reg1 = 0;
+double reg0 = 0;
+double reg1 = 0;
+double decimal = 10;
 char operatr = 0;
-int decimal = 10;
 
-float getRegister(int regNum) {
+double getRegister(int regNum) {
     if (regNum) {
         return reg1;
     }
@@ -26,7 +26,7 @@ int isOperator(char key) {
     return 0;
 }
 
-float operate() {
+double operate() {
     switch(operatr) {
         case '*': return reg1 * reg0;
         case '/': return reg1 / reg0;
@@ -41,11 +41,19 @@ void calcPress(char key) {
         if(decimal == 10) {
             reg0 = reg0 * 10 + (key - 48);
         } else {
-            reg0 = reg0 * decimal + (key - 48);
+            reg0 = reg0 + double(key - 48) * decimal;
             decimal = decimal / 10;
         }
 
     } else if(isOperator(key)) {
+        if(key == '.' && decimal > 0) {
+            // janky, but expecting to set decimal to be 0.1 and
+            // make it a magnitude smaller every button press.
+            decimal = 0.1;
+            return;
+        }
+        decimal = 10;
+
         operatr = key;
         if(reg0 == 0) {
             return;
@@ -58,16 +66,15 @@ void calcPress(char key) {
         }
         reg0 = 0;
     } else if(key == '#') { // CLEAR
+        if(reg0 == 0) {
+            reg1 = 0;
+        }
         reg0 = 0;
         decimal = 10;
-    } else if(key == '.' && decimal > 0) {
-        // janky, but expecting to set decimal to be 0.1 and
-        // make it a magnitude smaller every button press.
-        decimal = 0.1;
     }
 }
 
-float calcDisplay(char key) {
+double calcDisplay(char key) {
     if(isNum(key)) {
         return reg0;
     } else if(isOperator(key)) {

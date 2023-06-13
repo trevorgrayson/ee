@@ -1,8 +1,8 @@
 int isNum(char key);
 int isOperator(char key);
 
-float operate();
+double operate();
 
 void calcPress(char key);
-float calcDisplay(char key);
-float getRegister(int regNum);
+double calcDisplay(char key);
+double getRegister(int regNum);

@@ -8,19 +8,17 @@
 *********/
 
 #include <Arduino.h>
-// #include "lcd.h"
+#include "lcd.h"
 #include "telekeypad.h"
-#include "state.h"
 #include "client.h"
 #include "calculator.h"
-#include "lcd.h"
+
 #include <stdio.h>
 #define CALC_MODE 1
 
 char cmd[] = "                    ";
 int offset = 0;
 
-struct State state;
 
 int mode() {
     return CALC_MODE;
@@ -39,10 +37,14 @@ void loop() {
         switch(CALC_MODE) {
             case CALC_MODE:
                 calcPress(key);
+
+                // view
                 cursor(0, 0);
                 sprintf(cmd, "%f", getRegister(0));
                 print(cmd);
                 cursor(0, 1);
+                sprintf(cmd, "%f", getRegister(1));
+                print(cmd);
 //            case '#':
 //                reg1 = reg0;
 //                reg0 = 0;
