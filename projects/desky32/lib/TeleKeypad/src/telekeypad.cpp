@@ -15,8 +15,8 @@ char hexaKeys[ROWS][COLS] = {
           {'7', '8', '9', '+'}, // Multi
           {'.', '0', '#', '-'}  // Divide
 };
-byte rowPins[ROWS] = {17, 16, 4, 32};
-byte colPins[COLS] = {3, 19, 33, 15};
+byte rowPins[ROWS] = { 4, 0, 2, 15};
+byte colPins[COLS] = {18, 5, 17, 16};
 
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
 
