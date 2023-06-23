@@ -16,12 +16,19 @@
 
 #include <BleKeyboard.h>
 
-BleKeyboard bleKeyboard;
+BleKeyboard bleKeyboard("DeSKY", "tg.", 100);
 
 #define CALC_MODE 1
+#define DEBOUNCE_DELAY 50
 
 char cmd[] = "                    ";
 int offset = 0;
+int ZERO = 0;
+
+// debounced send
+int sendState = 0;
+int sendStateLast = 0;
+int sendStateTime = millis(); // renam
 
 
 int mode() {
@@ -34,17 +41,46 @@ void setup() {
     print("hello.");
     delay(200);
     bleKeyboard.begin();
+    bleKeyboard.setBatteryLevel(100);
 
-    pinMode(SEND_PIN, INPUT);
+    pinMode(SEND_PIN, INPUT_PULLUP);
 }
 
 void loop() {
-    if(digitalRead(SEND_PIN)) {
+    char key = getKey();
+    int sendReading = digitalRead(SEND_PIN);
+
+    Serial.println(sendReading);
+
+    if (sendReading == LOW && sendStateLast == HIGH) {
         bleKeyboard.print(getRegister(1));
+        delay(500);
         return;
     }
 
-    char key = getKey();
+    if (sendReading != sendStateLast) {
+        sendStateLast = sendReading;
+    }
+
+//    if(sendReading != sendStateLast) {
+//        sendStateTime = millis();
+//    }
+//    if ((millis() - sendStateTime) > DEBOUNCE_DELAY) {
+//        if (sendReading != sendState) {
+//            sendState = sendReading;
+//
+//            if (sendState == HIGH) {
+//                bleKeyboard.print(getRegister(1));
+//                return;
+//            }
+//        }
+//    }
+
+//    if((getRegister(0) == 0 && (key && ZERO == double(key)))) {  // pressing zero when reg0 is zero will send
+//        bleKeyboard.print(getRegister(1));
+//        return;
+//    }
+
     if(key) {
         switch(CALC_MODE) {
             case CALC_MODE:

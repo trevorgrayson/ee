@@ -40,9 +40,11 @@ void loop() {
 
                 // view
                 cursor(0, 0);
+                sprintf(cmd, "                    "); // TODO Bug
                 sprintf(cmd, "%f", getRegister(0));
                 print(cmd);
                 cursor(0, 1);
+                sprintf(cmd, "                    ");
                 sprintf(cmd, "%f", getRegister(1));
                 print(cmd);
 //            case '#':
