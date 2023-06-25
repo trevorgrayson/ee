@@ -13,110 +13,75 @@
 // #include "adalogo.h"
 // #include "adaqrcode.h"
 
-// Here's the new syntax when using SoftwareSerial (e.g. Arduino Uno) ----
-// If using hardware serial instead, comment out or remove these lines:
+#define LED_PIN 2
 
-#include "SoftwareSerial.h"
-#define TX_PIN 6 // Arduino transmit  YELLOW WIRE  labeled RX on printer
-#define RX_PIN 5 // Arduino receive   GREEN WIRE   labeled TX on printer
+#define TX_PIN 1 // Arduino transmit  YELLOW WIRE  labeled RX on printer
+#define RX_PIN 0 // Arduino receive   GREEN WIRE   labeled TX on printer
+// #define CTS_PIN 2
+#define PrinterSerial Serial
 
-SoftwareSerial mySerial(RX_PIN, TX_PIN); // Declare SoftwareSerial obj first
-Adafruit_Thermal printer(&mySerial);     // Pass addr to printer constructor
-// Then see setup() function regarding serial & printer begin() calls.
+Adafruit_Thermal printer(&PrinterSerial); //, CTS_PIN);     // Pass addr to printer constructor
 
-// Here's the syntax for hardware serial (e.g. Arduino Due) --------------
-// Un-comment the following line if using hardware serial:
+void header(String s) {
+    printer.println("");
+    printer.doubleHeightOn();
+    printer.println(s);
+    printer.doubleHeightOff();
+    printer.println("");
+}
 
-//Adafruit_Thermal printer(&Serial1);      // Or Serial2, Serial3, etc.
+void grocery(void) {
+    header("Grocery");
+    printer.println("Berries");
+    printer.println("Yogurt");
+    printer.println("Waffles");
+    printer.println("Milk");
+    printer.println("Oat Milk");
+    printer.println("Num num Snacks");
+}
 
-// -----------------------------------------------------------------------
+void heartIzzy(void) {
+    printer.println("");
+    printer.setSize('M');
+    printer.justify('C');
+    printer.println("I <3 Isaac");
+    printer.setSize('S');
+    printer.justify('L');
+}
+
+void footer(void) {
+    heartIzzy();
+    printer.feed(2);
+}
 
 void setup() {
+    PrinterSerial.begin(9600);
+    pinMode(LED_PIN, OUTPUT);
 
-  // This line is for compatibility with the Adafruit IotP project pack,
-  // which uses pin 7 as a spare grounding point.  You only need this if
-  // wired up the same way (w/3-pin header into pins 5/6/7):
-  pinMode(7, OUTPUT); digitalWrite(7, LOW);
+    printer.begin();
+    printer.setFont('B');
 
-  // NOTE: SOME PRINTERS NEED 9600 BAUD instead of 19200, check test page.
-  mySerial.begin(19200);  // Initialize SoftwareSerial
-  //Serial1.begin(19200); // Use this instead if using hardware serial
-  printer.begin();        // Init printer (same regardless of serial type)
+    header("TODO");
 
-  // The following calls are in setup(), but don't *need* to be.  Use them
-  // anywhere!  They're just here so they run one time and are not printed
-  // over and over (which would happen if they were in loop() instead).
-  // Some functions will feed a line when called, this is normal.
+    printer.println("dishwasher");
+    printer.println("Clean DOB Kit");
+    printer.println("HoneyDo Print Button");
+    printer.println("HoneyDo Wifi Client");
+    printer.println("ATMega Wrapper Blinky");
 
-  // Font options
-  printer.setFont('B');
-  printer.println("FontB");
-  printer.println("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-  printer.setFont('A');
-  printer.println("FontA (default)");
-  printer.println("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    printer.println("Wire hole in desk");
+    printer.println("fix yoga");
+    footer();
 
-  // Test inverse on & off
-  printer.inverseOn();
-  printer.println(F("Inverse ON"));
-  printer.inverseOff();
-
-  // Test character double-height on & off
-  printer.doubleHeightOn();
-  printer.println(F("Double Height ON"));
-  printer.doubleHeightOff();
-
-  // Set text justification (right, center, left) -- accepts 'L', 'C', 'R'
-  printer.justify('R');
-  printer.println(F("Right justified"));
-  printer.justify('C');
-  printer.println(F("Center justified"));
-  printer.justify('L');
-  printer.println(F("Left justified"));
-
-  // Test more styles
-  printer.boldOn();
-  printer.println(F("Bold text"));
-  printer.boldOff();
-
-  printer.underlineOn();
-  printer.println(F("Underlined text"));
-  printer.underlineOff();
-
-  printer.setSize('L');        // Set type size, accepts 'S', 'M', 'L'
-  printer.println(F("Large"));
-  printer.setSize('M');
-  printer.println(F("Medium"));
-  printer.setSize('S');
-  printer.println(F("Small"));
-
-  printer.justify('C');
-  printer.println(F("normal\nline\nspacing"));
-  printer.setLineHeight(50);
-  printer.println(F("Taller\nline\nspacing"));
-  printer.setLineHeight(); // Reset to default
-  printer.justify('L');
-
-  // Barcode examples:
-  // CODE39 is the most common alphanumeric barcode:
-  printer.printBarcode("ADAFRUT", CODE39);
-  printer.setBarcodeHeight(100);
-  // Print UPC line on product barcodes:
-  printer.printBarcode("123456789123", UPC_A);
-
-  // Print the 75x75 pixel logo in adalogo.h:
-  // printer.printBitmap(adalogo_width, adalogo_height, adalogo_data);
-
-  // Print the 135x135 pixel QR code in adaqrcode.h:
-  // printer.printBitmap(adaqrcode_width, adaqrcode_height, adaqrcode_data);
-  printer.println(F("Adafruit!"));
-  printer.feed(2);
-
-  printer.sleep();      // Tell printer to sleep
-  delay(3000L);         // Sleep for 3 seconds
-  printer.wake();       // MUST wake() before printing again, even if reset
-  printer.setDefault(); // Restore printer to defaults
+    printer.sleep();      // Tell printer to sleep
+    delay(3000L);         // Sleep for 3 seconds
+    printer.wake();       // MUST wake() before printing again, even if reset
+    printer.setDefault(); // Restore printer to defaults
 }
 
 void loop() {
+    digitalWrite(LED_PIN, LOW);
+    delay(1000);
+    digitalWrite(LED_PIN, HIGH);
+    delay(1000);
 }
