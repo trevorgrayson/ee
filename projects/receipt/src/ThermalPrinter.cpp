@@ -21,7 +21,14 @@ void setupThermalPrinter(void) {
 
     printer.begin();
     printer.setFont('B');
+}
 
+static void println(String s) {
+    printer.println(s);
+}
+
+void receiptPrint(String s) {
+    println(s);
 }
 
 void header(String s) {
@@ -34,12 +41,12 @@ void header(String s) {
 
 void grocery(void) {
     header("Grocery");
-    printer.println("Berries");
-    printer.println("Yogurt");
-    printer.println("Waffles");
-    printer.println("Milk");
-    printer.println("Oat Milk");
-    printer.println("Num num Snacks");
+    println("Berries");
+    println("Yogurt");
+    println("Waffles");
+    println("Milk");
+    println("Oat Milk");
+    println("Num num Snacks");
 }
 
 void heartIzzy(void) {
@@ -51,21 +58,6 @@ void heartIzzy(void) {
     printer.justify('L');
 }
 
-void todo(void) {
-    header("TODO");
-
-    printer.println("Clean DOB Kit");
-    printer.println("working out desk");
-    printer.println("book flight");
-    printer.println("digital clock");
-    printer.println("HoneyDo Wifi Client");
-    printer.println("HoneyDo Print Button");
-    printer.println("Wire hole in desk");
-    printer.println("one dave review");
-    printer.println("sunday.py");
-    printer.println("fix yoga");
-
-}
 
 void footer(void) {
     heartIzzy();

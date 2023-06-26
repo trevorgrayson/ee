@@ -3,5 +3,7 @@
 //
 void setupThermalPrinter(void);
 void header(String s);
-void todo(void);
 void footer(void);
+
+void todo(void);
+void receiptPrint(String s);
