@@ -3,20 +3,23 @@
 //
 #include <Arduino.h>
 #include "ThermalPrinter.h"
-
+#include "SoftwareSerial.h"
 #include "Adafruit_Thermal.h"
 // #include "adalogo.h"
 // #include "adaqrcode.h"
 
+#define PRINTER_RX 25
+#define PRINTER_TX 26
 // #define CTS_PIN 2
-#define PrinterSerial Serial2
 
-Adafruit_Thermal printer(&PrinterSerial); //, CTS_PIN);     // Pass addr to printer constructor
+
+SoftwareSerial pSerial(PRINTER_RX, PRINTER_TX);
+
+Adafruit_Thermal printer(&pSerial); //, CTS_PIN);     // Pass addr to printer constructor
 
 
 void setupThermalPrinter(void) {
-    //flush
-    PrinterSerial.begin(9600);
+    pSerial.begin(9600); // , SERIAL_8N1, PRINTER_RX, PRINTER_TX);
 
     printer.begin();
     printer.setFont('B');

@@ -8,13 +8,13 @@
 *********/
 #include <stdio.h>
 #include <Arduino.h>
+#include <BleKeyboard.h>
 
 #include "pins.h"
 #include "lcd.h"
 #include "telekeypad.h"
 #include "calculator.h"
-
-#include <BleKeyboard.h>
+#include "ThermalPrinter.h"
 
 BleKeyboard bleKeyboard("DeSKY", "tg.", 100);
 
@@ -37,11 +37,17 @@ int mode() {
 
 void setup() {
     Serial.begin(115200);
+
     setupLCD();
     print("hello.");
     delay(200);
     bleKeyboard.begin();
     bleKeyboard.setBatteryLevel(100);
+
+    setupThermalPrinter();
+    delay(2000);
+    receiptPrint("");
+    receiptPrint("Calc Time");
 
     pinMode(SEND_PIN, INPUT_PULLUP);
 }
