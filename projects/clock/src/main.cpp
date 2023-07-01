@@ -8,7 +8,7 @@ const uint8_t colonMask = 0b01000000;
 // Instantiation and pins configurations
 // Pin 3 - > DIO
 // Pin 2 - > CLK
-TM1637 tm(2, 3);
+TM1637 tm(2 , 15);
 
 double epic = 12 * 3600 + 34 * 60; // seconds
 
