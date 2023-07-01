@@ -35,8 +35,8 @@ void setup() {
     blink(500, 5);
 
     setupThermalPrinter();
-    blink(500, 3);
 
+    blink(500, 3);
     delay(1000);
     blink(500, 1);
 
