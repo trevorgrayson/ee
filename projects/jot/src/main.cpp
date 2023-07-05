@@ -28,17 +28,20 @@
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
 
+#define BACKSPACE 8
+#define ENTER 13
+
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 char buff[20];
 int offset = 0;
-int epic = 0;
+unsigned int epic = 0;
 
 void setup() {
     Serial.begin(9600);
-    Wire.begin(4,5);
+    Wire.begin(4, 5);
 
     // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
     if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
@@ -53,12 +56,14 @@ void setup() {
     display.clearDisplay();
 
     // Draw a single pixel in white
+//    display.setCursor(0,0);
+//    display.print("hello");
     display.drawPixel(10, 10, SSD1306_WHITE);
 
     // Show the display buffer on the screen. You MUST call display() after
     // drawing commands to make them visible on screen!
     display.display();
-    delay(2000);
+    delay(1000);
     // display.display() is NOT necessary after every single drawing command,
     // unless that's what you want...rather, you can batch up a bunch of
     // drawing operations and then update the screen all at once by calling
@@ -71,29 +76,52 @@ void setup() {
 }
 
 void loop() {
-    Wire.requestFrom(CARDKB_ADDR, 1, true);
-    char c;
-    while (Wire.available()) {
+    if(epic % 2000 == 0) { // maybe not seeing every millisecond in millis();
+        display.clearDisplay();
+        display.setCursor(0,0);
+        display.print(buff);
+        display.setCursor(0,20);
+        display.print(epic);
+        display.display();
+        delay(500);
+    }
+    epic++;
+    if (epic > 100998) {
+        epic = 0;
+    }
+    // delay(500);
+    int bytes = Wire.requestFrom(CARDKB_ADDR, 1, false);
+    char c = 0;
+    while (Wire.available()) { //while
         c = Wire.read();
+
         if (c != 0)
         {
             if (offset >= 19) {
                 offset = 0;
-                display.clearDisplay();
+                //display.clearDisplay();
             }
 
             buff[offset] = c;
             offset++;
             Serial.print(c);
         }
-    }
 
-    // if(millis() % 1000 == 0) {
-    display.setCursor(0,0);
-    display.print(buff);
-    display.display();
-    // }
-    delay(500);
+        switch (c) {
+            case BACKSPACE:
+                buff[offset] = ' ';
+                offset--;
+                break;
+            case ENTER:
+                // TODO Save text
+                memset(buff, 0, sizeof buff);
+                break;
+            case 0:
+                break;
+
+        }
+    }
+//    delay(400);
 }
 
 void writeToScreen() {
