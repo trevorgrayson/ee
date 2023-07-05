@@ -12,6 +12,7 @@
 #include "ThermalPrinter.h"
 #include "txtings.h"
 
+#define GPIO0 0
 #define LED_PIN 2
 
 struct State state;
@@ -30,23 +31,20 @@ void blink(unsigned int time) {
 }
 
 void setup() {
+    Serial.begin(9600);
+    pinMode(GPIO0, INPUT_PULLUP);
     pinMode(LED_PIN, OUTPUT);
-    delay(20);
-    blink(500, 5);
-
-    setupThermalPrinter();
-
-    blink(500, 3);
-    delay(1000);
-    blink(500, 1);
-
 
     setupTxtings();
     blink(500, 2);
 
     request(&state);
     blink(100, 4);
+    // kill wifi here?
 
+    setupThermalPrinter();
+
+    delay(3000);
     header("TODO");
 
     for (unsigned int x=0; x < sizeof(state.todos)/sizeof(state.todos[0]); x++) {

@@ -43,18 +43,19 @@ void setupTxtings(void) {
 
 void request(State *state) {
     if((wifiMulti.run() != WL_CONNECTED)) {
-        // USE_SERIAL.println("not connected");
+        Serial.println("not connected");
     }
 
     WiFiClient client;
     HTTPClient http;
 
+//    Serial.println("begin txtings");
     // configure traged server and url
     http.begin(client, "http://txtin.gs/status"); //HTTP
 
     // start connection and send HTTP header
     int httpCode = http.GET();
-
+//    Serial.println("GET sent");
     // httpCode will be negative on error
     if(httpCode > 0) {
         // HTTP header has been send and Server response header has been handled
@@ -66,9 +67,9 @@ void request(State *state) {
             DeserializationError error = deserializeJson(doc, payload);
 
             if (error) {
-//                sprintf(*(state->error), "deserializeJson() failed\0     ");
-//                Serial.print(F("deserializeJson() failed: "));
-//                Serial.println(error.f_str());
+                sprintf(*(state->error), "deserializeJson() failed\0     ");
+                Serial.print(F("deserializeJson() failed: "));
+                Serial.println(error.f_str());
                 return;
             }
 
@@ -106,11 +107,12 @@ void request(State *state) {
             // remove next line
             sprintf(state->aqiStr, "%d", aqi);
 
-            // USE_SERIAL.println(payload);
+//            Serial.println(payload);
         }
     } else {
         sprintf(*(state->error), "HTTP %s\0", http.errorToString(httpCode).c_str());
-        // USE_SERIAL.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+        Serial.printf("[HTTP] GET... failed.");
+        // Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
     }
 
     http.end();
