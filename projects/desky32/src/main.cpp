@@ -16,10 +16,14 @@
 #include "calculator.h"
 #include "ThermalPrinter.h"
 
-BleKeyboard bleKeyboard("DeSKY", "tg.", 100);
-
 #define CALC_MODE 1
 #define DEBOUNCE_DELAY 50
+
+// display
+#define TOP_LINE 0
+#define BTM_LINE 1
+
+BleKeyboard bleKeyboard("DeSKY", "tg.", 100);
 
 char cmd[] = "                    ";
 int offset = 0;
@@ -68,38 +72,19 @@ void loop() {
         sendStateLast = sendReading;
     }
 
-//    if(sendReading != sendStateLast) {
-//        sendStateTime = millis();
-//    }
-//    if ((millis() - sendStateTime) > DEBOUNCE_DELAY) {
-//        if (sendReading != sendState) {
-//            sendState = sendReading;
-//
-//            if (sendState == HIGH) {
-//                bleKeyboard.print(getRegister(1));
-//                return;
-//            }
-//        }
-//    }
-
-//    if((getRegister(0) == 0 && (key && ZERO == double(key)))) {  // pressing zero when reg0 is zero will send
-//        bleKeyboard.print(getRegister(1));
-//        return;
-//    }
-
     if(key) {
         switch(CALC_MODE) {
             case CALC_MODE:
                 calcPress(key);
 
                 // view
-                cursor(0, 0);
-                sprintf(cmd, "                    ");
-                sprintf(cmd, "%f", getRegister(0));
-                print(cmd);
-                cursor(0, 1);
+                cursor(0, TOP_LINE);
                 sprintf(cmd, "                    ");
                 sprintf(cmd, "%f", getRegister(1));
+                print(cmd);
+                cursor(0, BTM_LINE);
+                sprintf(cmd, "                    ");
+                sprintf(cmd, "%f", getRegister(0));
                 print(cmd);
         }
     }
