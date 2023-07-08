@@ -40,27 +40,23 @@ int mode() {
 }
 
 void setup() {
-    Serial.begin(115200);
+    // Serial.begin(9600);
+//    setupThermalPrinter();
+//    delay(3000);
+//    receiptPrint("");
+//    receiptPrint("DeSKY");
 
     setupLCD();
     print("hello.");
-    delay(200);
     bleKeyboard.begin();
     bleKeyboard.setBatteryLevel(100);
 
-    setupThermalPrinter();
-    delay(2000);
-    receiptPrint("");
-    receiptPrint("Calc Time");
 
     pinMode(SEND_PIN, INPUT_PULLUP);
 }
 
-void loop() {
-    char key = getKey();
+void btSendButton() {
     int sendReading = digitalRead(SEND_PIN);
-
-    Serial.println(sendReading);
 
     if (sendReading == LOW && sendStateLast == HIGH) {
         bleKeyboard.print(getRegister(1));
@@ -71,7 +67,12 @@ void loop() {
     if (sendReading != sendStateLast) {
         sendStateLast = sendReading;
     }
+}
 
+void loop() {
+    char key = getKey();
+
+    // btSendButton();
     if(key) {
         switch(CALC_MODE) {
             case CALC_MODE:

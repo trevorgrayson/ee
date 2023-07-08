@@ -8,19 +8,19 @@
 // #include "adalogo.h"
 // #include "adaqrcode.h"
 
-#define PRINTER_RX 25
-#define PRINTER_TX 26
+#define PRINTER_RX 14
+#define PRINTER_TX 12
 // #define CTS_PIN 2
 
 
 SoftwareSerial pSerial(PRINTER_RX, PRINTER_TX);
 
-Adafruit_Thermal printer(&pSerial); //, CTS_PIN);     // Pass addr to printer constructor
+Adafruit_Thermal printer(&Serial); //, CTS_PIN);     // Pass addr to printer constructor
 
 
 void setupThermalPrinter(void) {
-    pSerial.begin(9600); // , SERIAL_8N1, PRINTER_RX, PRINTER_TX);
-
+    Serial.begin(9600); // , SERIAL_8N1, PRINTER_RX, PRINTER_TX);
+    delay(500);
     printer.begin();
     printer.setFont('B');
 }
@@ -39,16 +39,6 @@ void header(String s) {
     printer.println(s);
     printer.doubleHeightOff();
     printer.println("");
-}
-
-void grocery(void) {
-    header("Grocery");
-    println("Berries");
-    println("Yogurt");
-    println("Waffles");
-    println("Milk");
-    println("Oat Milk");
-    println("Num num Snacks");
 }
 
 void heartIzzy(void) {
