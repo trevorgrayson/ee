@@ -14,7 +14,7 @@
 #include "lcd.h"
 #include "telekeypad.h"
 #include "calculator.h"
-#include "ThermalPrinter.h"
+
 
 #define CALC_MODE 1
 #define DEBOUNCE_DELAY 50
@@ -32,7 +32,7 @@ int ZERO = 0;
 // debounced send
 int sendState = 0;
 int sendStateLast = 0;
-int sendStateTime = millis(); // renam
+int sendStateTime = millis(); // rename
 
 
 int mode() {
@@ -40,17 +40,12 @@ int mode() {
 }
 
 void setup() {
-    // Serial.begin(9600);
-//    setupThermalPrinter();
-//    delay(3000);
-//    receiptPrint("");
-//    receiptPrint("DeSKY");
+    Serial.begin(9600);
 
     setupLCD();
     print("hello.");
     bleKeyboard.begin();
     bleKeyboard.setBatteryLevel(100);
-
 
     pinMode(SEND_PIN, INPUT_PULLUP);
 }
@@ -72,7 +67,7 @@ void btSendButton() {
 void loop() {
     char key = getKey();
 
-    // btSendButton();
+    btSendButton();
     if(key) {
         switch(CALC_MODE) {
             case CALC_MODE:
