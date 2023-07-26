@@ -74,6 +74,13 @@ void calcPress(char key) {
     }
 }
 
+int calcShouldSurrender(char key) {
+    int OPERATOR = 0;
+
+    return  reg0 == 0 &&
+            key == OPERATOR;
+}
+
 double calcDisplay(char key) {
     if(isNum(key)) {
         return reg0;

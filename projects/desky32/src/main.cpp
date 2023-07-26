@@ -14,10 +14,14 @@
 #include "lcd.h"
 #include "telekeypad.h"
 #include "calculator.h"
+#include "dsky.h"
 #include "ThermalPrinter.h"
 
 
-#define CALC_MODE 1
+#define CALC_MODE 0
+#define DSKY_MODE 1
+#define OPERATE 0
+
 #define DEBOUNCE_DELAY 50
 
 // display
@@ -35,9 +39,47 @@ int sendState = 0;
 int sendStateLast = 0;
 int sendStateTime = millis(); // rename
 
+int MODE = CALC_MODE;
 
-int mode() {
-    return CALC_MODE;
+
+/*
+ * Router Check mode switch
+ */
+void surrender(char key) {
+    switch(MODE) {
+        case CALC_MODE:
+            if (calcShouldSurrender(key)) {
+                MODE = !MODE;
+            }
+            break;
+        case DSKY_MODE:
+            if (dskyShouldSurrender(key))
+                MODE = !MODE;
+            break;
+    }
+}
+
+// BT
+void btSendButton() {
+    int sendReading = digitalRead(SEND_PIN);
+
+    if (sendReading == LOW && sendStateLast == HIGH) {
+        bleKeyboard.print(getRegister(1));
+        delay(500);
+        return;
+    }
+
+    if (sendReading != sendStateLast) {
+        sendStateLast = sendReading;
+    }
+}
+
+void output(int line, double value) {
+    char buff[] = "                    ";
+    cursor(0, line);
+    sprintf(buff, "                    ");
+    sprintf(buff, "%f", value);
+    print(buff);
 }
 
 void setup() {
@@ -58,19 +100,6 @@ void setup() {
     pinMode(SEND_PIN, INPUT_PULLUP);
 }
 
-void btSendButton() {
-    int sendReading = digitalRead(SEND_PIN);
-
-    if (sendReading == LOW && sendStateLast == HIGH) {
-        bleKeyboard.print(getRegister(1));
-        delay(500);
-        return;
-    }
-
-    if (sendReading != sendStateLast) {
-        sendStateLast = sendReading;
-    }
-}
 
 void loop() {
     char key = getKey();
@@ -90,6 +119,10 @@ void loop() {
                 sprintf(cmd, "                    ");
                 sprintf(cmd, "%f", getRegister(0));
                 print(cmd);
+            case DSKY_MODE:
+                dskyPress(key);
+
+                output(TOP_LINE, dskyDisplayLine(TOP_LINE));
         }
     }
 }

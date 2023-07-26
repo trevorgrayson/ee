@@ -6,3 +6,5 @@ double operate();
 void calcPress(char key);
 double calcDisplay(char key);
 double getRegister(int regNum);
+
+int calcShouldSurrender(char key);
