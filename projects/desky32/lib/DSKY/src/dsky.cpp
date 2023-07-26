@@ -4,7 +4,7 @@
 
 #include "dsky.h"
 
-int dskyReg0 = 0;
+double dskyReg0 = 0;
 
 
 int dskyShouldSurrender(char key) {
@@ -15,6 +15,6 @@ void dskyPress(char key) {
     dskyReg0 = dskyReg0 * 10 + (key - 48);
 }
 
-int dskyDisplayLine(int line) {
+double dskyDisplayLine(int line) {
     return dskyReg0;
 }

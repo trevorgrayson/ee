@@ -6,4 +6,4 @@
 
 int dskyShouldSurrender(char key);
 void dskyPress(char key);
-int dskyDisplayLine(int line);
+double dskyDisplayLine(int line);

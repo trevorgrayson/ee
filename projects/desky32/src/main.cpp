@@ -74,6 +74,7 @@ void btSendButton() {
     }
 }
 
+//TODO doubles only. can overload?
 void output(int line, double value) {
     char buff[] = "                    ";
     cursor(0, line);
@@ -111,6 +112,10 @@ void loop() {
                 calcPress(key);
 
                 // view
+                // TODO test if these work.
+                output(TOP_LINE, getRegister(1));
+                output(BTM_LINE, getRegister(0));
+
                 cursor(0, TOP_LINE);
                 sprintf(cmd, "                    ");
                 sprintf(cmd, "%f", getRegister(1));
