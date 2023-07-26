@@ -14,6 +14,7 @@
 #include "lcd.h"
 #include "telekeypad.h"
 #include "calculator.h"
+#include "ThermalPrinter.h"
 
 
 #define CALC_MODE 1
@@ -41,6 +42,13 @@ int mode() {
 
 void setup() {
     Serial.begin(9600);
+//    while (Serial.available()) {
+//        Serial.read();
+//    }
+
+//    setupThermalPrinter();
+//    receiptPrint("hello world");
+//    footer();
 
     setupLCD();
     print("hello.");

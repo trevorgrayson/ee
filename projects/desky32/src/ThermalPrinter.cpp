@@ -8,18 +8,19 @@
 // #include "adalogo.h"
 // #include "adaqrcode.h"
 
-#define PRINTER_RX 14
-#define PRINTER_TX 12
+#define PRINTER_RX 16
+#define PRINTER_TX 17
 // #define CTS_PIN 2
 
 
-SoftwareSerial pSerial(PRINTER_RX, PRINTER_TX);
+// HardwareSerial printerSerial(2);
 
 Adafruit_Thermal printer(&Serial); //, CTS_PIN);     // Pass addr to printer constructor
 
 
 void setupThermalPrinter(void) {
-    Serial.begin(9600); // , SERIAL_8N1, PRINTER_RX, PRINTER_TX);
+    Serial.begin(9600);
+//    printerSerial.begin(9600, SERIAL_8N1, PRINTER_RX, PRINTER_TX);
     delay(500);
     printer.begin();
     printer.setFont('B');
