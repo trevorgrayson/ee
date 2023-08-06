@@ -2,6 +2,11 @@
 #include <TM1637Display.h>
 
 
+#include <RTClib.h>
+// #include <Wire.h>
+
+RTC_DS3231 rtc;
+
 //#define ONE_DAY  (24 * 60 * 60)
 double ONE_DAY =  (24.0 * 60.0 * 60.0);
 const uint8_t colonMask = 0b11100000;
@@ -20,37 +25,39 @@ TM1637Display display(2, 3);
 
 double tick_epic = millis();
 
+void clockSetup() {
+    // initializing the rtc
+    if(!rtc.begin()) {
+        Serial.println("Couldn't find RTC!");
+        Serial.flush();
+        while (1) delay(10);
+    }
+
+    if(rtc.lostPower()) {
+        // this will adjust to the date and time at compilation
+        rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    }
+
+    //we don't need the 32K Pin, so disable it
+    rtc.disable32K();
+}
+
+void clockTick() {
+    // print current time
+    display.showNumberDec(rtc.now().hour()*100 + rtc.now().minute());
+}
+
 
 void setup()
 {
     Serial.begin(9600);
     display.setBrightness(0x0a);
+    clockSetup();
+    delay(2000);
+    rtc.adjust(DateTime(2024, 8, 3, 10, 40, 0));
 }
 
 void loop()
 {
-    uint8_t toMask = 0b0;
-
-    // Display Integers:
-    double hours = floor(epic/3600.0);
-    double minutes = floor((epic - (hours * 3600.0)) / 60.0);
-    Serial.println(epic);
-    Serial.println(hours);
-    Serial.println(minutes);
-
-    if (millis() - tick_epic > 1000) {
-        tick_epic = millis();
-        epic++;
-        if (toMask) {
-            toMask = 0b0;
-        } else {
-            toMask = colonMask;
-        }
-
-        display.showNumberDecEx(hours * 100.0 + minutes, toMask);
-    }
-
-    if (epic > ONE_DAY) {
-        epic = 0000.0;
-    }
+    clockTick();
 }
