@@ -30,7 +30,7 @@ void clockSetup() {
     if(!rtc.begin()) {
         Serial.println("Couldn't find RTC!");
         Serial.flush();
-        while (1) delay(10);
+        // while (1) delay(10);
     }
 
     if(rtc.lostPower()) {
@@ -52,9 +52,9 @@ void setup()
 {
     Serial.begin(9600);
     display.setBrightness(0x0a);
+
     clockSetup();
-    delay(2000);
-    rtc.adjust(DateTime(2024, 8, 3, 10, 40, 0));
+    // rtc.adjust(DateTime(2024, 8, 3, 1, 02, 0));
 }
 
 void loop()
