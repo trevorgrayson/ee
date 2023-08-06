@@ -2,13 +2,8 @@
 // Created by trevor on 8/6/2023.
 //
 
-#ifndef EE_CLOCK_H
-#define EE_CLOCK_H
+void clockSetup();
 
+void clockTick();
 
-class clock {
-
-};
-
-
-#endif //EE_CLOCK_H
+int clockTimeDigits();
