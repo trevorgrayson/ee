@@ -15,12 +15,21 @@ double epic = 9.0 *HOURS + 21.0 *MINUTES; // seconds
 // Instantiation and pins configurations
 // Pin 3 - > DIO
 // Pin 2 - > CLK
-TM1637Display display(2, 3);
+TM1637Display lax(2, 3);
+TM1637Display dia(4, 5);
+TM1637Display nyc(6, 7);
+
+int timezone(int time, int offset) {
+    // insert NYC time always
+    return (time + offset * 100) % 2400;
+}
 
 void setup()
 {
     Serial.begin(9600);
-    display.setBrightness(0x0a);
+    lax.setBrightness(0x0a);
+    dia.setBrightness(0x0a);
+    nyc.setBrightness(0x0a);
 
     clockSetup();
     // adjust(); // program the clock
@@ -29,5 +38,7 @@ void setup()
 void loop()
 {
     clockTick();
-    display.showNumberDec(clockTimeDigits());
+    nyc.showNumberDec(clockTimeDigits());
+    dia.showNumberDec(timezone(clockTimeDigits(),2));
+    lax.showNumberDec(timezone(clockTimeDigits(), 3));
 }
