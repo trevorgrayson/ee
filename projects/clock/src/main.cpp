@@ -23,7 +23,7 @@ void setup()
     display.setBrightness(0x0a);
 
     clockSetup();
-    adjust();
+    // adjust(); // program the clock
 }
 
 void loop()

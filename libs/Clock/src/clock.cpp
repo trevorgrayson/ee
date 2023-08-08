@@ -36,5 +36,5 @@ int clockTimeDigits() {
 }
 
 void adjust() {
-    rtc.adjust(DateTime(2023, 8, 7, 9, 25, 0));
+    rtc.adjust(DateTime(2023, 8, 7, 20, 37, 0));
 }
