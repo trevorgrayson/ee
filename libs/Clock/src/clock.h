@@ -9,3 +9,5 @@ void clockTick();
 int clockTimeDigits();
 
 void adjust();
+
+int timezone(int time, int offset);

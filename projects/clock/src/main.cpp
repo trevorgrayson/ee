@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <TM1637Display.h>
 #include "clock.h"
+#include "deej.h"
 
 //#define ONE_DAY  (24 * 60 * 60)
 double ONE_DAY =  (24.0 * 60.0 * 60.0);
@@ -19,25 +20,27 @@ TM1637Display lax(2, 3);
 TM1637Display dia(4, 5);
 TM1637Display nyc(6, 7);
 
-int timezone(int time, int offset) {
-    // insert NYC time always
-    return (time + offset * 100) % 2400;
-}
-
 void setup()
 {
     Serial.begin(9600);
+
+    clockSetup();
+    setupDeej();
+    // adjust(); // program the clock
+
+    // 4-digit LEDs
     lax.setBrightness(0x0a);
     dia.setBrightness(0x0a);
     nyc.setBrightness(0x0a);
 
-    clockSetup();
-    // adjust(); // program the clock
 }
 
 void loop()
 {
     clockTick();
+    tickDeej();
+
+    // 4-digit LEDs
     nyc.showNumberDec(clockTimeDigits());
     dia.showNumberDec(timezone(clockTimeDigits(),2));
     lax.showNumberDec(timezone(clockTimeDigits(), 3));
