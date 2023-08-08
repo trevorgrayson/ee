@@ -34,3 +34,7 @@ int clockTimeDigits() {
     return rtc.now().hour() * 100 \
             + rtc.now().minute();
 }
+
+void adjust() {
+    rtc.adjust(DateTime(2023, 8, 7, 9, 25, 0));
+}

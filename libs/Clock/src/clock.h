@@ -7,3 +7,5 @@ void clockSetup();
 void clockTick();
 
 int clockTimeDigits();
+
+void adjust();

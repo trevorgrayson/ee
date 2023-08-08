@@ -10,7 +10,7 @@ const double HOURS = 3600.0;
 
 
 // set the time
-double epic = 21.0 *HOURS + 29.0 *MINUTES; // seconds
+double epic = 9.0 *HOURS + 21.0 *MINUTES; // seconds
 
 // Instantiation and pins configurations
 // Pin 3 - > DIO
@@ -23,12 +23,11 @@ void setup()
     display.setBrightness(0x0a);
 
     clockSetup();
-    // rtc.adjust(DateTime(2024, 8, 3, 1, 02, 0));
+    adjust();
 }
 
 void loop()
 {
     clockTick();
-
     display.showNumberDec(clockTimeDigits());
 }
