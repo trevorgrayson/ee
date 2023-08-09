@@ -41,7 +41,7 @@ void loop()
     tickDeej();
 
     // 4-digit LEDs
-    nyc.showNumberDec(clockTimeDigits());
-    dia.showNumberDec(timezone(clockTimeDigits(),2));
-    lax.showNumberDec(timezone(clockTimeDigits(), 3));
+    nyc.showNumberDec(timezone(clockTimeDigits(), 3));
+    dia.showNumberDec(timezone(clockTimeDigits(), 1));
+    lax.showNumberDec(clockTimeDigits());
 }

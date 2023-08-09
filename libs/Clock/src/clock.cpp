@@ -36,7 +36,7 @@ int clockTimeDigits() {
 }
 
 void adjust() {
-    rtc.adjust(DateTime(2023, 8, 7, 18, 11, 0));
+    rtc.adjust(DateTime(2023, 8, 7, 22, 3, 0));
 }
 
 int timezone(int time, int offset) {
