@@ -1,5 +1,10 @@
 #include "calculator.h"
 
+/*
+ * reg0 moves to reg1
+ */
+
+
 double reg0 = 0;
 double reg1 = 0;
 double decimal = 10;
@@ -36,8 +41,13 @@ double operate() {
     return reg1;
 }
 
-void calcPress(char key) {
+int calcPress(char key) {
+    if (reg0 == 0.0f && key == '0') {
+        return 1;
+    }
+
     if(isNum(key)) {
+
         if(decimal == 10) {
             reg0 = reg0 * 10 + (key - 48);
         } else {
@@ -50,13 +60,13 @@ void calcPress(char key) {
             // janky, but expecting to set decimal to be 0.1 and
             // make it a magnitude smaller every button press.
             decimal = 0.1;
-            return;
+            return 0;
         }
         decimal = 10;
 
         operatr = key;
         if(reg0 == 0) {
-            return;
+            return 0;
         }
 
         if(reg1 == 0) {
@@ -72,6 +82,8 @@ void calcPress(char key) {
         reg0 = 0;
         decimal = 10;
     }
+
+    return 0;
 }
 
 double calcDisplay(char key) {

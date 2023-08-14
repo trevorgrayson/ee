@@ -3,6 +3,8 @@ int isOperator(char key);
 
 double operate();
 
-void calcPress(char key);
+int calcPress(char key);
 double calcDisplay(char key);
 double getRegister(int regNum);
+
+int isNum(char key);

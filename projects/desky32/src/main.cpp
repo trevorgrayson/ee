@@ -16,7 +16,11 @@
 #include "calculator.h"
 #include "ThermalPrinter.h"
 
+#define OPER_MODE 0
 #define CALC_MODE 1
+#define KEYPAD_MODE 2
+#define DESKY 3
+
 #define DEBOUNCE_DELAY 50
 
 // display
@@ -32,27 +36,29 @@ int ZERO = 0;
 // debounced send
 int sendState = 0;
 int sendStateLast = 0;
-int sendStateTime = millis(); // renam
+int sendStateTime = millis(); // rename
 
+int _mode = CALC_MODE;
 
 int mode() {
-    return CALC_MODE;
+    return _mode;
+}
+
+void setMode(int mode) {
+    _mode = mode;
 }
 
 void setup() {
-    // Serial.begin(9600);
-//    setupThermalPrinter();
-//    delay(3000);
-//    receiptPrint("");
-//    receiptPrint("DeSKY");
-
     setupLCD();
     print("hello.");
     bleKeyboard.begin();
     bleKeyboard.setBatteryLevel(100);
 
-
     pinMode(SEND_PIN, INPUT_PULLUP);
+}
+
+void btSend(char key) {
+    bleKeyboard.print(key);
 }
 
 void btSendButton() {
@@ -69,24 +75,82 @@ void btSendButton() {
     }
 }
 
+void operatorView() {
+    cursor(0, TOP_LINE);
+    sprintf(cmd, "1. Calc 2.Keypad   ");
+    print(cmd);
+    cursor(0, BTM_LINE);
+    sprintf(cmd, "2. Keypad           ");
+    print(cmd);
+}
+
+void calcView() {
+    cursor(0, TOP_LINE);
+    sprintf(cmd, "                    ");
+    sprintf(cmd, "%f          ", getRegister(1));
+    print(cmd);
+    cursor(0, BTM_LINE);
+    sprintf(cmd, "                    ");
+    sprintf(cmd, "%f          ", getRegister(0));
+    print(cmd);
+}
+
+void keypadView(char key) {
+    cursor(0, TOP_LINE);
+    sprintf(cmd, "Keypad %c        ", key);
+    print(cmd);
+}
+
+void blankView() {
+    cursor(0, TOP_LINE);
+    sprintf(cmd, "                    ");
+    print(cmd);
+    cursor(0, BTM_LINE);
+    sprintf(cmd, "                    ");
+    print(cmd);
+}
+
+void view(int mode, char key) {
+    switch(mode) {
+        case OPER_MODE:
+            operatorView();
+            break;
+        case CALC_MODE:
+            calcView();
+            break;
+        case KEYPAD_MODE:
+            keypadView(key);
+    }
+}
+
 void loop() {
     char key = getKey();
+    int selectedMode = int(key - 48);
+    int shouldSurrender = 0;
 
-    // btSendButton();
+    btSendButton();
     if(key) {
-        switch(CALC_MODE) {
-            case CALC_MODE:
-                calcPress(key);
+        switch(mode()) {
+            case OPER_MODE:
 
-                // view
-                cursor(0, TOP_LINE);
-                sprintf(cmd, "                    ");
-                sprintf(cmd, "%f", getRegister(1));
-                print(cmd);
-                cursor(0, BTM_LINE);
-                sprintf(cmd, "                    ");
-                sprintf(cmd, "%f", getRegister(0));
-                print(cmd);
+                if (isNum(key)) {
+                    setMode(selectedMode);
+                }
+                break;
+
+            case CALC_MODE:
+                shouldSurrender = calcPress(key);
+                break;
+
+            case KEYPAD_MODE:
+                btSend(key);
+                break;
         }
+        view(mode(), key);
+    }
+    if (shouldSurrender == 1) {
+        shouldSurrender = 0;
+        setMode(OPER_MODE);
+        operatorView();
     }
 }
