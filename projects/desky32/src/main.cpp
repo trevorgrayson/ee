@@ -14,13 +14,12 @@
 #include "lcd.h"
 #include "telekeypad.h"
 #include "calculator.h"
-#include "dsky.h"
 #include "ThermalPrinter.h"
 
-
-#define CALC_MODE 0
-#define DSKY_MODE 1
-#define OPERATE 0
+#define OPER_MODE 0
+#define CALC_MODE 1
+#define KEYPAD_MODE 2
+#define DESKY 3
 
 #define DEBOUNCE_DELAY 50
 
@@ -39,27 +38,29 @@ int sendState = 0;
 int sendStateLast = 0;
 int sendStateTime = millis(); // rename
 
-int MODE = CALC_MODE;
+int _mode = CALC_MODE;
 
-
-/*
- * Router Check mode switch
- */
-void surrender(char key) {
-    switch(MODE) {
-        case CALC_MODE:
-            if (calcShouldSurrender(key)) {
-                MODE = !MODE;
-            }
-            break;
-        case DSKY_MODE:
-            if (dskyShouldSurrender(key))
-                MODE = !MODE;
-            break;
-    }
+int mode() {
+    return _mode;
 }
 
-// BT
+void setMode(int mode) {
+    _mode = mode;
+}
+
+void setup() {
+    setupLCD();
+    print("hello.");
+    bleKeyboard.begin();
+    bleKeyboard.setBatteryLevel(100);
+
+    pinMode(SEND_PIN, INPUT_PULLUP);
+}
+
+void btSend(char key) {
+    bleKeyboard.print(key);
+}
+
 void btSendButton() {
     int sendReading = digitalRead(SEND_PIN);
 
@@ -74,60 +75,82 @@ void btSendButton() {
     }
 }
 
-//TODO doubles only. can overload?
-void output(int line, double value) {
-    char buff[] = "                    ";
-    cursor(0, line);
-    sprintf(buff, "                    ");
-    sprintf(buff, "%f", value);
-    print(buff);
+void operatorView() {
+    cursor(0, TOP_LINE);
+    sprintf(cmd, "1. Calc 2.Keypad   ");
+    print(cmd);
+    cursor(0, BTM_LINE);
+    sprintf(cmd, "2. Keypad           ");
+    print(cmd);
 }
 
-void setup() {
-    Serial.begin(9600);
-//    while (Serial.available()) {
-//        Serial.read();
-//    }
-
-//    setupThermalPrinter();
-//    receiptPrint("hello world");
-//    footer();
-
-    setupLCD();
-    print("hello.");
-    bleKeyboard.begin();
-    bleKeyboard.setBatteryLevel(100);
-
-    pinMode(SEND_PIN, INPUT_PULLUP);
+void calcView() {
+    cursor(0, TOP_LINE);
+    sprintf(cmd, "                    ");
+    sprintf(cmd, "%f          ", getRegister(1));
+    print(cmd);
+    cursor(0, BTM_LINE);
+    sprintf(cmd, "                    ");
+    sprintf(cmd, "%f          ", getRegister(0));
+    print(cmd);
 }
 
+void keypadView(char key) {
+    cursor(0, TOP_LINE);
+    sprintf(cmd, "Keypad %c        ", key);
+    print(cmd);
+}
+
+void blankView() {
+    cursor(0, TOP_LINE);
+    sprintf(cmd, "                    ");
+    print(cmd);
+    cursor(0, BTM_LINE);
+    sprintf(cmd, "                    ");
+    print(cmd);
+}
+
+void view(int mode, char key) {
+    switch(mode) {
+        case OPER_MODE:
+            operatorView();
+            break;
+        case CALC_MODE:
+            calcView();
+            break;
+        case KEYPAD_MODE:
+            keypadView(key);
+    }
+}
 
 void loop() {
     char key = getKey();
+    int selectedMode = int(key - 48);
+    int shouldSurrender = 0;
 
     btSendButton();
     if(key) {
-        switch(CALC_MODE) {
+        switch(mode()) {
+            case OPER_MODE:
+
+                if (isNum(key)) {
+                    setMode(selectedMode);
+                }
+                break;
+
             case CALC_MODE:
-                calcPress(key);
+                shouldSurrender = calcPress(key);
+                break;
 
-                // view
-                // TODO test if these work.
-                output(TOP_LINE, getRegister(1));
-                output(BTM_LINE, getRegister(0));
-
-                cursor(0, TOP_LINE);
-                sprintf(cmd, "                    ");
-                sprintf(cmd, "%f", getRegister(1));
-                print(cmd);
-                cursor(0, BTM_LINE);
-                sprintf(cmd, "                    ");
-                sprintf(cmd, "%f", getRegister(0));
-                print(cmd);
-            case DSKY_MODE:
-                dskyPress(key);
-
-                output(TOP_LINE, dskyDisplayLine(TOP_LINE));
+            case KEYPAD_MODE:
+                btSend(key);
+                break;
         }
+        view(mode(), key);
+    }
+    if (shouldSurrender == 1) {
+        shouldSurrender = 0;
+        setMode(OPER_MODE);
+        operatorView();
     }
 }
