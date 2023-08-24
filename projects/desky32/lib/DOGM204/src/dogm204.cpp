@@ -4,6 +4,7 @@
 // cursor_on
 
 #include "dogm204.h"
+#include <SSD1803A_I2C.h>
 
 
 const uint8_t i2caddr = 0x3D;
@@ -11,6 +12,8 @@ const uint8_t resetPin = 3;
 
 SSD1803A_I2C lcd(i2caddr, resetPin);
 
+uint8_t smiley[8] = {0b00000,0b00000,0b01010,0b00000,0b00000,0b10001,0b01110,0b00000};
+uint8_t frownie[8] = {0b00000,0b00000,0b01010,0b00000,0b00000,0b00000,0b01110,0b10001};
 
 //void backlight();
 void cursor(int x, int y) {
@@ -30,7 +33,7 @@ void print(char s[], int y) {
 void print(char s[]) {
     lcd.print(s);
 }
-//
+
 void setupDOGM() {
     lcd.begin(DOGM204);
     lcd.create(0, smiley);
@@ -72,5 +75,5 @@ void setupDOGM() {
 }
 
 void clear() {
-    lcd.clear();
+//    lcd.clear();
 }

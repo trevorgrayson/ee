@@ -11,10 +11,12 @@
 #include <BleKeyboard.h>
 
 #include "pins.h"
-#include "lcd.h"
+//#include "lcd.h"
+#include "dogm204.cpp"
 #include "telekeypad.h"
 #include "calculator.h"
 #include "ThermalPrinter.h"
+#include "btcalc.h"
 
 #define OPER_MODE 0
 #define CALC_MODE 1
@@ -27,7 +29,6 @@
 #define TOP_LINE 0
 #define BTM_LINE 1
 
-BleKeyboard bleKeyboard("DeSKY", "tg.", 100);
 
 char cmd[] = "                    ";
 int offset = 0;
@@ -49,23 +50,19 @@ void setMode(int mode) {
 }
 
 void setup() {
-    setupLCD();
+//    setupLCD();
+    setupDOGM();
+    setupBTCalc();
     print("hello.");
-    bleKeyboard.begin();
-    bleKeyboard.setBatteryLevel(100);
 
     pinMode(SEND_PIN, INPUT_PULLUP);
-}
-
-void btSend(char key) {
-    bleKeyboard.print(key);
 }
 
 void btSendButton() {
     int sendReading = digitalRead(SEND_PIN);
 
     if (sendReading == LOW && sendStateLast == HIGH) {
-        bleKeyboard.print(getRegister(1));
+        btSend(getRegister(1));
         delay(500);
         return;
     }
