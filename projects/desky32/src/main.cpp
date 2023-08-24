@@ -11,8 +11,7 @@
 #include <BleKeyboard.h>
 
 #include "pins.h"
-//#include "lcd.h"
-#include "dogm204.cpp"
+#include "lcd.h"
 #include "telekeypad.h"
 #include "calculator.h"
 #include "ThermalPrinter.h"
@@ -50,8 +49,7 @@ void setMode(int mode) {
 }
 
 void setup() {
-//    setupLCD();
-    setupDOGM();
+    setupLCD();
     setupBTCalc();
     print("hello.");
 
