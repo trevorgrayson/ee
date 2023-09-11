@@ -10,6 +10,7 @@
 #include <Arduino.h>
 
 #include "pins.h"
+#include "enums.h"
 #include "dogm204.h"
 #include "telekeypad.h"
 #include "calculator.h"
@@ -47,7 +48,6 @@ void loop() {
     if(key) {
         switch(mode()) {
             case OPER_MODE:
-
                 if (isNum(key)) {
                     setMode(selectedMode);
                 }

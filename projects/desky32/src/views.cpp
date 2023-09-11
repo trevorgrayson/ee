@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "views.h"
 #include "pins.h"
+#include "enums.h"
 #include "dogm204.h"
 #include "calculator.h"
 

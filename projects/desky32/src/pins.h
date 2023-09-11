@@ -4,9 +4,5 @@
 
 #define SEND_PIN 13 // duplicated in btcalc.cpp
 
-#define OPER_MODE 0
-#define CALC_MODE 1
-#define KEYPAD_MODE 2
-#define DESKY 3
 
 #define DEBOUNCE_DELAY 50
