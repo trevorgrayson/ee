@@ -19,13 +19,9 @@
 
 
 char cmd[] = "                    ";
-int offset = 0;
-int ZERO = 0;
 
 // debounced send
-int sendState = 0;
 int sendStateLast = 0;
-int sendStateTime = millis(); // rename
 
 int _mode = CALC_MODE;
 
@@ -84,15 +80,6 @@ void calcView() {
 void keypadView(char key) {
     cursor(0, TOP_LINE);
     sprintf(cmd, "Keypad %c        ", key);
-    print(cmd);
-}
-
-void blankView() {
-    cursor(0, TOP_LINE);
-    sprintf(cmd, "                    ");
-    print(cmd);
-    cursor(0, BTM_LINE);
-    sprintf(cmd, "                    ");
     print(cmd);
 }
 
