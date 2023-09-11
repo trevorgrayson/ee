@@ -8,7 +8,6 @@
 *********/
 #include <stdio.h>
 #include <Arduino.h>
-#include <BleKeyboard.h>
 
 #include "pins.h"
 #include "dogm204.h"
@@ -20,8 +19,6 @@
 
 char cmd[] = "                    ";
 
-// debounced send
-int sendStateLast = 0;
 
 int _mode = CALC_MODE;
 
@@ -41,20 +38,6 @@ void setup() {
     setupBTCalc();
 
     pinMode(SEND_PIN, INPUT_PULLUP);
-}
-
-void btSendButton() {
-    int sendReading = digitalRead(SEND_PIN);
-
-    if (sendReading == LOW && sendStateLast == HIGH) {
-        btSend(getRegister(1));
-        delay(500);
-        return;
-    }
-
-    if (sendReading != sendStateLast) {
-        sendStateLast = sendReading;
-    }
 }
 
 void operatorView() {
@@ -101,7 +84,7 @@ void loop() {
     int selectedMode = int(key - 48);
     int shouldSurrender = 0;
 
-    btSendButton();
+    btSendButton(getRegister(1));
     if(key) {
         switch(mode()) {
             case OPER_MODE:
