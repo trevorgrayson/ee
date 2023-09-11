@@ -11,7 +11,7 @@
 #include <BleKeyboard.h>
 
 #include "pins.h"
-#include "lcd.h"
+#include "dogm204.h"
 #include "telekeypad.h"
 #include "calculator.h"
 #include "ThermalPrinter.h"
@@ -38,9 +38,11 @@ void setMode(int mode) {
 }
 
 void setup() {
-    setupLCD();
+    setupDOGM();
+    cursor(7, 1);
+    print("DeSKY.");
+
     setupBTCalc();
-    print("hello.");
 
     pinMode(SEND_PIN, INPUT_PULLUP);
 }
@@ -135,6 +137,7 @@ void loop() {
     if (shouldSurrender == 1) {
         shouldSurrender = 0;
         setMode(OPER_MODE);
+        clear();
         operatorView();
     }
 }
