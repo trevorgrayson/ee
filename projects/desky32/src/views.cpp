@@ -18,10 +18,16 @@ char cmd[] = "                    ";
 
 void operatorView() {
     cursor(0, TOP_LINE);
-    sprintf(cmd, "1. Calc 2.Keypad   ");
+    sprintf(cmd, "1. Calculator    ");
     print(cmd);
-    cursor(0, BTM_LINE);
+    cursor(0, 1);
     sprintf(cmd, "2. Keypad           ");
+    print(cmd);
+    cursor(0, 2);
+    sprintf(cmd, "C. Stat           ");
+    print(cmd);
+    cursor(0, 3);
+    sprintf(cmd, "D. DeSKY           ");
     print(cmd);
 }
 

@@ -50,6 +50,7 @@ void loop() {
             case OPER_MODE:
                 if (isNum(key)) {
                     setMode(selectedMode);
+                    clear();
                 }
                 break;
 
