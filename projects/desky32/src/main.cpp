@@ -15,9 +15,7 @@
 #include "calculator.h"
 #include "ThermalPrinter.h"
 #include "btcalc.h"
-
-
-char cmd[] = "                    ";
+#include "views.h"
 
 
 int _mode = CALC_MODE;
@@ -38,45 +36,6 @@ void setup() {
     setupBTCalc();
 
     pinMode(SEND_PIN, INPUT_PULLUP);
-}
-
-void operatorView() {
-    cursor(0, TOP_LINE);
-    sprintf(cmd, "1. Calc 2.Keypad   ");
-    print(cmd);
-    cursor(0, BTM_LINE);
-    sprintf(cmd, "2. Keypad           ");
-    print(cmd);
-}
-
-void calcView() {
-    cursor(0, TOP_LINE);
-    sprintf(cmd, "                    ");
-    sprintf(cmd, "%f          ", getRegister(1));
-    print(cmd);
-    cursor(0, BTM_LINE);
-    sprintf(cmd, "                    ");
-    sprintf(cmd, "%f          ", getRegister(0));
-    print(cmd);
-}
-
-void keypadView(char key) {
-    cursor(0, TOP_LINE);
-    sprintf(cmd, "Keypad %c        ", key);
-    print(cmd);
-}
-
-void view(int mode, char key) {
-    switch(mode) {
-        case OPER_MODE:
-            operatorView();
-            break;
-        case CALC_MODE:
-            calcView();
-            break;
-        case KEYPAD_MODE:
-            keypadView(key);
-    }
 }
 
 void loop() {

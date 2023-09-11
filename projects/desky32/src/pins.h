@@ -10,7 +10,3 @@
 #define DESKY 3
 
 #define DEBOUNCE_DELAY 50
-
-// display
-#define TOP_LINE 0
-#define BTM_LINE 1
