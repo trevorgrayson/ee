@@ -62,9 +62,11 @@ void setup()
 
     state.distance = hc.dist();
 
+    delay(1000);
     if(shouldCalibrate(state.distance))
         state.target = state.distance;
         setDisplay(state.target);
+
 }
 
 void loop()
