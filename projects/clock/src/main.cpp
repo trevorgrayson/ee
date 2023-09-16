@@ -17,8 +17,8 @@ double epic = 9.0 *HOURS + 21.0 *MINUTES; // seconds
 // Pin 3 - > DIO
 // Pin 2 - > CLK
 TM1637Display lax(2, 3);
-TM1637Display dia(4, 5);
-TM1637Display nyc(6, 7);
+TM1637Display dia(6, 7); // inverted
+TM1637Display nyc(4, 5); // <=|
 
 void setup()
 {
@@ -32,7 +32,11 @@ void setup()
     lax.setBrightness(0x0a);
     dia.setBrightness(0x0a);
     nyc.setBrightness(0x0a);
+}
 
+void pomodoroButtonExecute() {
+    lax.showNumberDec(date());
+    delay(1000);
 }
 
 void loop()
@@ -40,8 +44,20 @@ void loop()
     clockTick();
     tickDeej();
 
-    // 4-digit LEDs
-    nyc.showNumberDec(timezone(clockTimeDigits(), 3));
-    dia.showNumberDec(timezone(clockTimeDigits(), 1));
-    lax.showNumberDec(clockTimeDigits());
+    int timeLeft = pomodoroTimeLeft();
+
+    // conditional LED view.
+    if (false) { // timeLeft > 0) {
+        // TODO:
+        nyc.showNumberDec(pomodoroTimeLeft());
+        dia.showNumberDec(timezone(clockTimeDigits(), 1));
+        lax.showNumberDec(date());
+    } else {
+        // display time
+        // 4-digit LEDs
+        nyc.showNumberDec(timezone(clockTimeDigits(), 3));
+        dia.showNumberDec(timezone(clockTimeDigits(), 1));
+        lax.showNumberDec(clockTimeDigits());
+    }
+
 }

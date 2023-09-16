@@ -5,6 +5,10 @@
 #include "deej.h"
 #include <Arduino.h>
 
+#define A0 14
+#define A1 15
+#define A2 16
+
 const int NUM_SLIDERS = 3;
 const int analogInputs[NUM_SLIDERS] = {A0, A1, A2}; // , A3, A4};
 

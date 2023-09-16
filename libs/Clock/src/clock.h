@@ -10,4 +10,12 @@ int clockTimeDigits();
 
 void adjust();
 
+int date();
+
 int timezone(int time, int offset);
+
+// palmadoro
+bool pomodoroButtonPressed();
+void pomodoroSetEpic();
+int pomodoroTimeLeft();
+void pomodoroButtonExecute();
