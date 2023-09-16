@@ -8,35 +8,16 @@
 *********/
 #include <stdio.h>
 #include <Arduino.h>
-#include <BleKeyboard.h>
 
 #include "pins.h"
-#include "lcd.h"
+#include "enums.h"
+#include "dogm204.h"
 #include "telekeypad.h"
 #include "calculator.h"
 #include "ThermalPrinter.h"
+#include "btcalc.h"
+#include "views.h"
 
-#define OPER_MODE 0
-#define CALC_MODE 1
-#define KEYPAD_MODE 2
-#define DESKY 3
-
-#define DEBOUNCE_DELAY 50
-
-// display
-#define TOP_LINE 0
-#define BTM_LINE 1
-
-BleKeyboard bleKeyboard("DeSKY", "tg.", 100);
-
-char cmd[] = "                    ";
-int offset = 0;
-int ZERO = 0;
-
-// debounced send
-int sendState = 0;
-int sendStateLast = 0;
-int sendStateTime = millis(); // rename
 
 int _mode = CALC_MODE;
 
@@ -49,78 +30,13 @@ void setMode(int mode) {
 }
 
 void setup() {
-    setupLCD();
-    print("hello.");
-    bleKeyboard.begin();
-    bleKeyboard.setBatteryLevel(100);
+    setupDOGM();
+    cursor(7, 1);
+    print("DeSKY.");
+
+    setupBTCalc();
 
     pinMode(SEND_PIN, INPUT_PULLUP);
-}
-
-void btSend(char key) {
-    bleKeyboard.print(key);
-}
-
-void btSendButton() {
-    int sendReading = digitalRead(SEND_PIN);
-
-    if (sendReading == LOW && sendStateLast == HIGH) {
-        bleKeyboard.print(getRegister(1));
-        delay(500);
-        return;
-    }
-
-    if (sendReading != sendStateLast) {
-        sendStateLast = sendReading;
-    }
-}
-
-void operatorView() {
-    cursor(0, TOP_LINE);
-    sprintf(cmd, "1. Calc 2.Keypad   ");
-    print(cmd);
-    cursor(0, BTM_LINE);
-    sprintf(cmd, "2. Keypad           ");
-    print(cmd);
-}
-
-void calcView() {
-    cursor(0, TOP_LINE);
-    sprintf(cmd, "                    ");
-    sprintf(cmd, "%f          ", getRegister(1));
-    print(cmd);
-    cursor(0, BTM_LINE);
-    sprintf(cmd, "                    ");
-    sprintf(cmd, "%f          ", getRegister(0));
-    print(cmd);
-}
-
-void keypadView(char key) {
-    cursor(0, TOP_LINE);
-    sprintf(cmd, "Keypad %c        ", key);
-    print(cmd);
-}
-
-void blankView() {
-    cursor(0, TOP_LINE);
-    sprintf(cmd, "                    ");
-    print(cmd);
-    cursor(0, BTM_LINE);
-    sprintf(cmd, "                    ");
-    print(cmd);
-}
-
-void view(int mode, char key) {
-    switch(mode) {
-        case OPER_MODE:
-            operatorView();
-            break;
-        case CALC_MODE:
-            calcView();
-            break;
-        case KEYPAD_MODE:
-            keypadView(key);
-    }
 }
 
 void loop() {
@@ -128,13 +44,13 @@ void loop() {
     int selectedMode = int(key - 48);
     int shouldSurrender = 0;
 
-    btSendButton();
+    btSendButton(getRegister(1));
     if(key) {
         switch(mode()) {
             case OPER_MODE:
-
                 if (isNum(key)) {
                     setMode(selectedMode);
+                    clear();
                 }
                 break;
 
@@ -151,6 +67,7 @@ void loop() {
     if (shouldSurrender == 1) {
         shouldSurrender = 0;
         setMode(OPER_MODE);
+        clear();
         operatorView();
     }
 }
