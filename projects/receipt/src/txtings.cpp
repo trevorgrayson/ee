@@ -7,12 +7,10 @@
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
 #include <ArduinoJson.h>
+#include "WiFiConn.h"
 
 #include "state.h"
-//#include "wificreds.h"
 
-const char* AP1_NAME  = "dont you know";
-const char* AP1_PASS  = "its on the fridge";
 
 char *response[1024];
 StaticJsonDocument<1024> doc;
@@ -22,28 +20,14 @@ const uint16_t port = 443;
 
 const char* calptrs[5];
 
-ESP8266WiFiMulti wifiMulti;
-
 
 void setupTxtings(void) {
-    //TODO Tune this speed
-    for(uint8_t t = 4; t > 0; t--) {
-        delay(1000);
-    }
-
-//  wifiMulti.addAP("", "");
-    WiFi.hostname("Receipt");
-    wifiMulti.addAP(AP1_NAME, AP1_PASS);
-
-    while(wifiMulti.run() != WL_CONNECTED) {
-        delay(500);
-    }
 }
 
 
 void request(State *state) {
-    if((wifiMulti.run() != WL_CONNECTED)) {
-        Serial.println("not connected");
+    if(!isConnected()) {
+        return;
     }
 
     WiFiClient client;

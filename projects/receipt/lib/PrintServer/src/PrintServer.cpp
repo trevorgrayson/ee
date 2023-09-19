@@ -7,27 +7,10 @@
 #include "ESP8266WiFi.h"
 #include "ThermalPrinter.h"
 
-const char* ssid = "dont you know";//type your ssid
-const char* password = "its on the fridge";//type your password
-
 WiFiServer server(80);
 
 
 void serverSetup() {
-    Serial.println();
-    Serial.println();
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
-
-    WiFi.begin(ssid, password);
-
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
-    Serial.println("");
-    Serial.println("WiFi connected");
-
     // Start the server
     server.begin();
     //Serial.println("Server started");
@@ -40,40 +23,65 @@ void serverSetup() {
     Serial.println("/");
 }
 
+void webform(WiFiClient client) {
+    client.println("HTTP/1.1 200 OK");
+    client.println("Content-Type: text/html");
+    client.println(""); //  do not forget this one
+    client.println("<!DOCTYPE HTML>");
+    client.println("<html>");
+
+    client.print("<h1>Print Me:</h1>");
+    client.println("<form action=\"/\"><textarea name=body></textarea><input type=\"submit\"/> </form>");
+    client.println("</html>");
+}
+
 
 void serverTick() {
     WiFiClient client = server.accept();
     // wait for a client (web browser) to connect
     if (client)
     {
-        Serial.println("\n[Client connected]");
+        bool isGET = true;
+        //Serial.println("\n[Client connected]");
         while (client.connected())
         {
             // read line by line what the client (web browser) is requesting
             if (client.available())
             {
                 String line = client.readStringUntil('\r');
-                Serial.print(line);
-                // wait for end of client's request, that is marked with an empty line
+                isGET = line[0] == 'G';
+
+            }
+            while (client.available()) {
+                // but first, let client finish its request
+                // that's diplomatic compliance to protocols
+                // (and otherwise some clients may complain, like curl)
+                // (that is an example, prefer using a proper webserver library)
+                if (isGET) {
+                    client.read();
+                    webform(client);
+                    break;
+
+                }
+
+                String line = client.readStringUntil('\n');
+
                 if (line.length() == 1 && line[0] == '\n')
                 {
-                    client.println("received.");
+                    // client.println("received.");
                     break;
                 }
+
+                receiptPrint(line);
             }
-        }
-
-        while (client.available()) {
-            // but first, let client finish its request
-            // that's diplomatic compliance to protocols
-            // (and otherwise some clients may complain, like curl)
-            // (that is an example, prefer using a proper webserver library)
             client.read();
+
+            // close the connection:
+            client.stop();
         }
 
-        // close the connection:
-        client.stop();
-        Serial.println("[Client disconnected]");
+
+        //Serial.println("[Client disconnected]");
     }
 
 

@@ -13,8 +13,11 @@
 #include "txtings.h"
 #include "PrintServer.h"
 #include "Blinker.h"
+#include "WiFiConn.h"
 
 #define GPIO0 0
+#define TODO_BTN 2
+
 
 struct State state;
 
@@ -30,13 +33,23 @@ void printTodo()
     serverSetup();
 }
 
+int shouldPrintTodo()
+{
+    return false;
+
+    int todobtn = digitalRead(TODO_BTN);
+    return !todobtn;
+}
 
 void setup() {
     Serial.begin(9600);
     Serial.println("printer server booting.");
     pinMode(GPIO0, INPUT_PULLUP);
+    pinMode(TODO_BTN, INPUT_PULLUP);
     blinkerSetup();
 
+    connectWiFi();
+    waitForWiFi();
     setupThermalPrinter();
     delay(3000);
 
@@ -45,10 +58,11 @@ void setup() {
 }
 
 void loop() {
-    if(false) {
+    if (shouldPrintTodo()) {
         setupTxtings();
         printTodo();
         // kill wifi here?
+        // restart server?
     }
     serverTick();
     //blink(1000, 1);
