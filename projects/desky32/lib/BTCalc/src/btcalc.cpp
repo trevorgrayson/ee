@@ -30,6 +30,19 @@ void btSend(char key) {
     bleKeyboard.print(key);
 }
 
+int shouldSend() {
+    int sendReading = digitalRead(SEND_PIN);
+
+    if (sendReading == LOW && sendStateLast == HIGH) {
+        return 1;
+    }
+
+    if (sendReading != sendStateLast) {
+        sendStateLast = sendReading;
+    }
+    return 0;
+}
+
 void btSendButton(double sendValue) {
     int sendReading = digitalRead(SEND_PIN);
 

@@ -45,6 +45,11 @@ void loop() {
     int shouldSurrender = 0;
 
     btSendButton(getRegister(1));
+    if (mode() == KEYPAD_MODE && shouldSend()) {
+        setMode(OPER_MODE);
+        view(mode(), key);
+        return;
+    }
     if(key) {
         switch(mode()) {
             case OPER_MODE:
