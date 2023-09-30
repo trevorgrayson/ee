@@ -43,7 +43,7 @@ int shouldPrintTodo()
 
 void setup() {
     Serial.begin(9600);
-    Serial.println("printer server booting.");
+    // Serial.println("printer server booting.");
     pinMode(GPIO0, INPUT_PULLUP);
     pinMode(TODO_BTN, INPUT_PULLUP);
     blinkerSetup();

@@ -31,7 +31,7 @@ void webform(WiFiClient client) {
     client.println("<html>");
 
     client.print("<h1>Print Me:</h1>");
-    client.println("<form action=\"/\"><textarea name=body></textarea><input type=\"submit\"/> </form>");
+    client.println("<form method=\"POST\" action=\"/\"><textarea name=body></textarea><input type=\"submit\"/> </form>");
     client.println("</html>");
 }
 
@@ -48,7 +48,7 @@ void serverTick() {
             // read line by line what the client (web browser) is requesting
             if (client.available())
             {
-                String line = client.readStringUntil('\r');
+                String line = client.readStringUntil('\n');
                 isGET = line[0] == 'G';
                 if (isGET) {
                     client.read();
@@ -58,6 +58,7 @@ void serverTick() {
                 }
             }
 
+            bool inBody = 1; //TODO
             while (client.available()) {
                 // but first, let client finish its request
                 // that's diplomatic compliance to protocols
@@ -66,16 +67,15 @@ void serverTick() {
                 String line = client.readStringUntil('\n');
 
                 // clear headers
-                if (false) // line.length() == 0) // && line[0] == '\n')
-                {
+//                if (line.length() == 0) // && line[0] == '\n')
+//                {
+//                    inBody = 1;
+//                }
 
-                    //while (client.available()) {
-
-                    //}
+                if (inBody) {
+                    client.println(line);
+                    receiptPrint(line);
                 }
-
-                client.println(line);
-                receiptPrint(line);
             }
 
             client.read();
