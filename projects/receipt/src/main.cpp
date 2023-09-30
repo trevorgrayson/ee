@@ -35,10 +35,8 @@ void printTodo()
 
 int shouldPrintTodo()
 {
-    return false;
-
     int todobtn = digitalRead(TODO_BTN);
-    return !todobtn;
+    return todobtn;
 }
 
 void setup() {
