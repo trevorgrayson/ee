@@ -50,32 +50,35 @@ void serverTick() {
             {
                 String line = client.readStringUntil('\r');
                 isGET = line[0] == 'G';
-
-            }
-            while (client.available()) {
-                // but first, let client finish its request
-                // that's diplomatic compliance to protocols
-                // (and otherwise some clients may complain, like curl)
-                // (that is an example, prefer using a proper webserver library)
                 if (isGET) {
                     client.read();
                     webform(client);
                     break;
 
                 }
+            }
 
+            while (client.available()) {
+                // but first, let client finish its request
+                // that's diplomatic compliance to protocols
+                // (and otherwise some clients may complain, like curl)
+                // (that is an example, prefer using a proper webserver library)
                 String line = client.readStringUntil('\n');
 
-                if (line.length() == 1 && line[0] == '\n')
+                // clear headers
+                if (false) // line.length() == 0) // && line[0] == '\n')
                 {
-                    // client.println("received.");
-                    break;
+
+                    //while (client.available()) {
+
+                    //}
                 }
 
+                client.println(line);
                 receiptPrint(line);
             }
-            client.read();
 
+            client.read();
             // close the connection:
             client.stop();
         }

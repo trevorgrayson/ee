@@ -54,7 +54,7 @@ void setup() {
     delay(3000);
 
     serverSetup();
-    receiptPrint("ok");
+    receiptPrint("setup.");
 }
 
 void loop() {
