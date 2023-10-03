@@ -100,4 +100,5 @@ void request(State *state) {
     }
 
     http.end();
+    client.stop();
 }

@@ -30,20 +30,19 @@ void printTodo()
         receiptPrint(state.todos[x]);
     }
     footer();
-    serverSetup();
 }
 
 int shouldPrintTodo()
 {
     int todobtn = digitalRead(TODO_BTN);
-    return todobtn;
+    return todobtn == LOW;
 }
 
 void setup() {
     Serial.begin(9600);
     // Serial.println("printer server booting.");
-    pinMode(GPIO0, INPUT_PULLUP);
-    pinMode(TODO_BTN, INPUT_PULLUP);
+    pinMode(GPIO0, INPUT);
+    pinMode(TODO_BTN, INPUT);
     blinkerSetup();
 
     connectWiFi();
@@ -57,10 +56,12 @@ void setup() {
 
 void loop() {
     if (shouldPrintTodo()) {
+        blink(500);
         setupTxtings();
         printTodo();
         // kill wifi here?
         // restart server?
+        serverSetup();
     }
     serverTick();
     //blink(1000, 1);
