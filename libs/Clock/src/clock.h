@@ -19,3 +19,7 @@ bool pomodoroButtonPressed();
 void pomodoroSetEpic();
 int pomodoroTimeLeft();
 void pomodoroButtonExecute();
+
+void setMeetingModulus();
+void pomodoroTick(int minutes);
+void soundAlarm();

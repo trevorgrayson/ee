@@ -36,6 +36,7 @@ void setup()
 
 void pomodoroButtonExecute() {
     lax.showNumberDec(date());
+    setMeetingModulus();
     delay(1000);
 }
 

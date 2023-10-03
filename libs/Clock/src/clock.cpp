@@ -34,8 +34,6 @@ void clockSetup() {
     rtc.disable32K();
 }
 
-
-
 int clockTimeDigits() {
     return rtc.now().hour() * 100 \
             + rtc.now().minute();
@@ -71,7 +69,7 @@ int timezone(int time, int offset) {
 }
 
 bool pomodoroButtonPressed() {
-    pomodoroSetEpic();
+    setMeetingModulus();
     return !digitalRead(POMODORO_PIN);  // TODO
 }
 
@@ -85,4 +83,6 @@ void clockTick() {
     if (pomodoroButtonPressed())
         pomodoroButtonExecute();
 
+    int minutes = 0;
+    pomodoroTick(minutes);
 }
