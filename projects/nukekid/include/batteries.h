@@ -4,6 +4,6 @@ int battSetting(int batt);
 int battCharge(int batt);
 int battDraw(int availablePower);
 int battDistribute(int draw);
-int battDisplay();
+void battDisplay();
 //
 int battChanged();

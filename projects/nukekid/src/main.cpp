@@ -65,5 +65,5 @@ void loop() {
     } else {
         fuelRodScreen(rodCurrent(), actuatorStatus(), rodDepth());
     }
-    battDisplay(0);
+    battDisplay();
 }

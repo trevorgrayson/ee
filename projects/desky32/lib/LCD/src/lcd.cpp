@@ -17,12 +17,12 @@ void cursor(int x, int y) {
 
 void print(char s[], int x, int y) {
     cursor(x, y);
-    lcd.print(s);
+    print(s);
 }
 
 void print(char s[], int y) {
     cursor(0, y);
-    lcd.print(s);
+    print(s);
 }
 
 void print(char s[]) {

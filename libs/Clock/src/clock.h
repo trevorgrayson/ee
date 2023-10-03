@@ -2,13 +2,24 @@
 // Created by trevor on 8/6/2023.
 //
 
-#ifndef EE_CLOCK_H
-#define EE_CLOCK_H
+void clockSetup();
 
+void clockTick();
 
-class clock {
+int clockTimeDigits();
 
-};
+void adjust();
 
+int date();
 
-#endif //EE_CLOCK_H
+int timezone(int time, int offset);
+
+// palmadoro
+bool pomodoroButtonPressed();
+void pomodoroSetEpic();
+int pomodoroTimeLeft();
+void pomodoroButtonExecute();
+
+void setMeetingModulus();
+void pomodoroTick(int minutes);
+void soundAlarm();

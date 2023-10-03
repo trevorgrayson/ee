@@ -8,109 +8,71 @@
 *********/
 #include <stdio.h>
 #include <Arduino.h>
-#include <BleKeyboard.h>
 
 #include "pins.h"
-#include "lcd.h"
+#include "enums.h"
+#include "dogm204.h"
 #include "telekeypad.h"
 #include "calculator.h"
-#include "dsky.h"
 #include "ThermalPrinter.h"
+#include "btcalc.h"
+#include "views.h"
 
 
-BleKeyboard bleKeyboard("DeSKY", "tg.", 100);
+int _mode = CALC_MODE;
 
-char cmd[] = "                    ";
-int offset = 0;
-int ZERO = 0;
-
-// debounced send
-int sendState = 0;
-int sendStateLast = 0;
-int sendStateTime = millis(); // rename
-
-int MODE = CALC_MODE;
-
-
-/*
- * Router Check mode switch
- */
-void surrender(char key) {
-    switch(MODE) {
-        case CALC_MODE:
-            if (calcShouldSurrender(key)) {
-                MODE = !MODE;
-            }
-            break;
-        case DSKY_MODE:
-            if (dskyShouldSurrender(key))
-                MODE = !MODE;
-            break;
-    }
+int mode() {
+    return _mode;
 }
 
-// BT
-void btSendButton() {
-    int sendReading = digitalRead(SEND_PIN);
-
-    if (sendReading == LOW && sendStateLast == HIGH) {
-        bleKeyboard.print(getRegister(1));
-        delay(500);
-        return;
-    }
-
-    if (sendReading != sendStateLast) {
-        sendStateLast = sendReading;
-    }
-}
-
-//TODO doubles only. can overload?
-void output(int line, double value) {
-    char buff[] = "                    ";
-    cursor(0, line);
-    sprintf(buff, "                    ");
-    sprintf(buff, "%f", value);
-    print(buff);
+void setMode(int mode) {
+    _mode = mode;
 }
 
 void setup() {
-    Serial.begin(9600);
+    setupDOGM();
+    cursor(7, 1);
+    print("DeSKY.");
 
-    setupLCD();
-    print("hello.");
-    bleKeyboard.begin();
-    bleKeyboard.setBatteryLevel(100);
+    setupBTCalc();
 
     pinMode(SEND_PIN, INPUT_PULLUP);
 }
 
-
 void loop() {
     char key = getKey();
+    int selectedMode = int(key - 48);
+    int shouldSurrender = 0;
 
-    btSendButton();
+    btSendButton(getRegister(1));
+    if (mode() == KEYPAD_MODE && shouldSend()) {
+        setMode(OPER_MODE);
+        view(mode(), key);
+        return;
+    }
     if(key) {
-        switch(CALC_MODE) {
+        switch(mode()) {
+            case OPER_MODE:
+                if (isNum(key)) {
+                    setMode(selectedMode);
+                    clear();
+                }
+                break;
+
             case CALC_MODE:
-                calcPress(key);
+                shouldSurrender = calcPress(key);
+                break;
 
-                // view
-                // TODO test if these work.
-                output(TOP_LINE, getRegister(1));
-                output(BTM_LINE, getRegister(0));
-
-                cursor(0, TOP_LINE);
-                sprintf(cmd, "                    ");
-                sprintf(cmd, "%f", getRegister(1));
-                print(cmd);
-                cursor(0, BTM_LINE);
-                sprintf(cmd, "                    ");
-                sprintf(cmd, "%f", getRegister(0));
-                print(cmd);
-            case DSKY_MODE:
-                dskyPress(key);
-
-                output(TOP_LINE, dskyDisplayLine(TOP_LINE));
+            case KEYPAD_MODE:
+                btSend(key);
+                break;
         }
+        view(mode(), key);
+    }
+    if (shouldSurrender == 1) {
+        shouldSurrender = 0;
+        setMode(OPER_MODE);
+        clear();
+        operatorView();
     }
 }

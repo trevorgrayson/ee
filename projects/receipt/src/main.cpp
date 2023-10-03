@@ -9,51 +9,59 @@
   ------------------------------------------------------------------------*/
 
 #include <Arduino.h>
-#include "ThermalPrinter.h"
+#include "../lib/ThermalPrinter/src/ThermalPrinter.h"
 #include "txtings.h"
+#include "PrintServer.h"
+#include "Blinker.h"
+#include "WiFiConn.h"
 
 #define GPIO0 0
-#define LED_PIN 2
+#define TODO_BTN 2
+
 
 struct State state;
 
-void blink(unsigned int time, unsigned int count) {
-    for (unsigned int x=0; x < count; x++) {
-        digitalWrite(LED_PIN, LOW);
-        delay(time);
-        digitalWrite(LED_PIN, HIGH);
-        delay(time);
+void printTodo()
+{
+    request(&state);
+    delay(3000);
+    header("TODO");
+    for (unsigned int x=0; x < sizeof(state.todos)/sizeof(state.todos[0]); x++) {
+        receiptPrint(state.todos[x]);
     }
+    footer();
+    serverSetup();
 }
 
-void blink(unsigned int time) {
-    blink( time, 2);
+int shouldPrintTodo()
+{
+    int todobtn = digitalRead(TODO_BTN);
+    return todobtn;
 }
 
 void setup() {
     Serial.begin(9600);
+    // Serial.println("printer server booting.");
     pinMode(GPIO0, INPUT_PULLUP);
-    pinMode(LED_PIN, OUTPUT);
+    pinMode(TODO_BTN, INPUT_PULLUP);
+    blinkerSetup();
 
-    setupTxtings();
-    blink(500, 2);
-
-    request(&state);
-    blink(100, 4);
-    // kill wifi here?
-
+    connectWiFi();
+    waitForWiFi();
     setupThermalPrinter();
-
     delay(3000);
-    header("TODO");
 
-    for (unsigned int x=0; x < sizeof(state.todos)/sizeof(state.todos[0]); x++) {
-        receiptPrint(state.todos[x]);
-    }
-
-    footer();
+    serverSetup();
+    receiptPrint("setup.");
 }
 
 void loop() {
-    blink(1000, 1);
+    if (shouldPrintTodo()) {
+        setupTxtings();
+        printTodo();
+        // kill wifi here?
+        // restart server?
+    }
+    serverTick();
+    //blink(1000, 1);
 }
