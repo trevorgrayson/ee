@@ -54,6 +54,9 @@ int battCharge(int batt) {
     return batts[batt].charge;
 }
 
+void setBatt(int batt, int value) {
+    batts[batt].charge = value;
+}
 /*
  * Calculate the Battery's Draw
  */

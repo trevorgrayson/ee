@@ -7,3 +7,5 @@ int battDistribute(int draw);
 void battDisplay();
 //
 int battChanged();
+
+void setBatt(int batt, int value);
