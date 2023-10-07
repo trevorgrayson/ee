@@ -2,6 +2,7 @@
 // Created by Trevor Grayson on 10/2/23.
 //
 #include "clock.h"
+#include "zelda.h"
 #include "Arduino.h"
 
 #define ALARM_PIN 14
@@ -9,20 +10,19 @@
 int modulusSet = 0;
 
 void soundAlarm() {
-    digitalWrite(ALARM_PIN, 1);
+    tone(ALARM_PIN, 100);
     delay(200);
-    digitalWrite(ALARM_PIN, 0);
-    delay(200);
+    noTone(ALARM_PIN);
 
-    digitalWrite(ALARM_PIN, 1);
-    delay(200);
-    digitalWrite(ALARM_PIN, 0);
-    delay(200);
-
-    digitalWrite(ALARM_PIN, 1);
-    delay(200);
-    digitalWrite(ALARM_PIN, 0);
-    delay(200);
+//    tone(ALARM_PIN, 100);
+//    delay(200);
+//    tone(ALARM_PIN, 0);
+//    delay(200);
+//
+//    tone(ALARM_PIN, 100);
+//    delay(200);
+//    tone(ALARM_PIN, 0);
+//    delay(200);
 }
 
 /*
@@ -42,7 +42,9 @@ void pomodoroTick(int minutes) {
     }
 
     if (minutes % 30 == 0) {
-        soundAlarm();
+//        soundAlarm();
+        playZelda();
+        noTone(ALARM_PIN);
         modulusSet = 0;
     }
 }

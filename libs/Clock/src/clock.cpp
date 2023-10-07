@@ -69,7 +69,6 @@ int timezone(int time, int offset) {
 }
 
 bool pomodoroButtonPressed() {
-    setMeetingModulus();
     return !digitalRead(POMODORO_PIN);  // TODO
 }
 
@@ -83,6 +82,5 @@ void clockTick() {
     if (pomodoroButtonPressed())
         pomodoroButtonExecute();
 
-    int minutes = 0;
-    pomodoroTick(minutes);
+    pomodoroTick(rtc.now().minute());
 }
