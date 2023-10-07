@@ -7,6 +7,7 @@
 // #include <Wire.h>
 
 #define POMODORO_PIN 13
+#define ALARM_PIN 14
 #define UNIX2MINUTES 60; // TODO internet fact, needs citation.
 
 RTC_DS3231 rtc;
@@ -17,7 +18,7 @@ double pomodoroEpic = 0;
 void clockSetup() {
     // initializing input button
     pinMode(POMODORO_PIN, INPUT_PULLUP);
-
+    pinMode(ALARM_PIN, OUTPUT);
     // initializing the rtc
     if(!rtc.begin()) {
         Serial.println("Couldn't find RTC!");
