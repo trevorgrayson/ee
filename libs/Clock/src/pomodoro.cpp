@@ -15,13 +15,13 @@ int modulusSet = 0;
 
 void setupPomodoro() {
     pinMode(POMODORO_PIN, INPUT_PULLUP);
-    pinMode(ALARM_PIN, OUTPUT);
+    pinMode(ALARM_PIN, INPUT);
 }
 
 void soundAlarm() {
     tone(ALARM_PIN, 100);
     delay(200);
-    noTone(ALARM_PIN);
+    pinMode(ALARM_PIN, INPUT);
 
 //    tone(ALARM_PIN, 100);
 //    delay(200);
@@ -54,6 +54,7 @@ void pomodoroTick(int minutes) {
 //        soundAlarm();
         playZelda();
         noTone(ALARM_PIN);
+        pinMode(ALARM_PIN, INPUT);
         modulusSet = 0;
     }
 }
