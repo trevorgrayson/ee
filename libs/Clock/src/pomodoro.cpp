@@ -1,13 +1,22 @@
 //
 // Created by Trevor Grayson on 10/2/23.
 //
+#include "pomodoro.h"
+
 #include "clock.h"
 #include "zelda.h"
 #include "Arduino.h"
 
+#define POMODORO_PIN 13
 #define ALARM_PIN 14
 
+
 int modulusSet = 0;
+
+void setupPomodoro() {
+    pinMode(POMODORO_PIN, INPUT_PULLUP);
+    pinMode(ALARM_PIN, OUTPUT);
+}
 
 void soundAlarm() {
     tone(ALARM_PIN, 100);
@@ -47,4 +56,8 @@ void pomodoroTick(int minutes) {
         noTone(ALARM_PIN);
         modulusSet = 0;
     }
+}
+
+bool pomodoroButtonPressed() {
+    return !digitalRead(POMODORO_PIN);  // TODO
 }
