@@ -3,10 +3,10 @@
 //
 
 #include "clock.h"
+#include "pomodoro.h"
 #include <RTClib.h>
 // #include <Wire.h>
 
-#define POMODORO_PIN 13
 #define UNIX2MINUTES 60; // TODO internet fact, needs citation.
 
 RTC_DS3231 rtc;
@@ -16,8 +16,7 @@ double pomodoroEpic = 0;
 
 void clockSetup() {
     // initializing input button
-    pinMode(POMODORO_PIN, INPUT_PULLUP);
-
+    setupPomodoro();
     // initializing the rtc
     if(!rtc.begin()) {
         Serial.println("Couldn't find RTC!");
@@ -68,10 +67,6 @@ int timezone(int time, int offset) {
     return (time + offset * 100) % 2400;
 }
 
-bool pomodoroButtonPressed() {
-    setMeetingModulus();
-    return !digitalRead(POMODORO_PIN);  // TODO
-}
 
 
 void decrementEpic() {
@@ -83,6 +78,5 @@ void clockTick() {
     if (pomodoroButtonPressed())
         pomodoroButtonExecute();
 
-    int minutes = 0;
-    pomodoroTick(minutes);
+    pomodoroTick(rtc.now().minute());
 }

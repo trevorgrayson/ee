@@ -1,28 +1,37 @@
 //
 // Created by Trevor Grayson on 10/2/23.
 //
+#include "pomodoro.h"
+
 #include "clock.h"
+#include "zelda.h"
 #include "Arduino.h"
 
+#define POMODORO_PIN 13
 #define ALARM_PIN 14
+
 
 int modulusSet = 0;
 
+void setupPomodoro() {
+    pinMode(POMODORO_PIN, INPUT_PULLUP);
+    pinMode(ALARM_PIN, INPUT);
+}
+
 void soundAlarm() {
-    digitalWrite(ALARM_PIN, 1);
+    tone(ALARM_PIN, 100);
     delay(200);
-    digitalWrite(ALARM_PIN, 0);
-    delay(200);
+    pinMode(ALARM_PIN, INPUT);
 
-    digitalWrite(ALARM_PIN, 1);
-    delay(200);
-    digitalWrite(ALARM_PIN, 0);
-    delay(200);
-
-    digitalWrite(ALARM_PIN, 1);
-    delay(200);
-    digitalWrite(ALARM_PIN, 0);
-    delay(200);
+//    tone(ALARM_PIN, 100);
+//    delay(200);
+//    tone(ALARM_PIN, 0);
+//    delay(200);
+//
+//    tone(ALARM_PIN, 100);
+//    delay(200);
+//    tone(ALARM_PIN, 0);
+//    delay(200);
 }
 
 /*
@@ -42,7 +51,14 @@ void pomodoroTick(int minutes) {
     }
 
     if (minutes % 30 == 0) {
-        soundAlarm();
+//        soundAlarm();
+        playZelda();
+        noTone(ALARM_PIN);
+        pinMode(ALARM_PIN, INPUT);
         modulusSet = 0;
     }
+}
+
+bool pomodoroButtonPressed() {
+    return !digitalRead(POMODORO_PIN);  // TODO
 }

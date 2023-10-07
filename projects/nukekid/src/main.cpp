@@ -21,6 +21,7 @@
 #include "grid.h"
 #include "controller.h"
 
+#define DEBUG false
 
 struct State {
     int power;
@@ -31,25 +32,52 @@ struct State {
 State state = {0, 0, 0};
 
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(9600);
     // hardware
-    setupLCD();
+//    setupLCD();
 
     // custom
     setupBatteries();
     setupFuelRod();
 
-    print("KoW Industries");
-    delay(200);
+    Serial.println("KoW Industries");
+    // print("KoW Industries");
+    // delay(200);
 }
 
 void loop() {
-    // Update
-    tickBatteries();
-    tickFuelRod();
 
+    // Update
+    tickBatteries();  // batt info stored in module
+    tickFuelRod();    // stores rod info
+
+    if (DEBUG) {
+        Serial.println("=== debug ===");
+//        Serial.print(rodSelection());
+//        Serial.print("\t");
+//        Serial.print(rodDepth());
+//        Serial.print("\t");
+//        Serial.print(rodCurrent());
+//        Serial.print("\t");
+//        Serial.print(power());
+//        Serial.println();
+
+//        Serial.print(ventSetting(0));
+//        Serial.print("\t");
+//        Serial.print(ventSetting(1));
+//        Serial.print("\t");
+//        Serial.print(ventSetting(2));
+//        Serial.print("\t");
+        Serial.println();
+    }
+
+    // read
     state.power = power();
     state.gridDraw = demand();
+
+    // debug
+    // setBatt(0, 255);
+    // setBatt(1, 255);
 
     int available = state.power - state.gridDraw;
 
@@ -66,4 +94,5 @@ void loop() {
         fuelRodScreen(rodCurrent(), actuatorStatus(), rodDepth());
     }
     battDisplay();
+
 }

@@ -5,6 +5,7 @@
 void setupFuelRod();
 void tickFuelRod();
 
+int rodSelection();
 int rodCurrent();
 int rodDepth();
 int nextRod();

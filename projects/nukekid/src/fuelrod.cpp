@@ -1,6 +1,6 @@
 //
 // Created by trevor on 5/26/23.
-//
+// QA'ed 2023/10/05
 
 #include "../include/fuelrod.h"
 #include "Arduino.h"
@@ -17,6 +17,7 @@
 
 struct Rod {
     int num;
+    int durability;
     int depth;
 };
 
@@ -29,7 +30,7 @@ char buff2[] = "                \0";
 
 void setupFuelRod() {
     for (int rod=0; rod < ROD_COUNT; rod++) {
-        rods[rod] = {rod, 5};
+        rods[rod] = {rod, 5, 0};
     }
 
     // setup pins
@@ -38,8 +39,11 @@ void setupFuelRod() {
     pinMode(ROD_SELECT, INPUT_PULLUP);
 }
 
+/*
+ *
+ */
 int rodCurrent() {
-    return rods[presentRod].num;
+    return rods[presentRod].durability * rods[presentRod].depth;
 }
 
 int rodDepth() {
@@ -47,7 +51,16 @@ int rodDepth() {
 }
 
 int nextRod() {
-    return presentRod++;
+    presentRod++;
+
+    if (presentRod > ROD_COUNT - 1)
+        presentRod = 0;
+
+    return presentRod;
+}
+
+int rodSelection() {
+    return rods[presentRod].num;
 }
 
 int actuatorStatus() {
@@ -71,7 +84,7 @@ int power() {
     int power = 0;
     for(int rod=0; rod< ROD_COUNT; rod++) {
         Rod rodney = rods[rod];
-        power += rodney.depth * 1;
+        power += rodney.durability * rodney.depth * 1;
     }
 
     return power;
@@ -91,5 +104,9 @@ void tickFuelRod() {
                 rods[presentRod].depth += 1;
             break;
     }
+
+    // TODO needs debouncing
+    if (rodButtonDepressed())
+        nextRod();
 
 }
