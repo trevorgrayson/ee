@@ -2,14 +2,23 @@
  *
  *
  */
+#include <Wire.h>
+#include "SSD1306.h"
 #include <SPI.h>
 #include <LoRa.h>
 
-void setup() {
-    Serial.begin(9600);
-    while (!Serial);
+#define SDA    4
+#define SCL   15
+#define RST   16
 
-    Serial.println("LoRa Receiver");
+
+SSD1306  display(0x3c, SDA, SCL, RST);
+
+void setup() {
+    // Serial.begin(9600);
+    // while (!Serial);
+    display.init();
+    //display.flipScreenVertically();
 
     if (!LoRa.begin(915E6)) {
         Serial.println("Starting LoRa failed!");
@@ -18,7 +27,6 @@ void setup() {
 }
 
 void loop() {
-    // try to parse packet
     int packetSize = LoRa.parsePacket();
     if (packetSize) {
         // received a packet
@@ -26,14 +34,49 @@ void loop() {
 
         // read packet
         while (LoRa.available()) {
-            Serial.print((char)LoRa.read());
+            Serial.print((char) LoRa.read());
         }
 
         // print RSSI of packet
         Serial.print("' with RSSI ");
         Serial.println(LoRa.packetRssi());
     }
+    display.clear();
+    display.drawString(0, 0, "sup?");
+    display.display();
 }
+//#include <SPI.h>
+//#include <LoRa.h>
+//
+//void setup() {
+//    Serial.begin(9600);
+//    while (!Serial);
+//
+//    Serial.println("LoRa Receiver");
+//
+//    if (!LoRa.begin(915E6)) {
+//        Serial.println("Starting LoRa failed!");
+//        while (1);
+//    }
+//}
+//
+//void loop() {
+//    // try to parse packet
+//    int packetSize = LoRa.parsePacket();
+//    if (packetSize) {
+//        // received a packet
+//        Serial.print("Received packet '");
+//
+//        // read packet
+//        while (LoRa.available()) {
+//            Serial.print((char)LoRa.read());
+//        }
+//
+//        // print RSSI of packet
+//        Serial.print("' with RSSI ");
+//        Serial.println(LoRa.packetRssi());
+//    }
+//}
 /*
 #include <SPI.h>
 #include <LoRa.h>
