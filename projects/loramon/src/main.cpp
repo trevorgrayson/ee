@@ -11,40 +11,59 @@
 #define SCL   15
 #define RST   16
 
-
 SSD1306  display(0x3c, SDA, SCL, RST);
 
+char buffer[50] = "starting.";
+
 void setup() {
-    // Serial.begin(9600);
-    // while (!Serial);
+    Serial.begin(9600);
+    while (!Serial);
+
     display.init();
     //display.flipScreenVertically();
 
+    Serial.println("Starting");
     if (!LoRa.begin(915E6)) {
         Serial.println("Starting LoRa failed!");
-        while (1);
+//        while (1);
     }
+    // delay(1000);
+    display.clear();
+    display.drawString(0, 0, "Listening to LoRa");
+    Serial.println("listening");
+    display.display();
 }
 
 void loop() {
+    display.clear();
+    display.drawString(0, 0, buffer);
+    display.display();
+
+    return;
+
     int packetSize = LoRa.parsePacket();
     if (packetSize) {
         // received a packet
         Serial.print("Received packet '");
 
+        int offset = 0;
         // read packet
         while (LoRa.available()) {
-            Serial.print((char) LoRa.read());
+            char c = LoRa.read();
+            buffer[offset] = c;
+            offset++;
+            // Serial.print((char) LoRa.read());
         }
 
         // print RSSI of packet
         Serial.print("' with RSSI ");
         Serial.println(LoRa.packetRssi());
     }
-    display.clear();
-    display.drawString(0, 0, "sup?");
-    display.display();
+
 }
+
+
+
 //#include <SPI.h>
 //#include <LoRa.h>
 //

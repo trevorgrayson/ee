@@ -10,55 +10,65 @@
 #define POMODORO_PIN 13
 #define ALARM_PIN 14
 
-
 int modulusSet = 0;
 
-void setupPomodoro() {
-    pinMode(POMODORO_PIN, INPUT_PULLUP);
-    pinMode(ALARM_PIN, INPUT);
-}
 
 void soundAlarm() {
     tone(ALARM_PIN, 100);
-    delay(200);
+    delay(500);
     pinMode(ALARM_PIN, INPUT);
-
-//    tone(ALARM_PIN, 100);
-//    delay(200);
-//    tone(ALARM_PIN, 0);
-//    delay(200);
-//
-//    tone(ALARM_PIN, 100);
-//    delay(200);
-//    tone(ALARM_PIN, 0);
-//    delay(200);
 }
 
 /*
+ * Set "timer" to go off on the modulus of the next
+ * timeperiod.
+ *
  * TODO
- * first press: mod 30,
- * second: mod 15
- * third: mod 10
+ * first press: mod 30, half hours
+ * second: mod 15, every quarter hour
+ * third: mod 10, every ten minutes
  * fourth: off
 */
 void setMeetingModulus() {
     modulusSet = 1;
 }
 
+/*
+ * is the button pressed?
+ */
+bool pomodoroButtonPressed() {
+    return !digitalRead(POMODORO_PIN);  // TODO
+}
+
+
+/*
+ * Arduino Hooks
+ */
+
+/*
+ * Arduino setup()
+ */
+void setupPomodoro() {
+    pinMode(POMODORO_PIN, INPUT_PULLUP);
+    pinMode(ALARM_PIN, INPUT);
+}
+
+/*
+ * Arduino loop()
+ */
 void pomodoroTick(int minutes) {
+    // gate clause, if modulus not set
     if (!modulusSet) {
         return;
     }
 
+    // alert on the next half hour
     if (minutes % 30 == 0) {
-//        soundAlarm();
+        // soundAlarm();
         playZelda();
+        // clear the humming noise
         noTone(ALARM_PIN);
         pinMode(ALARM_PIN, INPUT);
         modulusSet = 0;
     }
-}
-
-bool pomodoroButtonPressed() {
-    return !digitalRead(POMODORO_PIN);  // TODO
 }
