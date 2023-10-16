@@ -1,4 +1,6 @@
 //
+// RGB Light dimmer by sliders, et al.
+//
 // Created by trevor on 10/2/2022.
 //
 #include "../include/dimmer.h"

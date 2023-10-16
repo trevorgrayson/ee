@@ -178,7 +178,7 @@ void i2s_bus_init(i2s_bus_config *cfg)
     dev->sample_rate_conf.val = 0;
     dev->sample_rate_conf.tx_bits_mod = 8;
 
-    // Half speed of bit clock in LCD mode.
+    // Half speed of bit missionctrl in LCD mode.
     // (Smallest possible divider according to the spec).
     dev->sample_rate_conf.tx_bck_div_num = 2;
 

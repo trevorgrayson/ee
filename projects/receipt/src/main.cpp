@@ -51,11 +51,11 @@ void setup() {
     delay(3000);
 
     serverSetup();
-    receiptPrint("setup.");
+    // receiptPrint("setup.");
 }
 
 void loop() {
-    if (shouldPrintTodo()) {
+    if (false && shouldPrintTodo()) {
         blink(500);
         setupTxtings();
         printTodo();

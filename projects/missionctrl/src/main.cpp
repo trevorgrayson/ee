@@ -1,43 +1,64 @@
 #include <Arduino.h>
-#include "../include/state.h"
-// #include "audio.h"
-#include "../include/dimmer.h"
-#include "../include/serial.h"
+#include <TM1637Display.h>
+#include "clock.h"
+#include "deej.h"
 
-#define RED_ALERT_BUTTON 13
-
-struct State {
-    int redAlert = 0;
-    int r = 0;
-    int g = 0;
-    int b = 0;
-} state;
+//#define ONE_DAY  (24 * 60 * 60)
+double ONE_DAY =  (24.0 * 60.0 * 60.0);
+const uint8_t colonMask = 0b11100000;
+const double MINUTES = 60.0;
+const double HOURS = 3600.0;
 
 
-int isRedAlert() {
-    return digitalRead(RED_ALERT_BUTTON);
+// set the time
+double epic = 9.0 *HOURS + 21.0 *MINUTES; // seconds
+
+// Instantiation and pins configurations
+// Pin 3 - > DIO
+// Pin 2 - > CLK
+TM1637Display lax(2, 3);
+TM1637Display dia(6, 7); // inverted
+TM1637Display nyc(4, 5); // <=|
+
+void setup()
+{
+    Serial.begin(9600);
+
+    clockSetup();
+    setupDeej();
+    // adjust(); // program the missionctrl
+
+    // 4-digit LEDs
+    lax.setBrightness(0x0a);
+    dia.setBrightness(0x0a);
+    nyc.setBrightness(0x0a);
 }
 
-void updateState(State *state) {
-    state->redAlert = isRedAlert();
+void pomodoroButtonExecute() {
+    lax.showNumberDec(date());
+    setMeetingModulus();
+    delay(1000);
 }
 
-void output(State state) {
-    if(state.redAlert) {
-        redAlert();
+void loop()
+{
+    clockTick();
+    tickDeej();
+
+    int timeLeft = pomodoroTimeLeft();
+
+    // conditional LED view.
+    if (false) { // timeLeft > 0) {
+        // TODO:
+        nyc.showNumberDec(pomodoroTimeLeft());
+        dia.showNumberDec(timezone(clockTimeDigits(), 1));
+        lax.showNumberDec(date());
     } else {
-        deluminate();
+        // display time
+        // 4-digit LEDs
+        nyc.showNumberDec(timezone(clockTimeDigits(), 3));
+        dia.showNumberDec(timezone(clockTimeDigits(), 1));
+        lax.showNumberDec(clockTimeDigits());
     }
-}
 
-void setup() {
-    Serial.begin(115200);
-    pinMode(RED_ALERT_BUTTON, INPUT);
-    setupSerial();
-}
-
-void loop() {
-    updateState(&state);
-    output(state);
-    // scanInput();
 }

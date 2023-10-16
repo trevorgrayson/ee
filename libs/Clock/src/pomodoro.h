@@ -5,7 +5,7 @@ void setupPomodoro();
 
 void soundAlarm();
 
-void setMeetingModulus();
+int setMeetingModulus();
 
 void pomodoroTick(int minutes);
 

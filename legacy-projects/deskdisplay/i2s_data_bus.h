@@ -25,7 +25,7 @@ typedef struct {
   gpio_num_t data_6;
   gpio_num_t data_7;
 
-  /// Data clock pin.
+  /// Data missionctrl pin.
   gpio_num_t clock;
 
   /// "Start Pulse", enabling data input on the slave device (active low)

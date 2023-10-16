@@ -29,8 +29,13 @@ void soundAlarm() {
  * third: mod 10, every ten minutes
  * fourth: off
 */
-void setMeetingModulus() {
-    modulusSet = 1;
+int setMeetingModulus() {
+    switch (modulusSet) {
+        case 0: modulusSet = 30;
+        case 30: modulusSet = 15;
+        case 15: modulusSet = 10;
+    }
+    return modulusSet * 1;
 }
 
 /*
@@ -53,6 +58,12 @@ void setupPomodoro() {
     pinMode(ALARM_PIN, INPUT);
 }
 
+void quiet() {
+    // clear the humming noise
+    noTone(ALARM_PIN);
+    pinMode(ALARM_PIN, INPUT);
+    modulusSet = 0;
+}
 /*
  * Arduino loop()
  */
@@ -63,12 +74,10 @@ void pomodoroTick(int minutes) {
     }
 
     // alert on the next half hour
-    if (minutes % 30 == 0) {
+    // TODO Test new modulusSet logic
+    if (minutes % modulusSet == 0) {
         // soundAlarm();
         playZelda();
-        // clear the humming noise
-        noTone(ALARM_PIN);
-        pinMode(ALARM_PIN, INPUT);
-        modulusSet = 0;
+        quiet();
     }
 }
