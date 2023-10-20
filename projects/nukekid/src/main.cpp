@@ -20,16 +20,19 @@
 #include "batteries.h"
 #include "grid.h"
 #include "controller.h"
+#include "vent.h"
 
 #define DEBUG false
 
 struct State {
     int power;
     int gridDraw;
-    int temp;
+    int tempurature;
+    int radiation;
+    double efficency;
 };
 
-State state = {0, 0, 0};
+State state = {0, 0, 0, 0, 1};
 
 void setup() {
     Serial.begin(9600);
@@ -39,6 +42,7 @@ void setup() {
     // custom
     setupBatteries();
     setupFuelRod();
+    setupVent();
 
     Serial.println("KoW Industries");
     // print("KoW Industries");
@@ -50,6 +54,7 @@ void loop() {
     // Update
     tickBatteries();  // batt info stored in module
     tickFuelRod();    // stores rod info
+    // tickVent();
 
     if (DEBUG) {
         Serial.println("=== debug ===");
@@ -62,12 +67,12 @@ void loop() {
 //        Serial.print(power());
 //        Serial.println();
 
-//        Serial.print(ventSetting(0));
-//        Serial.print("\t");
-//        Serial.print(ventSetting(1));
-//        Serial.print("\t");
-//        Serial.print(ventSetting(2));
-//        Serial.print("\t");
+        Serial.print(ventStatus(0));
+        Serial.print("\t");
+        Serial.print(ventStatus(1));
+        Serial.print("\t");
+        Serial.print(ventStatus(2));
+        Serial.print("\t");
         Serial.println();
     }
 
