@@ -50,7 +50,7 @@ void setup() {
     setupThermalPrinter();
     delay(3000);
 
-    serverSetup();
+    // serverSetup();
     receiptPrint("setup.");
 }
 
@@ -63,6 +63,6 @@ void loop() {
         // restart server?
         serverSetup();
     }
-    serverTick();
+    //serverTick();
     //blink(1000, 1);
 }
