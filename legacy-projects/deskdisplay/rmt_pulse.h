@@ -35,8 +35,8 @@ bool IRAM_ATTR rmt_busy();
  * Outputs a single pulse (high -> low) on the configured pin.
  * This function will always wait for a previous call to finish.
  *
- * @param: high_time_us Pulse high time clock ticks.
- * @param: low_time_us Pulse low time in clock ticks.
+ * @param: high_time_us Pulse high time missionctrl ticks.
+ * @param: low_time_us Pulse low time in missionctrl ticks.
  * @param: wait Block until the pulse is finished.
  */
 void IRAM_ATTR pulse_ckv_ticks(uint16_t high_time_us, uint16_t low_time_us,

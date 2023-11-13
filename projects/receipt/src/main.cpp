@@ -55,7 +55,7 @@ void setup() {
 }
 
 void loop() {
-    if (shouldPrintTodo()) {
+    if (false && shouldPrintTodo()) {
         blink(500);
         setupTxtings();
         printTodo();
