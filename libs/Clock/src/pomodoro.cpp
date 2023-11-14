@@ -8,7 +8,7 @@
 #include "Arduino.h"
 
 #define POMODORO_PIN 13
-#define ALARM_PIN 14
+#define ALARM_PIN 14  // A0
 
 int modulusSet = 0;
 

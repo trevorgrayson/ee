@@ -20,6 +20,6 @@ void pomodoroSetEpic();
 int pomodoroTimeLeft();
 void pomodoroButtonExecute();
 
-void setMeetingModulus();
+int setMeetingModulus();
 void pomodoroTick(int minutes);
 void soundAlarm();
