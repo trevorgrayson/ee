@@ -48,14 +48,32 @@ void pomodoroButtonExecute() {
 
 void loop()
 {
+    char first;
+
     clockTick();
     tickDeej();
     int rotaryPosition = tickRotary();
 
     String line = terminalReceive();
     if (line) {
+        first = line.charAt(0);
         line.toCharArray(buffer, 20);
-        consolePrintLn(buffer);
+
+        switch (first) {
+            case '!':
+                // increment elecromag counter
+                break;
+            case '0':
+                consolePrintLn(buffer, 0);
+            case '1':
+                consolePrintLn(buffer, 1);
+            case '2':
+                consolePrintLn(buffer, 2);
+            case '3':
+                consolePrintLn(buffer, 3);
+            default:
+                consolePrintLn(buffer);
+        }
     }
 
     int timeLeft = pomodoroTimeLeft();
