@@ -4,7 +4,7 @@
 #include "deej.h"
 #include "console.h"
 #include "pins.h"
-
+#include "terminal.h"
 
 //#define ONE_DAY  (24 * 60 * 60)
 double ONE_DAY =  (24.0 * 60.0 * 60.0);
@@ -15,6 +15,7 @@ const double HOURS = 3600.0;
 // set the time
 double epic = 9.0 *HOURS + 21.0 *MINUTES; // seconds
 
+char buffer[20];
 // Instantiation and pins configurations
 // Pin 3 - > DIO
 // Pin 2 - > CLK
@@ -47,6 +48,11 @@ void loop()
 {
     clockTick();
     tickDeej();
+    String line = terminalReceive();
+    if (line) {
+        line.toCharArray(buffer, 20);
+        consolePrintLn(buffer);
+    }
 
     int timeLeft = pomodoroTimeLeft();
 

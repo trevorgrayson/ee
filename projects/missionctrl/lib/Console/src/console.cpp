@@ -14,6 +14,23 @@ void setupConsole() {
     lcd.init();                      // initialize the lcd
     // Print a message to the LCD.
     lcd.backlight();
+    consolePrintLn("ready.");
+}
+
+void tickConsole() {
+
+}
+
+void consolePrintLn(char c[], int y) {
+    lcd.setCursor(0, y);
+    lcd.print(c);
+}
+
+void consolePrintLn(char c[]) {
+    consolePrintLn(c, 0);
+}
+
+void consolePrint() {
     lcd.setCursor(0,0);
     lcd.print("CSIF 40k DSIF 80k");
     lcd.setCursor(0,1);
@@ -22,8 +39,4 @@ void setupConsole() {
     lcd.print("Evolve Taba Gal TA");  //Things that are expected and landed
     lcd.setCursor(0,3);
     lcd.print("DBT: 8hr Egress:9999"); // last build, scheduled egress that are expected and landed
-}
-
-void tickConsole() {
-
 }

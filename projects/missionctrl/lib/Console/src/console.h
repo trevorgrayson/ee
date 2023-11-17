@@ -5,3 +5,5 @@
 void setupConsole();
 void tickConsole();
 
+void consolePrint();
+void consolePrintLn(char c[]);
