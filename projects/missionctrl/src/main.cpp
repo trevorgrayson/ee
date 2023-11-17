@@ -48,6 +48,7 @@ void loop()
 {
     clockTick();
     tickDeej();
+
     String line = terminalReceive();
     if (line) {
         line.toCharArray(buffer, 20);

@@ -22,7 +22,7 @@ String terminalReceive() {
             if (inChar == '\n') {
                 stringComplete = true;
             }
-            delay(50);
+            delay(5); // 1 char takes 1 millisecond to transmit
         }
 
     return inputString;
