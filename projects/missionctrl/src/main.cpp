@@ -5,6 +5,7 @@
 #include "console.h"
 #include "pins.h"
 #include "terminal.h"
+#include "rotary.h"
 
 //#define ONE_DAY  (24 * 60 * 60)
 double ONE_DAY =  (24.0 * 60.0 * 60.0);
@@ -30,6 +31,7 @@ void setup()
     clockSetup();
     setupDeej();
     setupConsole();
+    setupRotary();
     // adjust(); // program the missionctrl
 
     // 4-digit LEDs
@@ -48,6 +50,7 @@ void loop()
 {
     clockTick();
     tickDeej();
+    int rotaryPosition = tickRotary();
 
     String line = terminalReceive();
     if (line) {
