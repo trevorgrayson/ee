@@ -13,7 +13,7 @@
 #include "txtings.h"
 #include "PrintServer.h"
 #include "Blinker.h"
-#include "WiFiConn.h"
+//#include "WiFiConn.h"
 
 #define GPIO0 0
 #define TODO_BTN 2
@@ -40,21 +40,31 @@ int shouldPrintTodo()
 
 void setup() {
     Serial.begin(9600);
-    // Serial.println("printer server booting.");
+    while (!Serial) {
+        ; // wait for serial port to connect. Needed for native USB
+    };
+//    Serial.println("printer server booting.");
     pinMode(GPIO0, INPUT);
     pinMode(TODO_BTN, INPUT);
     blinkerSetup();
+//
+//    connectWiFi();
+//    waitForWiFi();
 
-    connectWiFi();
-    waitForWiFi();
+//    setupThermalPrinter();
+//    delay(3000);
+//
+//    // serverSetup();
+    setupClient();
+
     setupThermalPrinter();
     delay(3000);
 
-    // serverSetup();
-    receiptPrint("setup.");
+    printTodo();  // <== this is the problem?
 }
 
 void loop() {
+    blink(500);
     if (false && shouldPrintTodo()) {
         blink(500);
         setupTxtings();

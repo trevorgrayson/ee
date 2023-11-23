@@ -21,7 +21,7 @@ void connectWiFi() {
     }
 
 //  wifiMulti.addAP("", "");
-    WiFi.hostname("Receipt");
+    //WiFi.hostname("Receipt");
     wifiMulti.addAP(AP1_NAME, AP1_PASS);
 
     while(wifiMulti.run() != WL_CONNECTED) {
