@@ -30,6 +30,8 @@ void soundAlarm() {
  * fourth: off
 */
 int setMeetingModulus() {
+    modulusSet = 30;
+    return modulusSet;
     switch (modulusSet) {
         case 0: modulusSet = 30;
         case 30: modulusSet = 15;

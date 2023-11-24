@@ -12,7 +12,8 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 void setupConsole() {
     lcd.init();                      // initialize the lcd
     // Print a message to the LCD.
-    lcd.backlight();
+//    lcd.backlight();
+    lcd.noBacklight();
     consolePrintLn("ready.");
 }
 

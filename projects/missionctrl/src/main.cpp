@@ -65,12 +65,16 @@ void loop()
                 break;
             case '0':
                 consolePrintLn(buffer, 0);
+                break;
             case '1':
                 consolePrintLn(buffer, 1);
+                break;
             case '2':
                 consolePrintLn(buffer, 2);
+                break;
             case '3':
                 consolePrintLn(buffer, 3);
+                break;
             default:
                 consolePrintLn(buffer);
         }

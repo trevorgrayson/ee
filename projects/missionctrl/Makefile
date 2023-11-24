@@ -1,0 +1,2 @@
+upload:
+	echo "OK"
