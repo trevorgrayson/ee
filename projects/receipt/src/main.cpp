@@ -43,18 +43,9 @@ void setup() {
     while (!Serial) {
         ; // wait for serial port to connect. Needed for native USB
     };
-//    Serial.println("printer server booting.");
     pinMode(GPIO0, INPUT);
     pinMode(TODO_BTN, INPUT);
     blinkerSetup();
-//
-//    connectWiFi();
-//    waitForWiFi();
-
-//    setupThermalPrinter();
-//    delay(3000);
-//
-//    // serverSetup();
     setupClient();
 
     setupThermalPrinter();

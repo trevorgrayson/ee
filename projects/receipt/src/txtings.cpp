@@ -31,50 +31,44 @@ ESP8266WiFiMulti wifiMulti;
 void setupClient() {
     //TODO Tune this speed
     for(uint8_t t = 4; t > 0; t--) {
-        USE_SERIAL.printf("[SETUP] WAIT %d...\n", t);
-        USE_SERIAL.flush();
+        // USE_SERIAL.printf("[SETUP] WAIT %d...\n", t);
+        // USE_SERIAL.flush();
         delay(1000);
     }
 
     WiFi.mode(WIFI_STA);
-//  wifiMulti.addAP("", "");
     wifiMulti.addAP(AP1_NAME, AP1_PASS);
-//    Serial.print("Waiting for WiFi... ");
+    //    Serial.print("Waiting for WiFi... ");
 
     while(wifiMulti.run() != WL_CONNECTED) {
-        Serial.print(".");
+        // Serial.print(".");
         delay(500);
     }
 
-//    Serial.println("");
-//    Serial.println("WiFi connected");
-//    Serial.println("IP address: ");
-//    Serial.println(WiFi.localIP());
+    //    Serial.println("");
+    //    Serial.println("WiFi connected");
+    //    Serial.println("IP address: ");
+    //    Serial.println(WiFi.localIP());
 }
 
 void request(State *state) {
     if((wifiMulti.run() != WL_CONNECTED)) {
        // USE_SERIAL.println("not connected");
+       // return;  // TODO
     }
 
     WiFiClient client;
-
     HTTPClient http;
 
-//    USE_SERIAL.print("[HTTP] begin...\n");
+    // USE_SERIAL.print("[HTTP] begin...\n");
     // configure traged server and url
     http.begin(client, "http://txtin.gs/status"); //HTTP
 
-//    USE_SERIAL.print("[HTTP] GET...\n");
-    // start connection and send HTTP header
     int httpCode = http.GET();
-
-    // httpCode will be negative on error
-    if(httpCode > 0) {
+    if(httpCode > 0) {  // httpCode will be negative on error
         // HTTP header has been send and Server response header has been handled
-//        USE_SERIAL.printf("[HTTP] GET... code: %d\n", httpCode);
+        // USE_SERIAL.printf("[HTTP] GET... code: %d\n", httpCode);
 
-        // file found at server
         if(httpCode == HTTP_CODE_OK) {
             String payload = http.getString();
 
@@ -100,33 +94,10 @@ void request(State *state) {
             }
             state->todos[doing.size()] = 0;
 
-//            JsonArray calendar = doc["calendar"];
-//            for(int x=0;
-//                x < calendar.size() && x < 10;  // sizeof(state->calendar));
-//                x++) {
-//                const char *row = calendar[x];
-//                state->calendar[x] = (char*)row;
-//            }
-//            state->calendar[calendar.size()] = 0;
-//
-//
-//            state->metar = (char*)metar;
-//            state->metar[45] = 'ok.\0';
-//
-//            JsonObject velocity = doc["velocity"];
-////          state->velocity.track = "x"; // (char)velocity["track"];
-//            state->velocity.daily = (float)velocity["daily"];
-//            state->velocity.required = (float)velocity["required"];
-//
-//            // remove next line
-//            // sprintf(state->aqiStr, "%d", aqi);
-//            sprintf(state->aqiStr, "ok");
-
-//            USE_SERIAL.println(payload);
         }
     } else {
         sprintf(*(state->error), "HTTP %s\0", http.errorToString(httpCode).c_str());
-//        USE_SERIAL.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+        USE_SERIAL.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
     }
 
     http.end();

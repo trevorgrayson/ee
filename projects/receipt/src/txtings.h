@@ -3,6 +3,5 @@
 //
 #include "state.h"
 
-void setupTxtings(void);
 void setupClient();
 void request(State *state);
