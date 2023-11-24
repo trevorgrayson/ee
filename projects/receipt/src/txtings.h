@@ -3,5 +3,7 @@
 //
 #include "state.h"
 
-void setupClient();
+void setupWifi();
+void waitForWifi();
+void announceWifi();
 void request(State *state);

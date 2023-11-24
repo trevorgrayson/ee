@@ -28,7 +28,7 @@ const char* calptrs[5];
 ESP8266WiFiMulti wifiMulti;
 
 
-void setupClient() {
+void setupWifi() {
     //TODO Tune this speed
     for(uint8_t t = 4; t > 0; t--) {
         // USE_SERIAL.printf("[SETUP] WAIT %d...\n", t);
@@ -36,19 +36,24 @@ void setupClient() {
         delay(1000);
     }
 
-    WiFi.mode(WIFI_STA);
+    WiFi.mode(WIFI_STA);  // WIFI_AP_STA
     wifiMulti.addAP(AP1_NAME, AP1_PASS);
-    //    Serial.print("Waiting for WiFi... ");
 
+}
+
+void waitForWifi() {
+    //    Serial.print("Waiting for WiFi... ");
     while(wifiMulti.run() != WL_CONNECTED) {
         // Serial.print(".");
         delay(500);
     }
+}
 
-    //    Serial.println("");
-    //    Serial.println("WiFi connected");
-    //    Serial.println("IP address: ");
-    //    Serial.println(WiFi.localIP());
+void announceWifi() {
+    Serial.println("");
+    Serial.println("WiFi connected");
+    Serial.println("IP address: ");
+    Serial.println(WiFi.localIP());
 }
 
 void request(State *state) {

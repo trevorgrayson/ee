@@ -13,10 +13,7 @@ WiFiServer server(80);
 void serverSetup() {
     // Start the server
     server.begin();
-    //Serial.println("Server started");
 
-    //,km, Print the IP address
-    //receiptPrint(WiFi.localIP().toString().c_str());
     Serial.print("Use this URL to connect: ");
     Serial.print("http://");
     Serial.print(WiFi.localIP());
@@ -42,7 +39,7 @@ void serverTick() {
     if (client)
     {
         bool isGET = true;
-        //Serial.println("\n[Client connected]");
+        // Serial.println("\n[Client connected]");
         while (client.connected())
         {
             // read line by line what the client (web browser) is requesting
@@ -60,17 +57,13 @@ void serverTick() {
 
             bool inBody = 1; //TODO
             while (client.available()) {
-                // but first, let client finish its request
-                // that's diplomatic compliance to protocols
-                // (and otherwise some clients may complain, like curl)
-                // (that is an example, prefer using a proper webserver library)
-                String line = client.readStringUntil('\n');
+                String line = client.readStringUntil('\n');  // HTTP Protocol
 
                 // clear headers
-//                if (line.length() == 0) // && line[0] == '\n')
-//                {
-//                    inBody = 1;
-//                }
+                // if (line.length() == 0) // && line[0] == '\n')
+                // {
+                //  inBody = 1;
+                // }
 
                 if (inBody) {
                     client.println(line);
@@ -79,27 +72,25 @@ void serverTick() {
             }
 
             client.read();
-            // close the connection:
-            client.stop();
+            // renderHTML(client);
         }
-
-
-        //Serial.println("[Client disconnected]");
     }
 
+    client.stop();
+}
 
-//    // Return the response
-//    client.println("HTTP/1.1 200 OK");
-//    client.println("Content-Type: text/html");
-//    client.println(""); //  do not forget this one
-//    client.println("<!DOCTYPE HTML>");
-//    client.println("<html>");
-//
-//    client.print("received.");
-//
-////    client.println("<br><br>");
-//    client.println("<form action=\"/\"><input type=\"text\" name=body/><input type=\"submit\"/> </form>");
-////    client.println("Click <a href=\"/LED=OFF\">here</a> turn the LED on pin 2 OFF<br>");
-//    client.println("</html>");
-//    client.stop();
+void renderHTML(WiFiClient client) {
+    client.println("HTTP/1.1 200 OK");
+    client.println("Content-Type: text/html");
+    client.println(""); //  do not forget this one
+    client.println("<!DOCTYPE HTML>");
+    client.println("<html>");
+
+    client.print("received.");
+
+    client.println("<br><br>");
+    client.println("<form action=\"/\"><input type=\"text\" name=body/><input type=\"submit\"/> </form>");
+    client.println("Click <a href=\"/LED=OFF\">here</a> turn the LED on pin 2 OFF<br>");
+    client.println("</html>");
+
 }

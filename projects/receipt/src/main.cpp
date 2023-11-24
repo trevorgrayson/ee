@@ -46,23 +46,20 @@ void setup() {
     pinMode(GPIO0, INPUT);
     pinMode(TODO_BTN, INPUT);
     blinkerSetup();
-    setupClient();
+    setupWifi();
+    waitForWifi();
 
     setupThermalPrinter();
     delay(3000);
-
-    printTodo();  // <== this is the problem?
 }
 
 void loop() {
-    blink(500);
-    if (false && shouldPrintTodo()) {
+    if (shouldPrintTodo()) {
         blink(500);
-        setupTxtings();
         printTodo();
         // kill wifi here?
         // restart server?
-        serverSetup();
+        //serverSetup();
     }
     //serverTick();
     //blink(1000, 1);
