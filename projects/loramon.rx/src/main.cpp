@@ -7,9 +7,9 @@
 #include <LoRa.h>
 
 //define the pins used by the transceiver module
-#define ss 8
-#define rst 12
-#define dio0 14  // 2
+#define ss 18 //8
+#define rst 14 // 12
+#define dio0 26 // 14  // 2
 
 //static const uint8_t SDA_OLED = 17;
 //static const uint8_t SCL_OLED = 18;
@@ -42,7 +42,7 @@ void setup() {
 
     //setup LoRa transceiver module
     LoRa.setPins(ss, rst, dio0);
-
+    Serial.println("pins set");
     //replace the LoRa.begin(---E-) argument with your location's frequency
     //433E6 for Asia
     //866E6 for Europe
@@ -54,7 +54,7 @@ void setup() {
     // Change sync word (0xF3) to match the receiver
     // The sync word assures you don't get LoRa messages from other LoRa transceivers
     // ranges from 0-0xFF
-    LoRa.setSyncWord(0xF3);
+    // LoRa.setSyncWord(0xF3);
     Serial.println("LoRa Initializing OK!");
 }
 

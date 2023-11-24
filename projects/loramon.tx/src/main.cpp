@@ -5,13 +5,18 @@
 #include <SPI.h>
 #include <LoRa.h>
 
+#define ss 18
+#define rst 14
+#define dio0 26
+
 int counter = 0;
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
     while (!Serial);
 
     Serial.println("LoRa Sender");
+    LoRa.setPins(ss, rst, dio0);
 
     if (!LoRa.begin(915E6)) {
         Serial.println("Starting LoRa failed!");
