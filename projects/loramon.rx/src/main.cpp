@@ -5,36 +5,28 @@
 
 #include <SPI.h>
 #include <LoRa.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
 //define the pins used by the transceiver module
 #define ss 18 //8
 #define rst 14 // 12
 #define dio0 26 // 14  // 2
 
-//static const uint8_t SDA_OLED = 17;
-//static const uint8_t SCL_OLED = 18;
-//static const uint8_t RST_OLED = 21;
-//
-//static const int8_t SW_LoRa = -1;
-//static const uint8_t SS_LoRa = 8;
-//static const uint8_t SCK_LoRa = 9;
-//static const uint8_t MOSI_LoRa = 10;
-//static const uint8_t MISO_LoRa = 11;
-//static const uint8_t RST_LoRa = 12;
-//static const uint8_t BUSY_LoRa = 13;
-//static const uint8_t DIO1_LoRa = 14;
-//
-//It is also recommended to redefine Arduino default SPI-1 and I2C-1 pins to OLED & LoRa pins as follow:
-//
-//static const uint8_t SDA = 17; // instead of 8;
-//static const uint8_t SCL = 18; // instead of 9;
-//
-//static const uint8_t SS = 8; // instead of 10;
-//static const uint8_t MOSI = 10; // instead of 11;
-//static const uint8_t MISO = 11; // instead of 13;
-//static const uint8_t SCK = 9; // instead of 12;
+#define OLED_RST 16
+#define OLED_SDA 4
+#define OLED_SCL 15
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+#define SCREEN_ADDRESS 0x3C
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
+
 
 void setup() {
+    Wire.begin(OLED_SDA, OLED_SCL);
     //initialize Serial Monitor
     Serial.begin(115200);
     while (!Serial);
@@ -42,7 +34,6 @@ void setup() {
 
     //setup LoRa transceiver module
     LoRa.setPins(ss, rst, dio0);
-    Serial.println("pins set");
     //replace the LoRa.begin(---E-) argument with your location's frequency
     //433E6 for Asia
     //866E6 for Europe
@@ -56,6 +47,19 @@ void setup() {
     // ranges from 0-0xFF
     // LoRa.setSyncWord(0xF3);
     Serial.println("LoRa Initializing OK!");
+
+    if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+        Serial.println(F("SSD1306 allocation failed"));
+        for(;;); // Don't proceed, loop forever
+    }
+    display.display();
+    delay(2000);
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(WHITE);
+    display.setCursor(0,0);
+    display.print("Display A");
+    display.display();
 }
 
 void loop() {
@@ -74,5 +78,9 @@ void loop() {
         // print RSSI of packet
         Serial.print("' with RSSI ");
         Serial.println(LoRa.packetRssi());
+        
+        display.clearDisplay();
+        display.print(LoRaData);
+        display.display();
     }
 }
