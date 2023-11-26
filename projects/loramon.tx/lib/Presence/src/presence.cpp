@@ -6,6 +6,9 @@
 
 #include "Arduino.h"
 #include "pins.h"
+#include "presenceState.h"
+
+struct Presence presence = {0, 0};
 
 void setupPresence()
 {
@@ -15,6 +18,9 @@ void setupPresence()
 
     pinMode(PIR_LIGHT, OUTPUT);
     pinMode(MIC_LIGHT, OUTPUT);
+
+    presence.noiseLevel = 0;
+    presence.motionLevel = 0;
 }
 
 /*
@@ -23,7 +29,7 @@ void setupPresence()
 int noiseLevel()
 {
     int reading = analogRead(MIC_PIN);
-    return 255 - (reading/4);
+    return reading; // 255 - (reading/4);
 }
 
 /*
@@ -32,5 +38,12 @@ int noiseLevel()
 int motionLevel()
 {
     int reading = analogRead(PIR_PIN);
-    return (reading / 600) * 255;
+    return reading; // (reading / 600) * 255;
+}
+
+struct Presence *presenceState()
+{
+    presence.noiseLevel = noiseLevel();
+    presence.motionLevel = motionLevel();
+    return &presence;
 }

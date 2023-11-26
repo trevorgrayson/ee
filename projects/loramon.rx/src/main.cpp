@@ -24,6 +24,7 @@
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 
+struct Presence *state;
 
 void setup() {
     Wire.begin(OLED_SDA, OLED_SCL);
@@ -52,14 +53,14 @@ void setup() {
         Serial.println(F("SSD1306 allocation failed"));
         for(;;); // Don't proceed, loop forever
     }
-    display.display();
-    delay(2000);
+
     display.clearDisplay();
-    display.setTextSize(1);
+    display.setTextSize(2);
     display.setTextColor(WHITE);
     display.setCursor(0,0);
-    display.print("Display A");
+    display.print("rx mode");
     display.display();
+    delay(1000);
 }
 
 void loop() {
@@ -69,18 +70,23 @@ void loop() {
         // received a packet
         Serial.print("Received packet '");
 
+        String LoRaData;
         // read packet
         while (LoRa.available()) {
-            String LoRaData = LoRa.readString();
+            LoRaData = LoRa.readString();
             Serial.print(LoRaData);
         }
+
+        display.clearDisplay();
+        display.setCursor(0,0);
+        display.println("rx");
+        display.println(LoRaData);
+        display.display();
+        delay(1000);
 
         // print RSSI of packet
         Serial.print("' with RSSI ");
         Serial.println(LoRa.packetRssi());
-        
-        display.clearDisplay();
-        display.print(LoRaData);
-        display.display();
+
     }
 }
