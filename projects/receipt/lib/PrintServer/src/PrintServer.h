@@ -3,5 +3,6 @@
 //
 
 
-void serverSetup();
+void serverStart();
+void serverStop();
 void serverTick();

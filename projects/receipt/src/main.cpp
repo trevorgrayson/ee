@@ -51,16 +51,18 @@ void setup() {
 
     setupThermalPrinter();
     delay(3000);
+    // serverStart();
 }
 
 void loop() {
     if (shouldPrintTodo()) {
         blink(500);
+        // serverStop();
+
         printTodo();
-        // kill wifi here?
-        // restart server?
-        //serverSetup();
+
+        // serverStart();
     }
-    //serverTick();
+    // serverTick();
     //blink(1000, 1);
 }

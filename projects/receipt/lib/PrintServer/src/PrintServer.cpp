@@ -10,7 +10,7 @@
 WiFiServer server(80);
 
 
-void serverSetup() {
+void serverStart() {
     // Start the server
     server.begin();
 
@@ -18,6 +18,10 @@ void serverSetup() {
     Serial.print("http://");
     Serial.print(WiFi.localIP());
     Serial.println("/");
+}
+
+void serverStop() {
+    server.stop();
 }
 
 void webform(WiFiClient client) {
@@ -31,7 +35,6 @@ void webform(WiFiClient client) {
     client.println("<form method=\"POST\" action=\"/\"><textarea name=body></textarea><input type=\"submit\"/> </form>");
     client.println("</html>");
 }
-
 
 void serverTick() {
     WiFiClient client = server.accept();
@@ -51,7 +54,6 @@ void serverTick() {
                     client.read();
                     webform(client);
                     break;
-
                 }
             }
 
@@ -59,6 +61,10 @@ void serverTick() {
             while (client.available()) {
                 String line = client.readStringUntil('\n');  // HTTP Protocol
 
+                if (line.length() == 0) {
+                    client.stop();
+                    return;
+                }
                 // clear headers
                 // if (line.length() == 0) // && line[0] == '\n')
                 // {
@@ -72,25 +78,8 @@ void serverTick() {
             }
 
             client.read();
-            // renderHTML(client);
         }
     }
 
     client.stop();
-}
-
-void renderHTML(WiFiClient client) {
-    client.println("HTTP/1.1 200 OK");
-    client.println("Content-Type: text/html");
-    client.println(""); //  do not forget this one
-    client.println("<!DOCTYPE HTML>");
-    client.println("<html>");
-
-    client.print("received.");
-
-    client.println("<br><br>");
-    client.println("<form action=\"/\"><input type=\"text\" name=body/><input type=\"submit\"/> </form>");
-    client.println("Click <a href=\"/LED=OFF\">here</a> turn the LED on pin 2 OFF<br>");
-    client.println("</html>");
-
 }
