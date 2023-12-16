@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from serial import Serial
+from sys import stdin
 
 parser = ArgumentParser("term writer")
 parser.add_argument("text", help="text to write")
@@ -11,3 +12,7 @@ link = Serial(arg.port, 9600)
 
 link.write(arg.text.encode())
 link.write(b'\n')
+
+for line in stdin:
+    line = line.strip()
+    link.write(bytes(line, 'utf-8'))

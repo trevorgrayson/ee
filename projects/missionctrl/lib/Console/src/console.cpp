@@ -8,6 +8,7 @@
 
 LiquidCrystal_I2C lcd(0x27,20,4);
 
+int consoleLight = 1;
 
 void setupConsole() {
     lcd.init();                      // initialize the lcd
@@ -39,4 +40,12 @@ void consolePrint() {
     lcd.print("Evolve Taba Gal TA");  //Things that are expected and landed
     lcd.setCursor(0,3);
     lcd.print("DBT: 8hr Egress:9999"); // last build, scheduled egress that are expected and landed
+}
+
+void toggleConsoleLight() {
+    consoleLight = !consoleLight;
+    if (consoleLight)
+        lcd.backlight();
+    else
+        lcd.noBacklight();
 }

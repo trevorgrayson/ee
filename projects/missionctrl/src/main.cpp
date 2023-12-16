@@ -60,20 +60,25 @@ void loop()
         line.toCharArray(buffer, 20);
 
         switch (first) {
+            case 'l':
+            case 'L':
+                toggleConsoleLight();
+                break;
             case '!':
                 // increment elecromag counter
                 break;
             case '0':
-                consolePrintLn(buffer, 0);
+                // +1 to remove first "instruction" character
+                consolePrintLn(buffer+1, 0);
                 break;
             case '1':
-                consolePrintLn(buffer, 1);
+                consolePrintLn(buffer+1, 1);
                 break;
             case '2':
-                consolePrintLn(buffer, 2);
+                consolePrintLn(buffer+1, 2);
                 break;
             case '3':
-                consolePrintLn(buffer, 3);
+                consolePrintLn(buffer+1, 3);
                 break;
             default:
                 consolePrintLn(buffer);
