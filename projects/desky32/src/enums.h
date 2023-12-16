@@ -6,3 +6,5 @@
 #define CALC_MODE 1
 #define KEYPAD_MODE 2
 #define DESKY 3
+#define STO 4
+#define RCL 5

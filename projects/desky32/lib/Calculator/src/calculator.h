@@ -8,3 +8,6 @@ double calcDisplay(char key);
 double getRegister(int regNum);
 
 int isNum(char key);
+
+void store(int key);
+double recall(int key);

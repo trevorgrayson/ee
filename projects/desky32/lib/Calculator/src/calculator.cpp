@@ -4,11 +4,22 @@
  * reg0 moves to reg1
  */
 
+double storage[10];
 
 double reg0 = 0;
 double reg1 = 0;
 double decimal = 10;
 char operatr = 0;
+
+void store(int key) {
+    // TODO Store in EEPROM
+    storage[key] = reg0;
+}
+
+double recall(int key) {
+    reg0 = storage[key];
+    return reg0;
+}
 
 double getRegister(int regNum) {
     if (regNum) {

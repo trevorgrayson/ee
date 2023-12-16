@@ -52,8 +52,20 @@ void loop() {
     }
     if(key) {
         switch(mode()) {
-            case OPER_MODE:
-                if (isNum(key)) {
+            case OPER_MODE: // IN OPERATION MODE
+                if (key == '+') {       // TODO STO Key
+                    key = ' ';
+                    while(!isNum(key)) {
+                        key = int(getKey() - 48);
+                    }
+                    store(key);
+                } else if (key == '-') { // TODO RCL Key
+                    key = ' ';
+                    while(!isNum(key)) {
+                        key = int(getKey() - 48);
+                    }
+                    recall(key);
+                } else if (isNum(key)) {
                     setMode(selectedMode);
                     clear();
                 }
