@@ -8,4 +8,5 @@ void operatorView();
 void calcView();
 void keypadView(char key);
 
+void debug(char key);
 void view(int mode, char key);

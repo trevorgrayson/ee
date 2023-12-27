@@ -24,10 +24,10 @@ void operatorView() {
     sprintf(cmd, "2. Keypad           ");
     print(cmd);
     cursor(0, 2);
-    sprintf(cmd, "C. Stat           ");
+    sprintf(cmd, "C. STOre           ");
     print(cmd);
     cursor(0, 3);
-    sprintf(cmd, "D. DeSKY           ");
+    sprintf(cmd, "D. ReCaLL           ");
     print(cmd);
 }
 
@@ -48,6 +48,11 @@ void keypadView(char key) {
     print(cmd);
 }
 
+void debug(char key) {
+    sprintf(cmd, "DEBUG %c        ", key);
+    cursor(15, BTM_LINE);
+    print(cmd);
+}
 void view(int mode, char key) {
     switch(mode) {
         case OPER_MODE:

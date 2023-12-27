@@ -39,6 +39,10 @@ void setup() {
     pinMode(SEND_PIN, INPUT_PULLUP);
 }
 
+double toDigit(char key) {
+    return double(key - 48);
+}
+
 void loop() {
     char key = getKey();
     int selectedMode = int(key - 48);
@@ -56,15 +60,17 @@ void loop() {
                 if (key == '+') {       // TODO STO Key
                     key = ' ';
                     while(!isNum(key)) {
-                        key = int(getKey() - 48);
+                        key = getKey();
                     }
-                    store(key);
+                    debug(key);
+                    store(int(key - 48));
                 } else if (key == '-') { // TODO RCL Key
                     key = ' ';
                     while(!isNum(key)) {
-                        key = int(getKey() - 48);
+                        key = getKey();
                     }
-                    recall(key);
+                    debug(key);
+                    recall(int(key - 48));
                 } else if (isNum(key)) {
                     setMode(selectedMode);
                     clear();
@@ -76,7 +82,11 @@ void loop() {
                 break;
 
             case KEYPAD_MODE:
-                btSend(key);
+                if(key == '#') {
+                 btSend('\t');
+                } else {
+                    btSend(key);
+                }
                 break;
         }
         view(mode(), key);
