@@ -139,11 +139,8 @@ void setup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); 
   Serial.begin(115200);
 
-<<<<<<< HEAD
-=======
   pinMode(LED_BUILTIN, OUTPUT);
 
->>>>>>> cheating and adding esp32POST project
   WiFi.mode(WIFI_STA);
   Serial.println();
   Serial.print("Connecting to ");
