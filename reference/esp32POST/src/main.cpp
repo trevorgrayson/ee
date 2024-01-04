@@ -29,6 +29,9 @@ const int serverPort = 80; // 80;
 
 WiFiClient client;
 
+#define LED_BUILTIN 4
+
+
 // CAMERA_MODEL_AI_THINKER
 #define PWDN_GPIO_NUM     32
 #define RESET_GPIO_NUM    -1
@@ -55,6 +58,8 @@ String sendPhoto() {
     String getAll;
     String getBody;
 
+    digitalWrite(LED_BUILTIN, HIGH);
+
     camera_fb_t * fb = NULL;
     fb = esp_camera_fb_get();
     if(!fb) {
@@ -62,6 +67,8 @@ String sendPhoto() {
         delay(1000);
         ESP.restart();
     }
+
+    digitalWrite(LED_BUILTIN, LOW);
 
     Serial.println("Connecting to server: " + serverName);
 
@@ -132,6 +139,11 @@ void setup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); 
   Serial.begin(115200);
 
+<<<<<<< HEAD
+=======
+  pinMode(LED_BUILTIN, OUTPUT);
+
+>>>>>>> cheating and adding esp32POST project
   WiFi.mode(WIFI_STA);
   Serial.println();
   Serial.print("Connecting to ");
