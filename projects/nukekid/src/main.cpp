@@ -22,7 +22,7 @@
 #include "controller.h"
 #include "vent.h"
 
-#define DEBUG false
+#define DEBUG true
 
 struct State {
     int power;
@@ -44,28 +44,49 @@ void setup() {
     setupFuelRod();
     setupVent();
 
+    pinMode(OUTPUT, 25);
+    pinMode(OUTPUT, 26);
     Serial.println("KoW Industries");
     // print("KoW Industries");
     // delay(200);
 }
 
-void loop() {
+void debug() {
+    // LED Set to hello.
+    // VENT LIGHTS ON
+    // BATT LIGHTS FULL ON
+    analogWrite(25, 255);
+    analogWrite(26, 255);
 
+    // READ
+    // switch
+    // fuel rod btn
+    // vent btns
+    // batt setting
+
+}
+
+void loop() {
     // Update
     tickBatteries();  // batt info stored in module
     tickFuelRod();    // stores rod info
     // tickVent();
 
+
+
+
     if (DEBUG) {
-        Serial.println("=== debug ===");
-//        Serial.print(rodSelection());
-//        Serial.print("\t");
-//        Serial.print(rodDepth());
-//        Serial.print("\t");
-//        Serial.print(rodCurrent());
-//        Serial.print("\t");
-//        Serial.print(power());
-//        Serial.println();
+        debug();
+        // Serial.println("=== debug ===");
+        Serial.print(rodSelection());
+        Serial.print("\t");
+        Serial.print(rodDepth());
+        Serial.print("\t");
+        Serial.print(rodCurrent());
+        Serial.print("\t");
+        Serial.print(power());
+        Serial.print("\t");
+        //Serial.println();
 
         Serial.print(ventStatus(0));
         Serial.print("\t");
@@ -75,7 +96,7 @@ void loop() {
         Serial.print("\t");
         Serial.println();
     }
-
+    return;
     // read
     state.power = power();
     state.gridDraw = demand();
