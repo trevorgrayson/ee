@@ -9,8 +9,8 @@
 // 0 RX
 // 1 TX
 
-#define ARTICULATE_SWITCH_UP   3 // 2 RX
 #define ARTICULATE_SWITCH_DOWN 2 // 3 TX
+#define ARTICULATE_SWITCH_UP   3 // 2 RX
 #define ROD_SELECT 4  // 4
 
 #define VENT_BTN_1 5
@@ -22,7 +22,7 @@
 // 11
 // 12
 // 13 Meh
-// 14
+// 14, A0
 // 15
 // 16  // 4 pins = 10 combo
 // 17  -| Shift Register: 3 pins
@@ -32,10 +32,12 @@
 // 21 AREF\
 
 // analog
-#define BATT_SETTING_1 23  // 23 A0
-#define BATT_SETTING_2 24  // 24 A1
-#define BATT_BAR_1 25      // 25 A2
-#define BATT_BAR_2 26      // 26 A3
+#define BATT_SETTING_1  14  // 23 A0
+#define BATT_SETTING_2  15  // 24 A1
+#define BATT_BAR_1      16  // 25 A2
+#define BATT_BAR_2      17  // 26 A3
+#define A7 21
+
 // 27 A4 Wire.h
 // 28 A5 Wire.h
 #define TEST_MODE_PIN 28

@@ -37,7 +37,7 @@ State state = {0, 0, 0, 0, 1};
 void setup() {
     Serial.begin(9600);
     // hardware
-//    setupLCD();
+    setupLCD();
 
     // custom
     setupBatteries();
@@ -47,16 +47,33 @@ void setup() {
     pinMode(OUTPUT, 25);
     pinMode(OUTPUT, 26);
     Serial.println("KoW Industries");
-    // print("KoW Industries");
-    // delay(200);
 }
 
 void debug() {
-    // LED Set to hello.
-    // VENT LIGHTS ON
-    // BATT LIGHTS FULL ON
-    analogWrite(25, 255);
-    analogWrite(26, 255);
+    Serial.print(rodSelection());
+    Serial.print("\t");
+    Serial.print(rodDepth());
+    Serial.print("\t");
+    Serial.print(rodCurrent());
+    Serial.print("\t");
+    Serial.print(power());
+    //Serial.println();
+
+    Serial.print(ventStatus(-1));
+    Serial.print("\t");
+    Serial.print(ventStatus(0));
+    Serial.print("\t");
+    Serial.print(ventStatus(1));
+    Serial.print("\t");
+    Serial.println();
+}
+
+void kidMode() {
+
+}
+
+
+void loop() {
 
     // READ
     // switch
@@ -77,24 +94,6 @@ void loop() {
 
     if (DEBUG) {
         debug();
-        // Serial.println("=== debug ===");
-        Serial.print(rodSelection());
-        Serial.print("\t");
-        Serial.print(rodDepth());
-        Serial.print("\t");
-        Serial.print(rodCurrent());
-        Serial.print("\t");
-        Serial.print(power());
-        Serial.print("\t");
-        //Serial.println();
-
-        Serial.print(ventStatus(0));
-        Serial.print("\t");
-        Serial.print(ventStatus(1));
-        Serial.print("\t");
-        Serial.print(ventStatus(2));
-        Serial.print("\t");
-        Serial.println();
     }
     return;
     // read
