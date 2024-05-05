@@ -1,15 +1,15 @@
-//TMRpcm library is needed
-
 #include "SD.h"
-#define SD_ChipSelectPin 10
 #include "TMRpcm.h"
 #include "SPI.h"
+
+#define SD_ChipSelectPin 10
+#define SPEAKER_PIN 9
 
 TMRpcm tmrpcm;
 
 void setup()
 {
-    tmrpcm.speakerPin=9;
+    tmrpcm.speakerPin = SPEAKER_PIN;
     Serial.begin(9600);
     if(!SD.begin(SD_ChipSelectPin))
     {
