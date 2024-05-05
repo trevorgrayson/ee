@@ -81,19 +81,24 @@ unsigned char KeyMap[48][7] =
 int _shift = 0, _fn = 0, _sym = 0, idle = 0;
 unsigned char KEY = 0, hadPressed = 0;
 int Mode = 0; //0->normal.1->shift 2->long_shift, 3->sym, 4->long_shift 5->fn,6->long_fn
+char returnChar = 0;
+
 void flashOn()
 {
     pixels.setPixelColor(0, pixels.Color(3, 3, 3)); pixels.show();
 }
+
 void flashOff()
 {
     pixels.setPixelColor(0, pixels.Color(0, 0, 0)); pixels.show();
 }
+
 void requestEvent()
 {
     if (hadPressed == 1)
     {
-        Wire.write(KeyMap[KEY - 1][Mode]);
+        returnChar = KeyMap[KEY - 1][Mode];
+        Wire.write(returnChar);
         //KEY=0;
         if ((Mode == 1) || (Mode == 3) || (Mode == 5)) {
             Mode = 0;
@@ -107,6 +112,17 @@ void requestEvent()
     }
 }
 
+unsigned char getKey()
+{
+    char out;
+    if (returnChar > 0)
+    {
+        out = returnChar;
+        returnChar = 0;
+        return out;
+    }
+    return 0;
+}
 
 void setupKbd()
 {
@@ -139,8 +155,8 @@ void setupKbd()
 
     }
     pixels.setPixelColor(0, pixels.Color(0, 0, 0));
-    Wire.begin(0x5f);
-    Wire.onRequest(requestEvent);
+    // Wire.begin(0x5f);
+    // Wire.onRequest(requestEvent);
 }
 
 unsigned char GetInput()

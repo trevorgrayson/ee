@@ -11,6 +11,7 @@ void flashOff();
 void setupKbd();
 void tickKbd();
 
+unsigned char getKey();
 unsigned char GetInput();
 
 #endif //EE_KBD_H
