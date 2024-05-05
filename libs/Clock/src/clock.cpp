@@ -61,6 +61,12 @@ int pomodoroTimeLeft() {
     return (int)max(minutesLeft, 0);
 }
 
+int pomodoroSecondsLeft() {
+    int seconds = (int)(pomodoroEpic - rtc.now().unixtime());
+
+    return (int)max(seconds, 0);
+}
+
 int timezone(int time, int offset) {
     // insert earliest time always
     // do not use negative offsets
