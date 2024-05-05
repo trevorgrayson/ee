@@ -3,7 +3,7 @@
 #include "kbd.h"
 #include "Wire.h"
 
-char inputBuffer[5000] = {};
+char inputBuffer[10000] = {};
 int offset = 0;
 
 void flushBuffer()
