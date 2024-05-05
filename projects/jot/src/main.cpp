@@ -35,9 +35,17 @@
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-char buff[20];
+char buff[50];
 int offset = 0;
-unsigned int epic = 0;
+
+void refresh() {
+    display.clearDisplay();
+    display.setCursor(0,0);
+    display.print(buff);
+    display.setCursor(0,20);
+    display.display();
+    delay(100);
+}
 
 void setup() {
     Serial.begin(9600);
@@ -49,25 +57,13 @@ void setup() {
         for(;;); // Don't proceed, loop forever
     }
 
-    epic++;
-
     display.setRotation(2);
-    // Clear the buffer
     display.clearDisplay();
 
-    // Draw a single pixel in white
-//    display.setCursor(0,0);
-//    display.print("hello");
     display.drawPixel(10, 10, SSD1306_WHITE);
 
-    // Show the display buffer on the screen. You MUST call display() after
-    // drawing commands to make them visible on screen!
     display.display();
     delay(1000);
-    // display.display() is NOT necessary after every single drawing command,
-    // unless that's what you want...rather, you can batch up a bunch of
-    // drawing operations and then update the screen all at once by calling
-    // display.display(). These examples demonstrate both approaches...
     display.clearDisplay();
     display.setTextSize(1);
     display.setTextColor(SSD1306_WHITE);        // Draw white text
@@ -76,23 +72,9 @@ void setup() {
 }
 
 void loop() {
-    if(epic % 2000 == 0) { // maybe not seeing every millisecond in millis();
-        display.clearDisplay();
-        display.setCursor(0,0);
-        display.print(buff);
-        display.setCursor(0,20);
-        display.print(epic);
-        display.display();
-        delay(500);
-    }
-    epic++;
-    if (epic > 100998) {
-        epic = 0;
-    }
-    // delay(500);
     int bytes = Wire.requestFrom(CARDKB_ADDR, 1, false);
     char c = 0;
-    while (Wire.available()) { //while
+    while (Wire.available()) {
         c = Wire.read();
 
         if (c != 0)
@@ -105,6 +87,7 @@ void loop() {
             buff[offset] = c;
             offset++;
             Serial.print(c);
+            refresh();
         }
 
         switch (c) {
@@ -115,6 +98,9 @@ void loop() {
             case ENTER:
                 // TODO Save text
                 memset(buff, 0, sizeof buff);
+                buff[0] = '\0';
+                offset = 0;
+                refresh();
                 break;
             case 0:
                 break;
