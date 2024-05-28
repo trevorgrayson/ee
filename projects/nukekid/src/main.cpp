@@ -34,6 +34,37 @@ struct State {
 
 State state = {0, 0, 0, 0, 1};
 
+void debug() {
+    // LED Set to hello.
+    // VENT LIGHTS ON
+    // BATT LIGHTS FULL ON
+
+    // READ
+    // switch
+    // fuel rod btn
+    // vent btns
+    // batt setting
+
+    // Serial.println("=== debug ===");
+    Serial.print(rodSelection());
+    Serial.print("\t");
+    Serial.print(rodDepth());
+    Serial.print("\t");
+    Serial.print(rodCurrent());
+    Serial.print("\t");
+    Serial.print(power());
+    Serial.print("\t");
+    //Serial.println();
+
+    Serial.print(ventStatus(0));
+    Serial.print("\t");
+    Serial.print(ventStatus(1));
+    Serial.print("\t");
+    Serial.print(ventStatus(2));
+    Serial.print("\t");
+    Serial.println();
+}
+
 void setup() {
     Serial.begin(9600);
     // hardware
@@ -44,44 +75,7 @@ void setup() {
     setupFuelRod();
     setupVent();
 
-    pinMode(OUTPUT, 25);
-    pinMode(OUTPUT, 26);
     Serial.println("KoW Industries");
-}
-
-void debug() {
-    Serial.print(rodSelection());
-    Serial.print("\t");
-    Serial.print(rodDepth());
-    Serial.print("\t");
-    Serial.print(rodCurrent());
-    Serial.print("\t");
-    Serial.print(power());
-    //Serial.println();
-
-    Serial.print(ventStatus(-1));
-    Serial.print("\t");
-    Serial.print(ventStatus(0));
-    Serial.print("\t");
-    Serial.print(ventStatus(1));
-    Serial.print("\t");
-    Serial.println();
-}
-
-void kidMode() {
-
-}
-
-
-void loop() {
-
-    // READ
-    // switch
-    // fuel rod btn
-    // vent btns
-    // batt setting
-
-}
 
 void loop() {
     // Update
@@ -89,13 +83,12 @@ void loop() {
     tickFuelRod();    // stores rod info
     // tickVent();
 
-
-
-
+    debug();
     if (DEBUG) {
         debug();
+        return;
     }
-    return;
+
     // read
     state.power = power();
     state.gridDraw = demand();

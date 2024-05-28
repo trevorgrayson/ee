@@ -30,5 +30,9 @@ void loop()
     if (key) {
         inputBuffer[offset] = key;
         key = 0;
+
+        flashOn();
+        delay(100);
+        flashOff();
     }
 }

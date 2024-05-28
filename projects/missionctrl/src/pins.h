@@ -8,3 +8,4 @@
 #define NYC2 5
 #define DIA1 6
 #define DIA2 7
+#define CLOCK_CLK 2
