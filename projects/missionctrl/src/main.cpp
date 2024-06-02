@@ -1,5 +1,6 @@
 #include <Arduino.h>
-#include <TM1637Display.h>
+// #include <TM1637Display.h>
+#include <TM1637.h>
 #include "clock.h"
 #include "deej.h"
 #include "console.h"
@@ -19,18 +20,25 @@ double epic = 9.0 *HOURS + 21.0 *MINUTES; // seconds
 // Instantiation and pins configurations
 // Pin 3 - > DIO
 // Pin 2 - > CLK
-TM1637Display lax(LAX1, LAX2);
-TM1637Display dia(DIA1, DIA2); // inverted
-TM1637Display nyc(NYC1, NYC2); // <=|
+TM1637 lax(LAX1, LAX2);
+TM1637 dia(DIA1, DIA2); // inverted
+TM1637 nyc(NYC1, NYC2); // <=|
 
+
+void alert()
+{
+    nyc.display("PAGE");
+    dia.display("R  ");
+    lax.display("DUTY");
+}
 
 void display()
 {
     // display time
     // 4-digit LEDs
-    nyc.showNumberDec(timezone(clockTimeDigits(), 3));
-    dia.showNumberDec(timezone(clockTimeDigits(), 1));
-    lax.showNumberDec(clockTimeDigits());
+    nyc.display(timezone(clockTimeDigits(), 3));
+    dia.display(timezone(clockTimeDigits(), 1));
+    lax.display(clockTimeDigits());
 }
 
 void setup()
@@ -44,6 +52,9 @@ void setup()
     // adjust(); // program the missionctrl
 
     // 4-digit LEDs
+    lax.init();
+    dia.init();
+    nyc.init();
     lax.setBrightness(0x0a);
     dia.setBrightness(0x0a);
     nyc.setBrightness(0x0a);
@@ -51,7 +62,9 @@ void setup()
 }
 
 void pomodoroButtonExecute() {
-    lax.showNumberDec(date());
+    alert();
+    delay(1000);
+    lax.display(date());
     setMeetingModulus();
     delay(1000);
 }
