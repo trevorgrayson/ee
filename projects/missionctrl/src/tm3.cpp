@@ -28,6 +28,11 @@ void tm3alert()
     lax.display("DUTY");
 }
 
+void tm3display(int date)
+{
+    lax.display(date);
+}
+
 void tm3display()
 {
     // display time

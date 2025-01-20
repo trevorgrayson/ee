@@ -25,7 +25,7 @@ double epic = 9.0 *HOURS + 21.0 *MINUTES; // seconds
 void pomodoroButtonExecute() {
     tm3alert();
     delay(1000);
-    // lax.display(date());
+    tm3display(date());
     setMeetingModulus();
     delay(1000);
 }
