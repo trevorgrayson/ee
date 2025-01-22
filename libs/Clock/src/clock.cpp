@@ -24,10 +24,10 @@ void clockSetup() {
         // while (1) delay(10);
     }
 
-//    if(rtc.lostPower()) {
-//        // this will adjust to the date and time at compilation
-//        rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-//    }
+    if(rtc.lostPower()) {
+        // this will adjust to the date and time at compilation
+        rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    }
 
     //we don't need the 32K Pin, so disable it
     rtc.disable32K();
@@ -39,11 +39,12 @@ int clockTimeDigits() {
 }
 
 void adjust() {
-    rtc.adjust(DateTime(2023, 11, 13, 22, 57, 0));
+    // rtc.adjust(DateTime(2023, 11, 13, 22, 57, 0));
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 }
 
 int date() {
-    return rtc.now().month() * 100 + rtc.now().day();
+    return (rtc.now().month() * 100) + rtc.now().day();
 }
 
 void pomodoroSetEpic() {
@@ -70,10 +71,8 @@ int pomodoroSecondsLeft() {
 int timezone(int time, int offset) {
     // insert earliest time always
     // do not use negative offsets
-    return (time + offset * 100) % 2400;
+    return ((time + offset) * 100) % 2400;
 }
-
-
 
 void decrementEpic() {
 

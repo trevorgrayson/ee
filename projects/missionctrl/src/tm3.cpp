@@ -6,7 +6,7 @@
 #include "pins.h"
 #include "clock.h"
 
-
+// clock, dio
 TM1637 lax(LAX1, LAX2);
 TM1637 dia(DIA1, DIA2); // inverted
 TM1637 nyc(NYC1, NYC2); // <=|

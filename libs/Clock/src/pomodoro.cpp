@@ -7,8 +7,8 @@
 #include "zelda.h"
 #include "Arduino.h"
 
-#define POMODORO_PIN 13
-#define ALARM_PIN 14  // A0
+#define POMODORO_PIN 13 // Wire button to 5V
+#define ALARM_PIN 14  // A0 Wire buzzer to Ground
 
 int modulusSet = 0;
 
@@ -44,7 +44,8 @@ int setMeetingModulus() {
  * is the button pressed?
  */
 bool pomodoroButtonPressed() {
-    return !digitalRead(POMODORO_PIN);  // TODO
+    // PULLING up, so high is off.
+    return digitalRead(POMODORO_PIN) == HIGH;  // TODO
 }
 
 

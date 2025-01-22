@@ -23,8 +23,8 @@ double epic = 9.0 *HOURS + 21.0 *MINUTES; // seconds
 
 
 void pomodoroButtonExecute() {
-    tm3alert();
-    delay(1000);
+//    tm3alert();
+//    delay(1000);
     tm3display(date());
     setMeetingModulus();
     delay(1000);
@@ -34,14 +34,18 @@ void setup()
 {
     Serial.begin(9600);
 
-    clockSetup();
-    setupDeej();
-    setupConsole();
-    setupRotary();
-    // adjust(); // program the missionctrl
-
     // 4-digit LEDs
     setuptm3();
+    tm3display(1337);
+    delay(200);
+
+    clockSetup();
+//    setupDeej();
+//    setupConsole();
+//    setupRotary();
+    // adjust(); // program the missionctrl
+
+    // 4-digit LED display
     tm3display();
 }
 
