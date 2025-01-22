@@ -16,9 +16,9 @@ void setuptm3()
     lax.init();
     dia.init();
     nyc.init();
-    lax.setBrightness(0x0a);
-    dia.setBrightness(0x0a);
-    nyc.setBrightness(0x0a);
+    lax.setBrightness(0x01);
+    dia.setBrightness(0x06);
+    nyc.setBrightness(0x06);
 }
 
 void tm3alert()
