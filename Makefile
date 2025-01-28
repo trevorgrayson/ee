@@ -1,6 +1,6 @@
-PYTHON?=python
+PYTHON?=python3
 VENV?=venv
-PROJECT?=projects/izzylights
+PROJECT?=projects/espwatch
 PIO?=$(PYTHON) -m platformio
 
 export PYTHONPATH = .:$(VENV)

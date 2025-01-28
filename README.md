@@ -1,6 +1,6 @@
 # electrical engineering
 
-small part electronic projects
+embedded electrical projects
 
 ```
 +- projects/ - individual implementations of projects, temp deprecated for pio
