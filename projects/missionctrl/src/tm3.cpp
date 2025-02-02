@@ -38,6 +38,7 @@ void tm3display(int date)
     if(date < 10) offset = 3;
 
     lax.display(date, false, true, offset);
+    lax.colonOn();
 }
 
 void tm3display()
