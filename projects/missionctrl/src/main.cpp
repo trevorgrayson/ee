@@ -1,11 +1,11 @@
 #include <Arduino.h>
 // #include <TM1637Display.h>
 #include "clock.h"
-#include "deej.h"
-#include "console.h"
+//#include "deej.h"
+//#include "console.h"
 #include "pins.h"
-#include "rotary.h"
-#include "listen.h"
+//#include "rotary.h"
+//#include "listen.h"
 #include "tm3.h"
 
 //#define ONE_DAY  (24 * 60 * 60)
@@ -24,11 +24,12 @@ double epic = 9.0 *HOURS + 21.0 *MINUTES; // seconds
 
 void pomodoroButtonExecute() {
 //    tm3alert();
-//    delay(1000);
+
     tm3display(date());
     setMeetingModulus();
     delay(1000);
 }
+
 
 void setup()
 {
@@ -36,25 +37,36 @@ void setup()
 
     // 4-digit LEDs
     setuptm3();
-    tm3display(1337);
-    delay(200);
-
     clockSetup();
-//    setupDeej();
-//    setupConsole();
-//    setupRotary();
-    // adjust(); // program the missionctrl
-
-    // 4-digit LED display
-    tm3display();
+    delay(500);
 }
 
 void loop()
 {
     clockTick();
-    // tickDeej();
-    // int rotaryPosition = tickRotary();
-    // listen();
-
     tm3display();
+    delay(500);
 }
+
+
+//void setup()
+//{
+//    Serial.begin(9600);
+//
+//    // 4-digit LEDs
+
+////    setupDeej();
+////    setupConsole();
+////    setupRotary();
+//    // adjust(); // program the missionctrl
+//    delay(500);
+//}
+//
+//void loop()
+//{
+
+//    // tickDeej();
+//    // int rotaryPosition = tickRotary();
+//    // listen();
+//    delay(500);
+//}

@@ -5,7 +5,8 @@
 #define CLOCK_CLK 2  // (Shared Clock? No.)
 #define LAX1 2
 #define LAX2 3
-#define NYC1 4
-#define NYC2 5
-#define DIA1 6
-#define DIA2 7
+#define NYC1 5
+#define NYC2 6
+
+#define DIA1 8
+#define DIA2 9

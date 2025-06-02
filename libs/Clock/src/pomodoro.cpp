@@ -45,9 +45,15 @@ int setMeetingModulus() {
  */
 bool pomodoroButtonPressed() {
     // PULLING up, so high is off.
-    return digitalRead(POMODORO_PIN) == HIGH;  // TODO
+    return digitalRead(POMODORO_PIN) == LOW;  // TODO
 }
 
+void quiet() {
+    // clear the humming noise
+    noTone(ALARM_PIN);
+    pinMode(ALARM_PIN, INPUT);
+    modulusSet = 0;
+}
 
 /*
  * Arduino Hooks
@@ -61,12 +67,6 @@ void setupPomodoro() {
     pinMode(ALARM_PIN, INPUT);
 }
 
-void quiet() {
-    // clear the humming noise
-    noTone(ALARM_PIN);
-    pinMode(ALARM_PIN, INPUT);
-    modulusSet = 0;
-}
 /*
  * Arduino loop()
  */
