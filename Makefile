@@ -2,6 +2,7 @@ PYTHON?=python3
 VENV?=venv
 PROJECT?=projects/espwatch
 PIO?=$(PYTHON) -m platformio
+AVRDUDE?=avrdude
 
 export PYTHONPATH = .:$(VENV)
 
@@ -10,6 +11,10 @@ run: compile
 
 upload: 
 	$(PIO) run -d $(PROJECT) --target upload
+
+avrupload:
+	# uno upload
+	$(AVRDUDE) -c arduino -P COM6 -p atmega328p -D -U flash:w:objs/blink.hex:i
 
 requirements.txt:
 	touch requirements.txt
