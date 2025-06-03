@@ -5,10 +5,23 @@
 #include "clock.h"
 #include "pomodoro.h"
 #include <RTClib.h>
-
-// #include <Wire.h>
+#include <Timezone.h> // e.g. https://github.com/JChristensen/Timezone/blob/master/examples/HardwareRTC/HardwareRTC.ino
 
 #define UNIX2MINUTES 60; // TODO internet fact, needs citation.
+
+TimeChangeRule myDST = {"EDT", Second, Sun, Mar, 2, -60 * 4};    //Daylight time = UTC - 4 hours
+TimeChangeRule mySTD = {"EST", First, Sun, Nov, 2,  -60 * 5};     //Standard time = UTC - 5 hours
+Timezone JFK_TZ(myDST, mySTD);
+
+TimeChangeRule edt = {"PDT", Second, Sun, Mar, 2,   -420};
+TimeChangeRule est = {"PST", First, Sun, Nov, 2,    -480};
+Timezone LAX_TZ(edt, est);
+
+TimeChangeRule idt = {"IST", First, Sun, Nov, 2,    +330};
+TimeChangeRule ist_ = {"IST", Second, Sun, Nov, 2,    +330};
+Timezone IST_TZ(idt, ist_);
+
+RTC_DS3231 rtc;
 
 int pomodoroMultiple = 0;
 double pomodoroEpic = 0;
@@ -19,7 +32,22 @@ int clockTimeDigits() {
 }
 
 int clockTimeDigitsForTZ(int tz)  {
+    DateTime now = rtc.now();
+    time_t utc = now.unixtime();
 
+    time_t local = LAX_TZ.toLocal(utc);
+    if(tz == JFK) local = JFK_TZ.toLocal(utc);
+    else if (tz == IST) local = IST_TZ.toLocal(utc);
+
+    return hour(local) * 100 + minute(local);
+}
+
+void printTime(time_t t) {
+    char buf[20];
+    sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d",
+            year(t), month(t), day(t),
+            hour(t), minute(t), second(t));
+    Serial.println(buf);
 }
 
 // month day minute
@@ -28,7 +56,7 @@ int unixtime() {
 }
 
 void adjust() {
-    // rtc.adjust(DateTime(2023, 11, 13, 22, 57, 0));
+    // rtc.adjust(DateTime(2025, 06, 02, 06, 50, 0));
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 }
 
@@ -81,7 +109,7 @@ void clockSetup() {
         // this will adjust to the date and time at compilation
         rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     }
-
+    
     //we don't need the 32K Pin, so disable it
     rtc.disable32K();
 }

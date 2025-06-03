@@ -2,11 +2,17 @@
 // Created by trevor on 8/6/2023.
 //
 
+#define ZULU 0
+#define JFK 1
+#define LAX 2
+#define IST 5
+
 void clockSetup();
 
 void clockTick();
 
 int clockTimeDigits();
+int clockTimeDigitsForTZ(int tz);
 
 void adjust();
 

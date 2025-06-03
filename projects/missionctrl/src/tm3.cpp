@@ -6,19 +6,7 @@
 #include "tm3.h"
 #include "pins.h"
 #include "clock.h"
-#include <Timezone.h> // e.g. https://github.com/JChristensen/Timezone/blob/master/examples/HardwareRTC/HardwareRTC.ino
 
-TimeChangeRule myDST = {"EDT", Second, Sun, Mar, 2, -60 * 4};    //Daylight time = UTC - 4 hours
-TimeChangeRule mySTD = {"EST", First, Sun, Nov, 2,  -60 * 5};     //Standard time = UTC - 5 hours
-Timezone JFK(myDST, mySTD);
-
-TimeChangeRule edt = {"EDT", Second, Sun, Mar, 2,   -240};    //Daylight time = UTC - 4 hours
-TimeChangeRule est = {"EST", First, Sun, Nov, 2,    -300};     //Standard time = UTC - 5 hours
-Timezone LAX(edt, est);
-
-TimeChangeRule IST = {"IST", First, Sun, Nov, 2,    +330};     //Standard time = UTC - 5 hours
-
-RTC_DS3231 rtc;
 // clock, dio
 TM1637Display  lax(LAX1, LAX2);
 TM1637Display  nyc(NYC1, NYC2);
@@ -28,17 +16,11 @@ int offset = 0; // <== huh?!
 
 void setuptm3()
 {
-//    lax.init();
-//    nyc.init();
-
-//    lax.setBrightness(6);
-//    nyc.setBrightness(6);
-//    delay(500);
     lax.setBrightness(1);
     nyc.setBrightness(1);
 
-//    nyc.display("RULZ");
-//    lax.display("IZZY");
+    //    nyc.display("RULZ");
+    //    lax.display("IZZY");
 }
 
 void tm3alert()
@@ -83,7 +65,7 @@ void tm3display()
     // display time
     // 4-digit LEDs
 
-    nyc.showNumberDec(timezone(clockTimeDigits(), 3), true);
-    lax.showNumberDec(clockTimeDigits(), true);
+    nyc.showNumberDec(clockTimeDigitsForTZ(IST), true);
+    lax.showNumberDec(clockTimeDigitsForTZ(LAX), true);
     // lax.switchColon();
 }
