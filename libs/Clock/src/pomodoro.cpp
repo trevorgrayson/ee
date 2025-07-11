@@ -7,8 +7,8 @@
 #include "zelda.h"
 #include "Arduino.h"
 
-#define POMODORO_PIN 13 // Wire button to 5V
-#define ALARM_PIN 14  // A0 Wire buzzer to Ground
+#define POMODORO_PIN 13 // 13 Wire button to 5V
+#define ALARM_PIN 14    // A0 Wire buzzer to Ground
 
 int modulusSet = 0;
 
@@ -79,7 +79,6 @@ void pomodoroTick(int minutes) {
     // alert on the next half hour
     // TODO Test new modulusSet logic
     if (minutes % modulusSet == 0) {
-        // soundAlarm();
         playZelda();
         quiet();
     }

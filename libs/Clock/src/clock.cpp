@@ -56,8 +56,8 @@ int unixtime() {
 }
 
 void adjust() {
-    // rtc.adjust(DateTime(2025, 06, 02, 06, 50, 0));
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    rtc.adjust(DateTime(2025, 07, 10, 19, 46, 30)); // UTC
+    //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 }
 
 int date() {
@@ -91,10 +91,6 @@ int timezone(int time, int offset) {
     return ((time + offset) * 100) % 2400;
 }
 
-void decrementEpic() {
-
-}
-
 void clockSetup() {
     // initializing input button
     setupPomodoro();
@@ -109,7 +105,7 @@ void clockSetup() {
         // this will adjust to the date and time at compilation
         rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     }
-    
+    //adjust();
     //we don't need the 32K Pin, so disable it
     rtc.disable32K();
 }
