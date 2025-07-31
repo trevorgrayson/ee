@@ -1,0 +1,13 @@
+Subject: Meter App
+Project: METER
+Team: tg
+Points: 1
+
+# Story
+
+As Trevor, I would like to quickly iterate on building a new telemeter to receive
+gauge data from running software applications.
+
+It will read serialized values over UART and turn them into analog meter signals.
+
+`ee/projects/meters`
