@@ -22,7 +22,8 @@ def configure_serial(fd, baudrate):
 # apply
 """
 
-def send(path, lines, delay=1.0):
+
+def send(path, message, delay=1.0):
     try:
         fd = os.open(path, os.O_RDWR|os.NOCTTY | os.O_SYNC)
         # configure_serial(fd, BAUD_RATE)
@@ -35,4 +36,5 @@ def send(path, lines, delay=1.0):
     except Exception as ex:
         print(ex)
 
+send(SERIAL_PORT, message)
 print("OK")
