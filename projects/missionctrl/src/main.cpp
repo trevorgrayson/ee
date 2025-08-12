@@ -35,9 +35,13 @@ void setup()
 {
     Serial.begin(9600);
     // 4-digit LEDs
+    Serial.println("begin...");
     setuptm3();
+    Serial.println("tm3 setup... [ OK ]");
     clockSetup();
+    Serial.println("RTC setup... [ OK ]");
     delay(500);
+
 }
 
 void loop()
