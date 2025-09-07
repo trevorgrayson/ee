@@ -1,51 +1,68 @@
-/**************************************************************************
- * BTFinder
- * Estimated range to paired device.
- *
- * TODO
- * ====
- * Change to BT device, or add BT module
- * BT
-     * pairing
-     * fulfill BT requirements in `rangefinder.h` module
- * display.h works
- * display results
- *
- * Also, pezo beeping could be better.
- **************************************************************************/
-
 #include <Arduino.h>
-// #include "display.h"
-#include "rangefinder.h"
-#include <stdio.h>
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
 
-char buff[50];
-int range = 0;
-
-// Move to Lib
-void print()
-{   // Fulfilled in ../libs/Display1306
-    Serial.println(buff);
-}
-
-// start
-void printRange(int range)
+float calculateDistance(int rssi, int txPower = -59, float pathLoss = 2.0)
 {
-    Serial.println(buff);
-    sprintf(buff, "OK");
-    print();
+    return pow(10.0, ((float)(txPower - rssi)) / (10.0 * pathLoss));
 }
 
-void setup() {
-    Serial.begin(9600);
-    // displaySetup();
+class MyServerCallbacks : public BLEServerCallbacks {
+    void onConnect(BLEServer* pServer) {
+        //
+    }
 
-    Serial.println("Start.");
+    void onDisconnect(BLEServer* pServer) {
+        //
+    }
+};
+
+// Event handling:
+// ESP_GAP_BLE_SCAN_RESULT_EVT
+
+
+void setup()
+{
+    Serial.begin();
+    BLEDevice::init("Phone Finder");
+    BLEServer *pServer = BLEDevice::createServer();
+    pServer->setCallbacks(new MyServerCallbacks());
+
+    BLEService *pService = pServer->createService(BLEUUID((uint16_t)0x180F));
+    BLECharacteristic *pCharacteristic = pService->createCharacteristic(
+                                                BLEUUID((uint16_t)0x2A19),
+                                                BLECharacteristic::PROPERTY_READ
+                                            );
+    pCharacteristic->setValue("hello");
+    pService->start();
+
+    pServer->getAdvertising()->start();
+    // waiting
 }
 
-void loop() {
-    range = getRange();
-    printRange(range);
+void loop()
+{
+    BLEScan *scan = BLEDevice::getScan();
+    scan->setActiveScan(true);
+    scan->setInterval(1000);
+    scan->setWindow(999);
 
-    delay(500);
+    // pick client
+    BLEScanResults results = scan->start(5, false);
+    // scan->getResults();
+
+    for (int i = 0; i < results.getCount(); i++)
+    {
+        BLEAdvertisedDevice device = results.getDevice(i);
+
+        String name = device.getName().c_str();
+        if (name.length() == 0) {
+            name = "[No Name]";
+        }
+        int rssi = device.getRSSI();
+        float distance = calculateDistance(rssi);
+        Serial.printf("%s: %d dBm, %d\n", name.c_str(), rssi, distance);
+    }
+    delay(2000);
 }
