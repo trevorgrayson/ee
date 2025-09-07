@@ -2,9 +2,8 @@
 // Created by trevor on 7/30/25.
 //
 #include <Arduino.h>
+#include "vault.h"
 
-String secrets[100];
-int offset = 0;
 
 void setup()
 {
@@ -31,4 +30,7 @@ void loop()
     offset++;
     if (offset > 99) { offset = 0; }
 
+
+
 }
+
