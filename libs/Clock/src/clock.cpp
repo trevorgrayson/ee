@@ -60,6 +60,32 @@ void adjust() {
     //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 }
 
+void adjustHours(int num)
+{
+    DateTime now = rtc.now();
+    rtc.adjust(DateTime(
+            rtc.now().year(),
+            rtc.now().month(),
+            rtc.now().day(),
+            rtc.now().hour() + num,
+            rtc.now().minute(),
+            rtc.now().second()
+    ));
+}
+
+void adjustMinutes(int num)
+{
+    DateTime now = rtc.now();
+    rtc.adjust(DateTime(
+        rtc.now().year(),
+        rtc.now().month(),
+        rtc.now().day(),
+        rtc.now().hour(),
+        rtc.now().minute() + num,
+        rtc.now().second()
+    ));
+}
+
 int date() {
     return (rtc.now().month() * 100) + rtc.now().day();
 }

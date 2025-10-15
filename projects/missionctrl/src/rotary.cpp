@@ -6,15 +6,27 @@
 
 #include <Arduino.h>
 #include <RotaryEncoder.h>
-
-#define PIN_IN1 A2
-#define PIN_IN2 A3
+#include "pins.h"
 
 RotaryEncoder *encoder = nullptr;
 
+int tickRotary() {
+    static int pos = 0;
+
+    encoder->tick();
+
+    int newPos = encoder->getPosition();
+     if (pos != newPos) {
+         return newPos;
+          encoder->getDirection();
+     }
+
+    return newPos;
+}
+
 void checkPosition()
 {
-    encoder->tick(); // just call tick() to check the state.
+    tickRotary(); // just call tick() to check the state.
 }
 
 void setupRotary() {
@@ -23,18 +35,4 @@ void setupRotary() {
     // register interrupt routine
     attachInterrupt(digitalPinToInterrupt(PIN_IN1), checkPosition, CHANGE);
     attachInterrupt(digitalPinToInterrupt(PIN_IN2), checkPosition, CHANGE);
-}
-
-int tickRotary() {
-    static int pos = 0;
-
-    encoder->tick();
-
-    int newPos = encoder->getPosition();
-    // if (pos != newPos) {
-    //     return newPos;
-    //     // encoder->getDirection();
-    // }
-
-    return newPos;
 }

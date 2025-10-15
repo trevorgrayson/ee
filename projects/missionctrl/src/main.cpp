@@ -4,7 +4,7 @@
 //#include "deej.h"
 //#include "console.h"
 #include "pins.h"
-//#include "rotary.h"
+#include "rotary.h"
 //#include "listen.h"
 #include "tm3.h"
 
@@ -44,8 +44,11 @@ void setup()
     clockSetup();
     Serial.println("RTC setup... [ OK ]");
     delay(500);
+
     segment7.begin();
     segment7.show(1, 1);
+
+    setupRotary();
 }
 
 void loop()
