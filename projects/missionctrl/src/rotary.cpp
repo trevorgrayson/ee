@@ -7,32 +7,55 @@
 #include <Arduino.h>
 #include <RotaryEncoder.h>
 #include "pins.h"
+#include "clock.h"
 
-RotaryEncoder *encoder = nullptr;
+RotaryEncoder *smallKnob = nullptr;
+RotaryEncoder *largeKnob = nullptr;
+
+
 
 int tickRotary() {
-    static int pos = 0;
+    // TODO split out each encoder to a function
+    static int smPos = smallKnob->getPosition();
+    static int lgPos = 0;
+    smallKnob->tick();
 
-    encoder->tick();
+    int newSmPos = smallKnob->getPosition();
+    if (smPos != newSmPos) {
+        int smDiff = newSmPos-smPos;
+        smPos = smDiff;
+        // smallKnob->getDirection();
+        return smDiff;
+    } else {
+        return -10000;
+    }
 
-    int newPos = encoder->getPosition();
-     if (pos != newPos) {
-         return newPos;
-          encoder->getDirection();
-     }
+//    largeKnob->tick();
+//
+//    int newLgPos = largeKnob->getPosition();
+//    if (lgPos != newLgPos) {
+//        Serial.println(newLgPos-smPos);
+//        adjustHours(newLgPos-smPos);
+//        largeKnob->getDirection();
+//    }
 
-    return newPos;
-}
 
-void checkPosition()
-{
-    tickRotary(); // just call tick() to check the state.
 }
 
 void setupRotary() {
-    encoder = new RotaryEncoder(PIN_IN1, PIN_IN2, RotaryEncoder::LatchMode::TWO03);
+    pinMode(ENCODER_SM_PIN1, INPUT_PULLUP);
+    pinMode(ENCODER_SM_PIN2, INPUT_PULLUP);
+    smallKnob = new RotaryEncoder(ENCODER_SM_PIN1, ENCODER_SM_PIN2, RotaryEncoder::LatchMode::TWO03);
+
+    pinMode(ENCODER_LG_PIN1, INPUT_PULLUP);
+    pinMode(ENCODER_LG_PIN2, INPUT_PULLUP);
+    largeKnob = new RotaryEncoder(ENCODER_LG_PIN1, ENCODER_LG_PIN2, RotaryEncoder::LatchMode::TWO03);
 
     // register interrupt routine
-    attachInterrupt(digitalPinToInterrupt(PIN_IN1), checkPosition, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(PIN_IN2), checkPosition, CHANGE);
+    // only pins 2, 3 work on uno
+    // atmega32u4  2, 3, 18, 19, 20, 21
+//    attachInterrupt(digitalPinToInterrupt(ENCODER_SM_PIN1), tickRotary, CHANGE);
+//    attachInterrupt(digitalPinToInterrupt(ENCODER_SM_PIN2), tickRotary, CHANGE);
+//    attachInterrupt(digitalPinToInterrupt(ENCODER_LG_PIN1), tickRotary, CHANGE);
+//    attachInterrupt(digitalPinToInterrupt(ENCODER_LG_PIN2), tickRotary, CHANGE);
 }

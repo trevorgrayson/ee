@@ -11,8 +11,8 @@
 #define DIA1 8
 #define DIA2 9
 
-#define PIN_IN1     A2
-#define PIN_IN2     A3
-#define SM_PIN1     A4
-#define SM_PIN2     A5
+#define ENCODER_SM_PIN1     A2
+#define ENCODER_SM_PIN2     A3
+#define ENCODER_LG_PIN1     A4
+#define ENCODER_LG_PIN2     A5
 #define CLICK_PIN   A6

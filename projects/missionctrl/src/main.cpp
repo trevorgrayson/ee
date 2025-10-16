@@ -26,6 +26,9 @@ double epic = 9.0 *HOURS + 21.0 *MINUTES; // seconds
 // Pin 3 - > DIO
 // Pin 2 - > CLK
 
+/*******
+ * event triggers
+ */
 void pomodoroButtonExecute() {
     tm3alert();
 
@@ -36,13 +39,12 @@ void pomodoroButtonExecute() {
 
 void setup()
 {
+    //adjust();
     Serial.begin(9600);
     // 4-digit LEDs
     Serial.println("begin...");
-    setuptm3();
-    Serial.println("tm3 setup... [ OK ]");
-    clockSetup();
-    Serial.println("RTC setup... [ OK ]");
+    setuptm3(); Serial.println("tm3 setup... [ OK ]");
+    clockSetup(); Serial.println("RTC setup... [ OK ]");
     delay(500);
 
     segment7.begin();
@@ -55,4 +57,12 @@ void loop()
 {
     clockTick();
     tm3display();
+    int newMinutes = tickRotary();
+    if (newMinutes > -1000)
+    {
+        Serial.print("Minutes set:");
+        Serial.println(newMinutes);
+        // adjustMinutes(newMinutes);
+    }
+
 }
