@@ -43,9 +43,10 @@ void setup()
     // 4-digit LEDs
     Serial.println("begin...");
     setuptm3(); Serial.println("tm3 setup... [ OK ]");
+    //clockSetup(2025, 10, 19, 9, 17);
     clockSetup(); Serial.println("RTC setup... [ OK ]");
     delay(500);
-    adjust(2025, 10, 19, 9, 17);
+
 
     segment7.begin();
     segment7.show(1, 1);

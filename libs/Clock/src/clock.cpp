@@ -55,11 +55,6 @@ int unixtime() {
     return rtc.now().unixtime();
 }
 
-void adjust(int year, int month, int day, int hour, int minute)
-{
-    rtc.adjust(DateTime(year, month, day, hour, minute, 00)); // UTC
-}
-
 void adjust() {
 //    rtc.adjust(DateTime(2025, 07, 10, 19, 46, 30)); // UTC
     rtc.adjust(DateTime(2025, 10, 16, 8, 3, 00)); // UTC
@@ -140,6 +135,12 @@ void clockSetup() {
     //adjust();
     //we don't need the 32K Pin, so disable it
     rtc.disable32K();
+}
+
+void clockSetup(int year, int month, int day, int hour, int minute)
+{
+    rtc.adjust(DateTime(year, month, day, hour, minute, 00)); // UTC
+    clockSetup();
 }
 
 void clockTick() {
