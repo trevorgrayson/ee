@@ -15,6 +15,7 @@ int clockTimeDigits();
 int clockTimeDigitsForTZ(int tz);
 
 void adjust();
+void adjust(int year, int month, int day, int hour, int minute);
 void adjustHours(int num);
 void adjustMinutes(int num);
 
