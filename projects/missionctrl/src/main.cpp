@@ -21,7 +21,6 @@ double epic = 9.0 *HOURS + 21.0 *MINUTES; // seconds
 // Pin 3 - > DIO
 // Pin 2 - > CLK
 
-
 void pomodoroButtonExecute() {
     tm3alert();
 
@@ -29,7 +28,6 @@ void pomodoroButtonExecute() {
     setMeetingModulus();
     delay(1000);
 }
-
 
 void setup()
 {
@@ -41,7 +39,6 @@ void setup()
     clockSetup();
     Serial.println("RTC setup... [ OK ]");
     delay(500);
-
 }
 
 void loop()
