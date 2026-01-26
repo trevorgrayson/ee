@@ -8,6 +8,11 @@
 //#include "listen.h"
 #include "tm3.h"
 
+#include "FourDisplays.h"
+
+uint8_t dispAddrs[4] = {0x70, 0x71, 0x72, 0x73};
+FourDisplays segment7(dispAddrs);
+
 //#define ONE_DAY  (24 * 60 * 60)
 double ONE_DAY =  (24.0 * 60.0 * 60.0);
 const uint8_t colonMask = 0b11100000;
@@ -39,6 +44,8 @@ void setup()
     clockSetup();
     Serial.println("RTC setup... [ OK ]");
     delay(500);
+    segment7.begin();
+    segment7.show(1, 1);
 }
 
 void loop()
