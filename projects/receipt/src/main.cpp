@@ -10,8 +10,8 @@
 #include <map>
 
 // ===== WiFi credentials =====
-const char* ssid = "wifi_ssid";         // WIFISSID
-const char* password = "password"; // WIFIPASS
+const char* ssid = WIFI_SSID;
+const char* password = WIFI_PASS;
 
 // ===== Printer setup =====
 SoftwareSerial printerSerial(2, 0); // TX, RX (RX unused)
