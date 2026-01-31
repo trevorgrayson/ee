@@ -1,18 +1,26 @@
 //
 // Created by trevor on 1/25/26.
 //
+// TODO: full content body print.
+// TODO: Swapping pins may remove chinese
+// TODO: OTA Updates
+// check headers
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include "Adafruit_Thermal.h"
+#include <SoftwareSerial.h>
 
-const char* ssid     = "YOUR_SSID";
-const char* password = "YOUR_PASS";
+const char* ssid = WIFI_SSID;
+const char* password = WIFI_PASS;
 
 ESP8266WebServer server(80);
 
 // Thermal printer on hardware serial
-Adafruit_Thermal printer(&Serial);
+#define PrinterSerial Serial    //TODO: swapping pins may remove chinese.
+//SoftwareSerial printerSerial(2, 0); // TX, RX (RX unused)
+Adafruit_Thermal printer(&PrinterSerial);
+
 
 void printMarkdown(String text);
 //void handleRoot();
@@ -21,10 +29,10 @@ void printMarkdown(String text);
 void handleRoot() {
     String page = R"rawliteral(
   <html>
-  <h2>Tickets Printer</h2>
+  <h2>Therm Printer</h2>
   <p>POST text to <b>/print</b></p>
   <p>Example curl:</p>
-  <pre>curl -X POST http://tickets.local/print -d "text=Hello **World**"</pre>
+  <pre>curl -X POST http://tkts.local/print -d "Hello **World**"</pre>
   <h3>Markdown Supported</h3>
   <ul>
     <li># Header</li>
@@ -40,12 +48,12 @@ void handleRoot() {
 }
 
 void handlePrint() {
-    if (!server.hasArg("text")) {
-        server.send(400, "text/plain", "Missing text field");
-        return;
-    }
+//    if (!server.hasArg("text")) {
+//        server.send(400, "text/plain", "Missing text field");
+//        return;
+//    }
 
-    String text = server.arg("text");
+    String text = server.arg("plain");
     printMarkdown(text);
 
     server.send(200, "text/plain", "Printed");
@@ -132,7 +140,7 @@ main.cpp
 */
 
 void setup() {
-    Serial.begin(19200);          // Most thermal printers default here
+    PrinterSerial.begin(9600);          // 19200 Most thermal printers default here
     delay(500);
     printer.begin();
 
@@ -143,7 +151,7 @@ void setup() {
         delay(500);
     }
 
-    MDNS.begin("tickets");
+    MDNS.begin("tkts");
 
     server.on("/", HTTP_GET, handleRoot);
     server.on("/print", HTTP_POST, handlePrint);
