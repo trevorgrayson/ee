@@ -5,6 +5,14 @@
 // TODO: Swapping pins may remove chinese
 // TODO: OTA Updates
 // check headers
+//extern "C" {
+//#include "user_interface.h"
+//}
+
+#define DEBUG_ESP_PORT Serial
+#define NODEBUG_WEBSOCKETS
+#define NDEBUG
+
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
@@ -15,10 +23,12 @@ const char* ssid = WIFI_SSID;
 const char* password = WIFI_PASS;
 
 ESP8266WebServer server(80);
+// server.enableCORS(false);
 
 // Thermal printer on hardware serial
 #define PrinterSerial Serial    //TODO: swapping pins may remove chinese.
-//SoftwareSerial printerSerial(2, 0); // TX, RX (RX unused)
+//SoftwareSerial printerSerial(2, 0); // TX, RX (RX unused) -1
+
 Adafruit_Thermal printer(&PrinterSerial);
 
 
@@ -32,7 +42,12 @@ void handleRoot() {
   <h2>Therm Printer</h2>
   <p>POST text to <b>/print</b></p>
   <p>Example curl:</p>
-  <pre>curl -X POST http://tkts.local/print -d "Hello **World**"</pre>
+  <pre>curl -X POST http://tkts.local/print "Hello **World**"</pre>
+  <pre>curl -X POST http://tkts.local/print --data-binary @ticket.txt</pre>
+  <pre>printf "# Order 42\n---\n**Burger**\n*No onions*\n" \
+| curl http://tkts.local/print --data-binary @-</pre>
+  <pre>curl http://tkts.local/print \
+  --data-binary $'# Order 42\n---\n**Burger**\n*No onions*\n'</pre>
   <h3>Markdown Supported</h3>
   <ul>
     <li># Header</li>
@@ -54,6 +69,9 @@ void handlePrint() {
 //    }
 
     String text = server.arg("plain");
+    text.replace("\\n", "\n");
+    text.replace("\\r", "");
+
     printMarkdown(text);
 
     server.send(200, "text/plain", "Printed");
@@ -63,11 +81,20 @@ void printLine(String line) {
     printer.println(line);
 }
 
+void printerResetStyles() {
+    printer.boldOff();
+    printer.inverseOff();
+    printer.underlineOff();
+    printer.justify('L');
+    printer.setSize('S');
+}
+
 void printMarkdown(String text) {
     printer.justify('L');
     printer.setSize('S');
 
     while (text.length()) {
+        printerResetStyles();
         int nl = text.indexOf('\n');
         String line = (nl == -1) ? text : text.substring(0, nl);
         if (nl != -1) text = text.substring(nl + 1);
@@ -80,8 +107,8 @@ void printMarkdown(String text) {
             printer.setSize('L');
             printer.boldOn();
             printer.println(line.substring(2));
-            printer.boldOff();
-            printer.setSize('S');
+            printerResetStyles();
+            printer.println("");
             continue;
         }
 
@@ -140,10 +167,6 @@ main.cpp
 */
 
 void setup() {
-    PrinterSerial.begin(9600);          // 19200 Most thermal printers default here
-    delay(500);
-    printer.begin();
-
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
 
@@ -156,6 +179,13 @@ void setup() {
     server.on("/", HTTP_GET, handleRoot);
     server.on("/print", HTTP_POST, handlePrint);
     server.begin();
+
+    PrinterSerial.begin(9600);          // 19200 Most thermal printers default here
+    Serial.setDebugOutput(false);
+    system_set_os_print(0);
+
+    delay(500);
+    printer.begin();
 }
 
 void loop() {
