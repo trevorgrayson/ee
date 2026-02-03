@@ -56,6 +56,53 @@ void handleRoot() {
     <li>`code`</li>
     <li>---</li>
   </ul>
+
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    textarea { width: 100%; height: 300px; font-family: monospace; }
+    button { padding: 10px 20px; font-size: 16px; margin-top: 10px; }
+    .status { margin-top: 10px; }
+  </style>
+
+<h2>Ticket Sender</h2>
+
+<textarea id="ticket">
+*** ORDER #123 ***
+Burger
+Fries
+Coke
+
+Thank you!
+</textarea>
+
+<br>
+<button onclick="sendTicket()">Send to Printer</button>
+
+<div class="status" id="status"></div>
+
+<script>
+function sendTicket() {
+  const body = document.getElementById("ticket").value;
+  const status = document.getElementById("status");
+
+  status.textContent = "Sending...";
+
+  fetch("http://tkts.local/print", {   // ← change if needed
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain"
+    },
+    body: body
+  })
+  .then(res => res.text())
+  .then(text => {
+    status.textContent = "Server response: " + text;
+  })
+  .catch(err => {
+    status.textContent = "Error: " + err;
+  });
+}
+</script>
   </html>
   )rawliteral";
 
