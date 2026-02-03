@@ -1,0 +1,8 @@
+{
+  "name": "esp8266ota",
+  "version": "0.1.0",
+  "description": "ESP8266 check for live OTA updates.",
+  "keywords": ["live-updates", "ota", "network", "esp8266"],
+  "frameworks": ["arduino"],
+  "platforms": ["espressif8266"]
+}
