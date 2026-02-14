@@ -1,0 +1,11 @@
+{
+  "name": "FourBy7Seg",
+  "version": "0.1.0",
+  "description": "four linear 7-seg displays.",
+  "keywords": [],
+  "frameworks": ["arduino"],
+  "platforms": [],
+  "dependencies": [
+    "LiquidCrystal_I2c"
+  ]
+}

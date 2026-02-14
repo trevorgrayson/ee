@@ -8,7 +8,7 @@ Multi7Seg::Multi7Seg(uint8_t count)
 
 bool Multi7Seg::begin(const uint8_t *addresses)
 {
-    Wire.begin();
+    Wire.begin(); //TODO
 
     for (uint8_t i = 0; i < _count; i++) {
         if (!_displays[i].begin(addresses[i])) {

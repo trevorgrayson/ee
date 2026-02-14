@@ -1,12 +1,19 @@
 //
 // Created by trevor on 5/26/24.
 //
+/* beginning char defines command.
+ * following chars are read as input.
+ * l -
+ * 0-4 - print to console line
+ * else print to line 0
+ */
 
-#include "listen.h"
+#include "../include/listen.h"
 
 #include <Arduino.h>
-#include "terminal.h"
 #include "console.h"
+#include "terminal.h"
+#include "listen.h"
 
 char buffer[20];
 
@@ -16,7 +23,6 @@ void listen()
     String line = terminalReceive();
     if (line) {
         line.toCharArray(buffer, 20);
-
         switch (line.charAt(0)) {
             case 'l':
             case 'L':

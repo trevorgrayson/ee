@@ -6,6 +6,6 @@
   "frameworks": ["arduino"],
   "platforms": ["espressif8266"],
   "dependencies": [
-    "adafruit/Adafruit LED Backpack"
+    "adafruit/Adafruit LED Backpack Library"
   ]
 }

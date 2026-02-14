@@ -1,0 +1,13 @@
+//
+// Created by trevor on 11/14/2023.
+//
+
+void setupConsole();
+
+void consolePrint();
+void consolePrintLn(char c[]);
+void consolePrintLn(char c[], int y);
+
+void consoleLightOn();
+void consoleLightOff();
+void toggleConsoleLight();
