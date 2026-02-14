@@ -18,12 +18,19 @@
 #include <ESP8266mDNS.h>
 #include "Adafruit_Thermal.h"
 #include <SoftwareSerial.h>
+#include <OtaClient.h>
 
 const char* ssid = WIFI_SSID;
 const char* password = WIFI_PASS;
 
 ESP8266WebServer server(80);
 // server.enableCORS(false);
+
+OtaClient ota(
+        "http://ota.pearl.st",
+        "tkts",
+        "1.0.0"
+);
 
 // Thermal printer on hardware serial
 #define PrinterSerial Serial    //TODO: swapping pins may remove chinese.
@@ -220,6 +227,9 @@ void setup() {
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
     }
+
+    ota.begin();
+    ota.checkForUpdate();   // check at boot
 
     MDNS.begin("tkts");
 

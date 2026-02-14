@@ -19,7 +19,7 @@ void OtaClient::begin() {
 }
 
 String OtaClient::buildCheckUrl() {
-    return _server + "/firmware/check?name=" + _firmwareName +
+    return _server + "/ota/firmware?name=" + _firmwareName +
            "&version=" + _currentVersion;
 }
 

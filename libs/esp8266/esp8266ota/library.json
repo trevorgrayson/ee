@@ -4,5 +4,8 @@
   "description": "ESP8266 check for live OTA updates.",
   "keywords": ["live-updates", "ota", "network", "esp8266"],
   "frameworks": ["arduino"],
-  "platforms": ["espressif8266"]
+  "platforms": ["espressif8266"],
+  "dependencies": [
+    "bblanchon/ArduinoJson"
+  ]
 }
