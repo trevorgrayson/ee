@@ -1,10 +1,10 @@
 //
 // Created by Trevor Grayson on 10/2/23.
 //
-#include "pomodoro.h"
+#include "../include/pomodoro.h"
 
-#include "clock.h"
-#include "zelda.h"
+#include "../include/clock.h"
+#include "../include/zelda.h"
 #include "Arduino.h"
 
 #define POMODORO_PIN 13 // 13 Wire button to 5V

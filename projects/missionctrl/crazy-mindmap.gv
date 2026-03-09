@@ -1,0 +1,61 @@
+graph MindMap {
+
+    /* ---- Layout ---- */
+    layout=twopi
+    root="Root"
+    overlap=false
+    splines=true
+    ranksep=1.8
+    bgcolor="white"
+
+    /* ---- Node style ---- */
+    node [
+        shape=box
+        style="rounded,filled"
+        fillcolor="#f9f9f9"
+        color="#bbbbbb"
+        penwidth=2
+        fontname="Helvetica"
+        fontsize=12
+        margin="0.15,0.08"
+    ]
+
+    /* ---- Edge style ---- */
+    edge [
+        dir=none
+        color="#888888"
+        penwidth=2
+    ]
+
+    /* ---- Root ---- */
+    Root [
+        shape=ellipse
+        fillcolor="#e8f0ff"
+        fontsize=16
+    ]
+
+    /* ---- Level 1 ---- */
+    Root -- "Topic A"
+    Root -- "Topic B"
+    Root -- "Topic C"
+
+    /* ---- Level 2 ---- */
+    "Topic A" -- "A1"
+    "Topic A" -- "A2"
+
+    "Topic B" -- "B1"
+    "Topic B" -- "B2"
+
+    "Topic C" -- "C1"
+
+    /* ---- Level 3 ---- */
+    "A1" -- "A1a"
+    "A1" -- "A1b"
+
+    /* ---- Multi-parent example ---- */
+    "B1" -- "Shared Idea"
+    "A2" -- "Shared Idea"
+
+    /* ---- Optional: keep first layer together ---- */
+    {rank=same; "Topic A"; "Topic B"; "Topic C";}
+}

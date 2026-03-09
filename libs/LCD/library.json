@@ -1,0 +1,11 @@
+{
+  "name": "LCD Display",
+  "version": "0.1.0",
+  "description": "Multi-line LCD Console",
+  "keywords": [],
+  "frameworks": ["arduino"],
+  "platforms": [""],
+  "dependencies": [
+    "marcoschwartz/LiquidCrystal_I2C"
+  ]
+}

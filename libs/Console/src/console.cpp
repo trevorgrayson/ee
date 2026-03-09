@@ -23,6 +23,7 @@ void setupConsole() {
 void consolePrintLn(char c[], int y) {
     lcd.setCursor(0, y);
     lcd.print(c);
+    //TODO clear rest of line
 }
 
 void consolePrintLn(char c[]) {

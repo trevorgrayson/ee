@@ -2,8 +2,8 @@
 // Created by trevor on 8/6/2023.
 //
 
-#include "clock.h"
-#include "pomodoro.h"
+#include "../include/clock.h"
+#include "../include/pomodoro.h"
 #include <RTClib.h>
 #include <Timezone.h> // e.g. https://github.com/JChristensen/Timezone/blob/master/examples/HardwareRTC/HardwareRTC.ino
 
@@ -139,8 +139,14 @@ void clockSetup() {
 
 void clockSetup(int year, int month, int day, int hour, int minute)
 {
+    // initializing the rtc
+    if(!rtc.begin()) {
+        Serial.println("Couldn't find RTC!");
+        Serial.flush();
+    }
+    rtc.disable32K();
+
     rtc.adjust(DateTime(year, month, day, hour, minute, 00)); // UTC
-    clockSetup();
 }
 
 void clockTick() {

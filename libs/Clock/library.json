@@ -1,0 +1,13 @@
+{
+  "name": "Clock",
+  "version": "0.1.0",
+  "description": "Multi-Timezone RTC Module to drive many clocks.",
+  "keywords": ["RTC", "multi-timezone", "timezone"],
+  "frameworks": ["arduino"],
+  "platforms": [""],
+  "dependencies": [
+    "adafruit/RTClib",
+    "jchristensen/Timezone",
+    "PaulStoffregen/Time"
+  ]
+}
