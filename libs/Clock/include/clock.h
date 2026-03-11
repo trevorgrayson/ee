@@ -7,6 +7,7 @@
 #define LAX 2
 #define IST 5
 
+int rtcLostPower();
 void clockSetup();
 void clockSetup(int year, int month, int day, int hour, int minute);
 void clockTick();

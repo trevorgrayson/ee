@@ -26,6 +26,10 @@ RTC_DS3231 rtc;
 int pomodoroMultiple = 0;
 double pomodoroEpic = 0;
 
+int rtcLostPower() {
+    return rtc.lostPower();
+}
+
 int clockTimeDigits() {
     return rtc.now().hour() * 100 \
             + rtc.now().minute();

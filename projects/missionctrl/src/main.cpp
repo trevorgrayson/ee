@@ -52,7 +52,9 @@ void setup()
     consolePrintLn("ready.");
     consoleLightOff();
 
-    clockSetup(2026, 3, 9, 7, 35); Serial.println("RTC setup... [ OK ]");
+    if(rtcLostPower())
+        clockSetup(2026, 3, 11, 4, 9); Serial.println("RTC setup... [ OK ]");
+
 
     displays.begin(addresses);
     displays.setBrightness(5);
