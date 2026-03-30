@@ -20,28 +20,23 @@
 #include <SoftwareSerial.h>
 #include <OtaClient.h>
 
-const char* ssid = WIFI_SSID;
+const char* ssid     = WIFI_SSID;
 const char* password = WIFI_PASS;
 
 ESP8266WebServer server(80);
 // server.enableCORS(false);
 
-OtaClient ota(
-        "http://ota.pearl.st",
-        "tkts",
-        "1.0.0"
-);
+OtaClient ota("http://ota.pearl.st", "tkts", "1.0.0");
 
-// Thermal printer on hardware serial
-#define PrinterSerial Serial    //TODO: swapping pins may remove chinese.
-//SoftwareSerial printerSerial(2, 0); // TX, RX (RX unused) -1
+#define PrinterSerial Serial  // Thermal printer on hardware serial
+// TODO: swapping pins may remove chinese.
+// SoftwareSerial printerSerial(2, 0); // TX, RX (RX unused) -1
 
 Adafruit_Thermal printer(&PrinterSerial);
 
-
 void printMarkdown(String text);
-//void handleRoot();
-//void handlePrint();
+void handleRoot();
+void handlePrint();
 
 void handleRoot() {
     String page = R"rawliteral(
@@ -49,7 +44,7 @@ void handleRoot() {
   <h2>Therm Printer</h2>
   <p>POST text to <b>/print</b></p>
   <p>Example curl:</p>
-  <pre>curl -X POST http://tkts.local/print "Hello **World**"</pre>
+  <pre>curl -X POST http://tkts.local/print --data-binary "Hello **World**"</pre>
   <pre>curl -X POST http://tkts.local/print --data-binary @ticket.txt</pre>
   <pre>printf "# Order 42\n---\n**Burger**\n*No onions*\n" \
 | curl http://tkts.local/print --data-binary @-</pre>
@@ -216,18 +211,16 @@ void printMarkdown(String text) {
     printer.feed(3);
 }
 
-/*
-main.cpp
-*/
-
 void setup() {
     WiFi.mode(WIFI_STA);
+    WiFi.hostname("tkts");
     WiFi.begin(ssid, password);
 
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
     }
 
+    // Check for Updates
     ota.begin();
     ota.checkForUpdate();   // check at boot
 
@@ -241,7 +234,7 @@ void setup() {
     Serial.setDebugOutput(false);
     system_set_os_print(0);
 
-    delay(500);
+    // Ready Printer
     printer.begin();
 }
 
