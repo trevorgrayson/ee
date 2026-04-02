@@ -15,6 +15,8 @@
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266HTTPClient.h>
+#include <WiFiClientSecureBearSSL.h>
 #include <ESP8266mDNS.h>
 #include "Adafruit_Thermal.h"
 #include <SoftwareSerial.h>
@@ -37,6 +39,8 @@ Adafruit_Thermal printer(&PrinterSerial);
 void printMarkdown(String text);
 void handleRoot();
 void handlePrint();
+void handleFetch();
+void handleFetchOptions();
 
 void handleRoot() {
     String page = R"rawliteral(
@@ -59,7 +63,6 @@ void handleRoot() {
       --accent: #111111;
       --shadow: 0 12px 32px rgba(0,0,0,0.10);
       --radius: 18px;
-      --fab-size: 62px;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-right: env(safe-area-inset-right, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -135,6 +138,29 @@ void handleRoot() {
       border-radius: 999px;
     }
 
+    .topbar-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill-btn {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      font-size: 0.72rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+    }
+
+    .pill-btn:active {
+      background: rgba(0,0,0,0.06);
+    }
+
     .editor-card {
       min-height: 0;
       height: 100%;
@@ -189,116 +215,6 @@ void handleRoot() {
       color: #9a978f;
     }
 
-    .fab-wrap {
-      position: fixed;
-      right: calc(18px + var(--safe-right));
-      bottom: calc(18px + var(--safe-bottom));
-      z-index: 1001;
-    }
-
-    .fab {
-      width: var(--fab-size);
-      height: var(--fab-size);
-      border-radius: 50%;
-      border: 0;
-      background: var(--accent);
-      color: white;
-      display: grid;
-      place-items: center;
-      box-shadow: 0 14px 30px rgba(0,0,0,0.28);
-      font-size: 1.4rem;
-      cursor: pointer;
-    }
-
-    .fab:active { transform: scale(0.97); }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.08);
-      z-index: 1000;
-      display: none;
-    }
-
-    .overlay.show { display: block; }
-
-    .sheet {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 1002;
-      background: rgba(255,255,255,0.99);
-      border-top-left-radius: 22px;
-      border-top-right-radius: 22px;
-      box-shadow: 0 -10px 30px rgba(0,0,0,0.18);
-      padding: 10px 12px calc(16px + var(--safe-bottom)) 12px;
-      transform: translateY(105%);
-      transition: transform 160ms ease;
-    }
-
-    .sheet.open { transform: translateY(0); }
-
-    .grabber {
-      width: 42px;
-      height: 5px;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.15);
-      margin: 4px auto 12px auto;
-    }
-
-    .menu-group {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: white;
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-
-    .menu-item {
-      width: 100%;
-      text-align: left;
-      border: 0;
-      background: transparent;
-      color: var(--text);
-      padding: 16px 14px;
-      border-radius: 16px;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .menu-item:active {
-      background: rgba(0,0,0,0.06);
-    }
-
-    .submenu {
-      padding-left: 14px;
-      padding-right: 10px;
-      padding-bottom: 8px;
-      display: none;
-    }
-
-    .submenu.open { display: block; }
-
-    .submenu-item {
-      width: 100%;
-      text-align: left;
-      border: 0;
-      background: rgba(0,0,0,0.03);
-      color: var(--text);
-      padding: 14px 12px;
-      border-radius: 14px;
-      font-size: 0.98rem;
-      margin: 8px 0 0 0;
-    }
-
-    .submenu-item:active {
-      background: rgba(0,0,0,0.08);
-    }
-
     .toast {
       position: fixed;
       left: 50%;
@@ -328,20 +244,6 @@ void handleRoot() {
         max-width: 760px;
         margin: 0 auto;
       }
-
-      .sheet {
-        left: auto;
-        right: calc(18px + var(--safe-right));
-        bottom: calc(92px + var(--safe-bottom));
-        width: min(92vw, 320px);
-        border-radius: 22px;
-        transform: scale(0.96) translateY(8px);
-        transform-origin: bottom right;
-      }
-
-      .sheet.open { transform: scale(1) translateY(0); }
-
-      .grabber { display: none; }
     }
   </style>
 </head>
@@ -352,7 +254,11 @@ void handleRoot() {
         <h1 class="title">tkts.local printer</h1>
         <p class="subtitle">Editing</p>
       </div>
-      <div class="status" id="saveStatus">Saved</div>
+      <div class="topbar-actions">
+        <button class="pill-btn" id="printBtn" type="button">Print</button>
+        <button class="pill-btn" id="fetchBtn" type="button">Fetch</button>
+        <div class="status" id="saveStatus">Saved</div>
+      </div>
     </header>
 
     <section class="editor-card">
@@ -373,43 +279,6 @@ void handleRoot() {
     </section>
   </div>
 
-  <div class="overlay" id="overlay"></div>
-
-  <div class="sheet" id="menuSheet" style="display:none">
-    <div class="grabber"></div>
-
-    <div class="menu-group">
-      <button class="menu-item" id="printToggle" type="button">
-        <span>Print</span>
-        <span id="printChevron">▾</span>
-      </button>
-      <div class="submenu" id="printMenu">
-        <button class="submenu-item" id="printBtn" type="button">Print Now</button>
-        <button class="submenu-item" id="fetchBtn" type="button">Fetch</button>
-      </div>
-    </div>
-
-    <div class="menuhttp://tkts.local/-group">
-      <button class="menu-item" id="settingsToggle" type="button">
-        <span>Settings</span>
-        <span id="settingsChevron">▾</span>
-      </button>
-      <div class="submenu" id="settingsMenu">
-        <button class="submenu-item" id="wifiBtn" type="button">Add WiFi Network</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="fab-wrap">
-    <button
-      class="fab"
-      id="fab"
-      type="button"
-      aria-label="Open menu"
-      aria-expanded="false"
-    >☰</button>
-  </div>
-
   <div class="toast" id="toast"></div>
 
   <script>
@@ -418,17 +287,7 @@ void handleRoot() {
       const charCount = document.getElementById("charCount");
       const wordCount = document.getElementById("wordCount");
       const saveStatus = document.getElementById("saveStatus");
-      const fab = document.getElementById("fab");
-      const overlay = document.getElementById("overlay");
-      const menuSheet = document.getElementById("menuSheet");
       const toast = document.getElementById("toast");
-
-      const printToggle = document.getElementById("printToggle");
-      const settingsToggle = document.getElementById("settingsToggle");
-      const printMenu = document.getElementById("printMenu");
-      const settingsMenu = document.getElementById("settingsMenu");
-      const printChevron = document.getElementById("printChevron");
-      const settingsChevron = document.getElementById("settingsChevron");
 
       const STORAGE_KEY = "mobile-markdown-editor-draft";
 
@@ -469,28 +328,12 @@ void handleRoot() {
         }, 1800);
       }
 
-      function openMenu() {
-        overlay.classList.add("show");
-        menuSheet.classList.add("open");
-        fab.setAttribute("aria-expanded", "true");
-        menuSheet.setAttribute("style", "display:block");
-      }
-
-      function closeMenu() {
-        overlay.classList.remove("show");
-        menuSheet.classList.remove("open");
-        fab.setAttribute("aria-expanded", "false");
-        menuSheet.setAttribute("style", "display:none");
-      }
-
-      function toggleMenu() {
-        if (menuSheet.classList.contains("open")) closeMenu();
-        else openMenu();
-      }
-
-      function toggleSubmenu(menu, chevron) {
-        const isOpen = menu.classList.toggle("open");
-        chevron.textContent = isOpen ? "▴" : "▾";
+      async function fetchUrl(url) {
+        const response = await fetch(`/fetch?url=${encodeURIComponent(url)}`);
+        if (!response.ok) {
+          throw new Error(`Fetch failed (${response.status})`);
+        }
+        return response.text();
       }
 
       async function printDocument() {
@@ -500,7 +343,6 @@ void handleRoot() {
           return;
         }
 
-        closeMenu();
         showToast("Printing…");
 
         try {
@@ -528,20 +370,21 @@ void handleRoot() {
         persistDraft();
       });
 
-      fab.addEventListener("click", toggleMenu);
-      overlay.addEventListener("click", closeMenu);
-
-      printToggle.addEventListener("click", () => toggleSubmenu(printMenu, printChevron));
-      settingsToggle.addEventListener("click", () => toggleSubmenu(settingsMenu, settingsChevron));
-
       document.getElementById("printBtn").addEventListener("click", printDocument);
-      document.getElementById("fetchBtn").addEventListener("click", () => {
-        closeMenu();
-        showToast("Fetch action");
-      });
-      document.getElementById("wifiBtn").addEventListener("click", () => {
-        closeMenu();
-        showToast("Add WiFi Network");
+      document.getElementById("fetchBtn").addEventListener("click", async () => {
+        const url = prompt("Fetch URL");
+        if (!url) return;
+        showToast("Fetching…");
+        try {
+          const body = await fetchUrl(url);
+          editor.value = body;
+          updateCounts();
+          persistDraft();
+          showToast("Fetched");
+        } catch (error) {
+          console.error(error);
+          showToast("Fetch failed");
+        }
       });
 
       restoreDraft();
@@ -631,14 +474,77 @@ void handlePrint() {
 //    }
     printer.wake();
     delay(300);
-    printer.println("Ok.");
     String text = server.arg("plain");
     text.replace("\\n", "\n");
     text.replace("\\r", "");
 
-    printMarkdown("ok");
+    printMarkdown(text);
 
     server.send(200, "text/plain", "Printed\n");
+}
+
+void addCorsHeaders() {
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    server.sendHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+    server.sendHeader("Access-Control-Allow-Headers", "Content-Type");
+    server.sendHeader("Access-Control-Max-Age", "600");
+}
+
+void handleFetchOptions() {
+    addCorsHeaders();
+    server.send(204, "text/plain", "");
+}
+
+void handleFetch() {
+    addCorsHeaders();
+    if (!server.hasArg("url")) {
+        server.send(400, "text/plain", "Missing url");
+        return;
+    }
+
+    String url = server.arg("url");
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        server.send(400, "text/plain", "Only http(s) URLs supported");
+        return;
+    }
+
+    HTTPClient http;
+    http.setTimeout(6000);
+
+    bool isHttps = url.startsWith("https://");
+    if (isHttps) {
+        BearSSL::WiFiClientSecure client;
+        client.setInsecure();
+        if (!http.begin(client, url)) {
+            server.send(502, "text/plain", "Bad URL");
+            return;
+        }
+        int code = http.GET();
+        if (code <= 0) {
+            http.end();
+            server.send(502, "text/plain", "Fetch failed");
+            return;
+        }
+        String body = http.getString();
+        http.end();
+        server.send(code, "text/plain", body);
+        return;
+    }
+
+    WiFiClient client;
+    if (!http.begin(client, url)) {
+        server.send(502, "text/plain", "Bad URL");
+        return;
+    }
+    int code = http.GET();
+    if (code <= 0) {
+        http.end();
+        server.send(502, "text/plain", "Fetch failed");
+        return;
+    }
+    String body = http.getString();
+    http.end();
+    server.send(code, "text/plain", body);
 }
 
 void printLine(String line) {
@@ -746,6 +652,8 @@ void setup() {
 
     server.on("/", HTTP_GET, handleRoot);
     server.on("/print", HTTP_POST, handlePrint);
+    server.on("/fetch", HTTP_GET, handleFetch);
+    server.on("/fetch", HTTP_OPTIONS, handleFetchOptions);
     server.begin();
 
     PrinterSerial.begin(9600);          // 19200 Most thermal printers default here
