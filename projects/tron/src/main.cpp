@@ -5,6 +5,8 @@
 #define MATRIX_WIDTH 32
 #define MATRIX_HEIGHT 8
 #define NUM_LEDS (MATRIX_WIDTH * MATRIX_HEIGHT)
+#define SNAKE_LEN 5
+#define ROUND_SHOW_MS 700
 
 #define P1_UP_PIN 16
 #define P1_DOWN_PIN 17
@@ -29,8 +31,17 @@ struct Player {
     bool alive;
 };
 
+struct Trail {
+    uint16_t buf[NUM_LEDS];
+    uint16_t head;
+    uint16_t len;
+};
+
 static Player p1;
 static Player p2;
+static Trail t1;
+static Trail t2;
+static uint16_t roundNum = 0;
 
 static const uint16_t TICK_MS = 120;
 static uint32_t lastTick = 0;
@@ -59,7 +70,72 @@ static void clearBoard() {
     FastLED.show();
 }
 
-static void setPlayerStart(Player &p, uint8_t x, uint8_t y, Dir d, const CRGB &c, uint8_t id) {
+static void drawDigit3x5(uint8_t x, uint8_t y, uint8_t digit, const CRGB &c) {
+    static const uint16_t font[10] = {
+        0b111101101101111, // 0
+        0b010110010010111, // 1
+        0b111001111100111, // 2
+        0b111001111001111, // 3
+        0b101101111001001, // 4
+        0b111100111001111, // 5
+        0b111100111101111, // 6
+        0b111001001001001, // 7
+        0b111101111101111, // 8
+        0b111101111001111  // 9
+    };
+    if (digit > 9) return;
+    uint16_t bits = font[digit];
+    for (uint8_t row = 0; row < 5; row++) {
+        for (uint8_t col = 0; col < 3; col++) {
+            uint8_t bit = 14 - (row * 3 + col);
+            if ((bits >> bit) & 0x1) {
+                uint8_t px = x + col;
+                uint8_t py = y + row;
+                if (px < MATRIX_WIDTH && py < MATRIX_HEIGHT) {
+                    leds[XY(px, py)] = c;
+                }
+            }
+        }
+    }
+}
+
+static void showRoundNumber(uint16_t round) {
+    char buf[6];
+    snprintf(buf, sizeof(buf), "%u", round);
+    uint8_t len = strlen(buf);
+    uint8_t totalWidth = (len * 3) + (len > 0 ? (len - 1) : 0);
+    uint8_t startX = (MATRIX_WIDTH - totalWidth) / 2;
+    uint8_t startY = (MATRIX_HEIGHT - 5) / 2;
+
+    for (uint8_t i = 0; i < len; i++) {
+        uint8_t digit = static_cast<uint8_t>(buf[i] - '0');
+        drawDigit3x5(startX + i * 4, startY, digit, CRGB::White);
+    }
+    FastLED.show();
+    delay(ROUND_SHOW_MS);
+}
+
+static void trailReset(Trail &t) {
+    t.head = 0;
+    t.len = 0;
+}
+
+static void trailAddAndTrim(Trail &t, uint16_t idx, uint8_t id) {
+    t.buf[t.head] = idx;
+    t.head = (t.head + 1) % NUM_LEDS;
+    if (t.len < NUM_LEDS) t.len++;
+    if (SNAKE_LEN > 0 && t.len > SNAKE_LEN) {
+        uint16_t tailIndex = (t.head + NUM_LEDS - t.len) % NUM_LEDS;
+        uint16_t tailIdx = t.buf[tailIndex];
+        t.len--;
+        if (occupancy[tailIdx] == id) {
+            occupancy[tailIdx] = 0;
+            leds[tailIdx] = CRGB::Black;
+        }
+    }
+}
+
+static void setPlayerStart(Player &p, Trail &t, uint8_t x, uint8_t y, Dir d, const CRGB &c, uint8_t id) {
     p.x = x;
     p.y = y;
     p.dir = d;
@@ -68,11 +144,17 @@ static void setPlayerStart(Player &p, uint8_t x, uint8_t y, Dir d, const CRGB &c
     uint16_t idx = XY(x, y);
     occupancy[idx] = id;
     leds[idx] = c;
+    trailReset(t);
+    trailAddAndTrim(t, idx, id);
 }
 
 static void resetGame() {
     clearBoard();
-    setPlayerStart(p1, 6, 3, DIR_RIGHT, CRGB::Red, 1);
+    roundNum++;
+    showRoundNumber(roundNum);
+    clearBoard();
+    setPlayerStart(p1, t1, 6, 3, DIR_RIGHT, CRGB::Red, 1);
+    trailReset(t2);
     p2.alive = false;
     FastLED.show();
 }
@@ -105,7 +187,7 @@ static void readInputs() {
             uint8_t sx = 25;
             uint8_t sy = 4;
             if (occupancy[XY(sx, sy)] == 0) {
-                setPlayerStart(p2, sx, sy, next, CRGB::Blue, 2);
+                setPlayerStart(p2, t2, sx, sy, next, CRGB::Blue, 2);
                 FastLED.show();
             }
         }
@@ -176,6 +258,7 @@ static void tick() {
         uint16_t i1 = XY(n1x, n1y);
         occupancy[i1] = 1;
         leds[i1] = p1.color;
+        trailAddAndTrim(t1, i1, 1);
         p1.x = n1x; p1.y = n1y;
         FastLED.show();
         return;
@@ -211,6 +294,8 @@ static void tick() {
 
     leds[i1] = p1.color;
     leds[i2] = p2.color;
+    trailAddAndTrim(t1, i1, 1);
+    trailAddAndTrim(t2, i2, 2);
 
     p1.x = n1x; p1.y = n1y;
     p2.x = n2x; p2.y = n2y;
