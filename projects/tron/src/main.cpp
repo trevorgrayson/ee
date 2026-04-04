@@ -99,17 +99,28 @@ static void readInputs() {
 }
 
 static bool stepPlayer(const Player &p, uint8_t &nx, uint8_t &ny) {
-    nx = p.x;
-    ny = p.y;
+    int16_t tx = p.x;
+    int16_t ty = p.y;
     switch (p.dir) {
-        case DIR_UP:    ny = (p.y == 0) ? 255 : (p.y - 1); break;
-        case DIR_DOWN:  ny = p.y + 1; break;
-        case DIR_LEFT:  nx = (p.x == 0) ? 255 : (p.x - 1); break;
-        case DIR_RIGHT: nx = p.x + 1; break;
+        case DIR_UP:
+            ty -= 1;
+            if (ty < 0) ty = MATRIX_HEIGHT - 1;
+            break;
+        case DIR_DOWN:
+            ty += 1;
+            if (ty >= MATRIX_HEIGHT) ty = 0;
+            break;
+        case DIR_LEFT:
+            tx -= 1;
+            if (tx < 0) tx = MATRIX_WIDTH - 1;
+            break;
+        case DIR_RIGHT:
+            tx += 1;
+            if (tx >= MATRIX_WIDTH) tx = 0;
+            break;
     }
-    if (nx >= MATRIX_WIDTH || ny >= MATRIX_HEIGHT) {
-        return false;
-    }
+    nx = static_cast<uint8_t>(tx);
+    ny = static_cast<uint8_t>(ty);
     return true;
 }
 
