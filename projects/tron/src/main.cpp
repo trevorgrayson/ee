@@ -73,7 +73,7 @@ static void setPlayerStart(Player &p, uint8_t x, uint8_t y, Dir d, const CRGB &c
 static void resetGame() {
     clearBoard();
     setPlayerStart(p1, 6, 3, DIR_RIGHT, CRGB::Red, 1);
-    setPlayerStart(p2, 25, 4, DIR_LEFT, CRGB::Blue, 2);
+    p2.alive = false;
     FastLED.show();
 }
 
@@ -90,11 +90,28 @@ static void readInputs() {
     else next = p1.dir;
     if (!isOpposite(p1.dir, next)) p1.dir = next;
 
+    bool p2Pressed = true;
     if (pressed(P2_UP_PIN)) next = DIR_UP;
     else if (pressed(P2_DOWN_PIN)) next = DIR_DOWN;
     else if (pressed(P2_LEFT_PIN)) next = DIR_LEFT;
     else if (pressed(P2_RIGHT_PIN)) next = DIR_RIGHT;
-    else next = p2.dir;
+    else {
+        p2Pressed = false;
+        next = p2.dir;
+    }
+
+    if (!p2.alive) {
+        if (p2Pressed) {
+            uint8_t sx = 25;
+            uint8_t sy = 4;
+            if (occupancy[XY(sx, sy)] == 0) {
+                setPlayerStart(p2, sx, sy, next, CRGB::Blue, 2);
+                FastLED.show();
+            }
+        }
+        return;
+    }
+
     if (!isOpposite(p2.dir, next)) p2.dir = next;
 }
 
@@ -140,8 +157,27 @@ static void gameOverFlash(bool p1Crash, bool p2Crash) {
 }
 
 static void tick() {
-    if (!p1.alive || !p2.alive) {
+    if (!p1.alive) {
         resetGame();
+        return;
+    }
+
+    if (!p2.alive) {
+        uint8_t n1x, n1y;
+        stepPlayer(p1, n1x, n1y);
+
+        bool crash1 = occupancy[XY(n1x, n1y)] != 0;
+        if (crash1) {
+            p1.alive = false;
+            gameOverFlash(true, false);
+            return;
+        }
+
+        uint16_t i1 = XY(n1x, n1y);
+        occupancy[i1] = 1;
+        leds[i1] = p1.color;
+        p1.x = n1x; p1.y = n1y;
+        FastLED.show();
         return;
     }
 
